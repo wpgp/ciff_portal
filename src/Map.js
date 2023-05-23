@@ -169,7 +169,7 @@ function DistrictPopup(obj, col){
 function GriddedData({ country, indicator, band }){
   const palette = (band === 'CH') ? 'Palette2' : 'Palette1';
 
-  let path = 'https://raw.githubusercontent.com/rhorom/ciff_portal/main/'
+  let path = ''//'https://raw.githubusercontent.com/rhorom/ciff_portal/main/'
   path += `./data/${country.Abbreviation}_LBW_R1.tif`;
   
   fetch(path)
