@@ -12,7 +12,7 @@
     <li>Click <i class="fa fa-arrow-circle-left"></i> to reset the map view.
     <li>Select an administrative unit from the list provided. Selection can also be done by clicking any region on the map.</li>
     <li>Chart and tabulated data for the selected unit is displayed on the right. The data can be sorted according to the sub-unit name or the indicator values.</li>
-    <li>When an administrative unit is selected, the aggregated values of all indicators from that unit are displayed below the map.</li>
+    <li>The aggregated values of all indicators from the selected unit can also be seen on the panel.</li>
 </ol>
 </div>
 <div class='col-6'>
