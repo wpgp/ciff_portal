@@ -45,7 +45,7 @@ export function LookupTable(props){
     }
 }
 
-export function GroupSelect({ items, lead, end, defaultOpt, pass }){
+export function GroupSelecta({ items, lead, end, defaultOpt, pass }){
     const group = [...new Set(items.map((item) => item[lead]))];
 
     function handleChange(e){
@@ -68,7 +68,7 @@ export function GroupSelect({ items, lead, end, defaultOpt, pass }){
     )
 }
 
-export function GroupSelects(props){
+export function GroupSelect(props){
     const [itm, setItm] = useState(props.items);
     const fixed = props.fixed ? props.fixed : ['none'];
     const lead = props.lead ? props.lead : props.keys;
@@ -82,8 +82,14 @@ export function GroupSelects(props){
         if (end.includes(key)) {
             props.pass(value);
             if (value !== 'default') {
-              filtered = props.items.filter((item) => (item === value))
+              filtered = props.items.filter((item) => {
+                return item[key].replaceAll(' ','') === value
+              })
             }
+
+            lead.forEach((itm) => {
+                document.getElementById('select'+itm).value = filtered[0][itm].replaceAll(' ','')
+            })
         }
   
         if (lead.includes(key)) {
@@ -129,7 +135,7 @@ export function SimpleSelect({ name, items, defaultOpt, pass, noDefault }){
     }
   
     return (
-        <>
+        <div>
             <Form.Select id={'select'+name} key={'select'+name} defaultValue={defaultOpt} onChange={handleChange}>
                 {noDefault ? '' : <option key={'default'+defaultOpt} value={''}>Select {name}</option>}
                 {items.map((item) => {
@@ -139,6 +145,6 @@ export function SimpleSelect({ name, items, defaultOpt, pass, noDefault }){
                     )
                 })}
             </Form.Select>
-        </>
+        </div>
     )
 }

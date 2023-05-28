@@ -1,7 +1,5 @@
-import data from './data/IND_data.json';
 import indicators from './data/indicators.json';
 
-export const dataTable = data.features.map((item) => item.properties);
 export const pIndicator = indicators.filter((item) => item.Proportional).map((item) => item.Abbreviation);
 export const nIndicator = indicators.filter((item) => !item.Proportional).map((item) => item.Abbreviation);
 

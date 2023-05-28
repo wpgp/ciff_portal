@@ -117,38 +117,45 @@ function Legend({ indicator, opt }){
       ticks.push(ticks[n-1] + delta)
       sticks.push(sticks[n-1] + sdelta)
     }
-  
+
+    const cbar = (
+      <svg width='100%' height='95'>
+        {ids.slice(0,18).map((item) => (
+          <rect key={item} x={(5+item*5)+'%'} y='0%' rx='5px' ry='5px' width='5%' height='30' stroke='#2b2b2b' fill={colormap[item]}/>
+        ))}
+        <line x1='0' x2='100%' y1='40' y2='40' stroke='black' weight='2'/>
+        {sticks.map((item, id) => (
+          <line key={id} x1={item+'%'} x2={item+'%'} y1='37' y2='43' stroke='black' weight='2'/>
+        ))}
+        {ticks.map((item, id) => (
+          <text key={id} x={sticks[id]+'%'} y='55' textAnchor='middle' fontSize='90%'>{parseFloat(item).toFixed(digit)}</text>
+        ))}
+        <text x='50%' y='70' textAnchor='middle'>{remark}</text>
+        <text x='50%' y='83' textAnchor='middle' fontSize='90%'>{proportional}</text>
+      </svg>
+    )
+    
     return (
-      <div className='row p-1 mb-2' style={{background:'#f0f0f0', borderRadius:'10px', minHeight:'125px'}}>
-        <h5>{info[0]}</h5>
-        <div className='col-6' style={{fontSize:'80%'}}>
-          <svg width='100%' height='95'>
-            {ids.slice(0,18).map((item) => (
-              <rect key={item} x={(5+item*5)+'%'} y='0%' rx='5px' ry='5px' width='5%' height='30' stroke='#2b2b2b' fill={colormap[item]}/>
-            ))}
-            <line x1='0' x2='100%' y1='40' y2='40' stroke='black' weight='2'/>
-            {sticks.map((item, id) => (
-              <line key={id} x1={item+'%'} x2={item+'%'} y1='37' y2='43' stroke='black' weight='2'/>
-            ))}
-            {ticks.map((item, id) => (
-              <text key={id} x={sticks[id]+'%'} y='55' textAnchor='middle'>{parseFloat(item).toFixed(digit)}</text>
-            ))}
-            <text x='50%' y='70' textAnchor='middle'>{remark}</text>
-            <text x='50%' y='83' textAnchor='middle' fontSize='90%'>{proportional}</text>
-          </svg>
+      <div className='row pt-2 mb-2' style={{background:'#f0f0f0', borderRadius:'10px', minHeight:'125px'}}>
+        <div className='p-0'><h5>{info[0]}</h5></div>
+        
+        <div className='col-5 p-0 m-0' style={{fontSize:'75%'}}>
+          <p>
+            <b>Definition</b><br/>{info[1]}
+          </p>
         </div>
-        <div className='col-6 p-0 m-0'>
+        
+        <div className='col-7' style={{fontSize:'75%'}}>
           <div className='row p-0 m-0'>
-            <div className='col p-1 m-0' style={{fontSize:'75%'}}>
-              <p>
-                <b>Definition</b><br/>{info[1]}
-              </p>
-            </div>
-            <div className='col p-1 m-0' style={{fontSize:'75%'}}>
+            <div className='col-md-5 p-1 m-0'>
               <b>Remarks</b><br/>
               <b>R<sub>1</sub>{'\u25B9'}</b> {info[4]}, {info[6]}
               <br/><b>R<sub>2</sub>{'\u25B9'}</b> {info[5]}, {info[7]}
               <br/><b>Ch{'\u25B9'}</b> (R<sub>2</sub> - R<sub>1</sub>)
+            </div>
+
+            <div className='col-md-7 p-1 m-0'>
+              {cbar}
             </div>
           </div>
         </div>
@@ -306,15 +313,17 @@ export function TheMap({ country, boundary, data, selected, pass, indicator }){
       <div className='title'>Subnational Map of {country.Name}</div>
       <div className='row' style={{minHeight:'100px'}}>
         <div className='frame' style={{fontSize:'100%'}}>
+
           <div>
-            <p>The map below displays the choropleth of aggregated {<BsSquareFill/>} or gridded data {<BsFillGridFill/>} of a particular indicator in the selected country.
-            Data from Round {<BsFill1CircleFill/>}, Round {<BsFill2CircleFill/>}, or the change between rounds {<BsSubtract/>} can be selected. 
+            <p>The map below displays the choropleth of aggregated or gridded data of a particular indicator in the selected country.
+            Data from Round 1, Round 2, or the change between rounds can be selected. 
             </p>
             <p>
             To get deeper information on a specific administrative unit, click a region on the map or select it from the options below.
             </p>
           </div>
           <div className='float-end p-2 pt-0 pb-0'>
+            Select administrative unit
             {selectStates}
           </div>
         </div>

@@ -97,7 +97,7 @@ function MakeTable({ columns, data, palette }) {
 function TwoPointChart({ input, field, sorter }){
   const fields = [field + "_R1", field + "_R2"];
   const mapper = {
-    'SortbyDistrict':'district',
+    'SortbySub-unit':'district',
     'SortbyR1': fields[0],
     'SortbyR2': fields[1],
     'SortbyChange': field + '_CH',
@@ -116,6 +116,29 @@ function TwoPointChart({ input, field, sorter }){
   spec.scales[1].domain = minmax;
   spec.scales[3].domain = minmax;
   spec.scales[4].domain.sort.field = mapper[sorter];
+  return <Vega spec={spec} actions={false} />
+}
+
+function DistrictChart({ input, field, sorter }){
+  const fields = [field + "_R1", field + "_R2", field + "_CH"];
+  const mapper = {
+    'SortbySub-unit':'district',
+    'SortbyLocation':'r',
+    'SortbyR1': fields[0],
+    'SortbyR2': fields[1],
+    'SortbyChange': fields[2],
+  };
+
+  const minmax = (visDict[field]['Minmax']);
+  let spec = JSON.parse(JSON.stringify(specs['DistrictBars']));
+
+  spec.data[0].values = input;
+  spec.data[1].transform[0].expr = "datum." + fields[0];
+  spec.data[1].transform[1].expr = "datum." + fields[1];
+  spec.signals[0].value = 200;
+  
+  spec.marks[2].sort.field = "datum[\"" + mapper[sorter] + "\"]";
+  spec.scales[0].domain = minmax;
   return <Vega spec={spec} actions={false} />
 }
 
@@ -140,7 +163,7 @@ function DensityChart({ input, field, minmax, xlabels=true, type='Histogram' }){
   )
 }
 
-export function AllIndicators({ country, data, pass }){
+export function AllIn({ country, data, pass }){
   const info = LookupTable({'items':indicators, 'first':'Abbreviation', 'second':['R1','R2','Y1','Y2','Unit'], 'value':'C_Prev'});
 
   let concerning = [];
@@ -231,10 +254,40 @@ export function AllIndicators({ country, data, pass }){
   )
 }
 
-export function TheChart({ country, data, indicator, selected, pass }){
-  const [openChart, setOpenChart] = useState(true);
-  const [openTable, setOpenTable] = useState(false);
-  const [sortChart, setSortChart] = useState('SortbyDistrict');
+export function AllIndicators({ input, proportional }){
+  let spec = JSON.parse(JSON.stringify(specs['StateAggregate']));
+  spec.data[0].values = input;
+
+  if (proportional) {
+    spec.title.text = "An increase in the indicator below means improvement";
+    spec.data[1].transform[0].expr = "(datum.Proportional === true)";
+  } else {
+    spec.title.text = "A decrease in the indicator below means improvement";
+    spec.data[1].transform[0].expr = "(datum.Proportional === false)";
+  }
+
+  spec.signals[0].value = 150;
+  return <Vega spec={spec} actions={false} />
+}
+
+export function AllIndicatorsDistribution({ input, proportional }){
+  let spec = JSON.parse(JSON.stringify(specs['StateAggregateDistribution']));
+  spec.data[0].values = input;
+
+  if (proportional) {
+    spec.title.text = "An increase in the indicator below means improvement";
+    spec.data[1].transform[2].expr = "(datum.Proportional === true)";
+  } else {
+    spec.title.text = "A decrease in the indicator below means improvement";
+    spec.data[1].transform[2].expr = "(datum.Proportional === false)";
+  }
+
+  spec.signals[0].value = 150;
+  return <Vega spec={spec} actions={false} />
+}
+
+export function TheChart({ country, data, aggData, indicator, selected, pass }){
+  const [sortChart, setSortChart] = useState('SortbySub-unit');
 
   const stateName = data[0].state;
 
@@ -257,16 +310,27 @@ export function TheChart({ country, data, indicator, selected, pass }){
   }, [indicator])
 
   const columns = [
-    {Header:'State', accessor:'state'},
-    {Header:'District', accessor:'district'},
+    {Header:'Sub-unit Name', accessor:'district'},
     {Header:`R1`, accessor: `${indicator}_R1`, Cell:DecimalFormat, sortType:'basic'},
     {Header:'R2', accessor:`${indicator}_R2`, Cell:DecimalFormat, sortType:'basic'},
     {Header:'CH', accessor:`${indicator}_CH`, Cell:DecimalFormat, sortType:'basic'}
   ]
   
-  const twopointchart = useMemo(() => (
-    <TwoPointChart input={data} field={indicator} sorter={sortChart}/>
+  const districtchart = useMemo(() => (
+    <DistrictChart input={data} field={indicator} sorter={sortChart}/>
   ), [data, indicator, sortChart])
+
+  const allindicators = useMemo(() => (
+    <div className='row m-0 p-0'>
+      <div className='float-end m-0 p-0'>
+        <AllIndicators input={aggData} proportional={true}/>
+      </div>
+      <hr/>
+      <div className='float-end m-0 p-0'>
+        <AllIndicators input={aggData} proportional={false}/>
+      </div>
+    </div>
+  ), [aggData])
 
   const hilite = ['_R1', '_R2', '_CH'].map((item) => {
     let obj = {}
@@ -283,18 +347,70 @@ export function TheChart({ country, data, indicator, selected, pass }){
     return obj
   })
 
+  const summaryTab = (
+    <>
+      <p style={{fontSize:'90%'}}>
+        Descriptive summary about the indicators from the selected administrative unit goes here.
+      </p>
+    </>
+  )
+
+  const indicatorsTab = (
+    <>
+      <p style={{fontSize:'90%'}}>
+      Overall improvement in the selected administrative unit can also be assessed by comparing the aggregated (mean) values of all indicators.
+      </p>
+      <hr/>
+      {allindicators}
+    </>
+  )
+
+  const chartTab = (
+    <>
+      <p style={{fontSize:'90%'}}>
+      The chart below summarizes the indicator values (in percentage) aggregated at sub-unit level.
+      </p>
+      <div className='m-0 p-0 mb-3' style={{width:'200px'}}>
+        <SimpleSelect 
+          items={['Sort by Sub-unit', 'Sort by Location', 'Sort by R1', 'Sort by R2', 'Sort by Change']} 
+          defaultOpt={'SortbySub-unit'}
+          noDefault={true}
+          name={'sortChart'}
+          pass={setSortChart}
+        />
+      </div>
+      <hr/>
+      <div className='m-0 p-0'><h6>{visDict[indicator]['Indicator']}</h6></div>
+      {districtchart}
+    </>
+  )
+
+  const tableTab = (
+    <>
+      <p style={{fontSize:'90%'}}>
+      The table below summarizes the indicator values (in percentage) aggregated at sub-unit level.
+      </p>
+      <hr/>
+      {<MakeTable columns={columns} data={data} palette={palette}/>}
+    </>
+  )
+
   return (
     <div className='row'>
-      <div className='title'>Extensive Data</div>
+      <div className='title'>Detailed Data</div>
       <div className='pt-1 pb-2 frame' style={{fontSize:'100%'}}>
         <div>
-        The indicator values from the first and second round survey are presented, including the change between the rounds.
-        Those values are aggregated at sub-unit level.
+          <p>
+            The indicator values from the first and second round survey are presented, including the change between the rounds. Those values are aggregated at sub-unit level.
+          </p>
+          <p>
+            All indicators values are aggregated at unit level.
+          </p>
         </div>
       </div>
     
       <div className='row m-0 info'>
-        <h5 style={{padding:'5px', borderRadius:'5px', background:'#cfcccc', color:'#000'}}>{stateName}, {country.Name} ({data.length} sub-unit)</h5>
+        <h5 style={{padding:'5px', borderRadius:'5px', background:'#cfcccc', color:'#000'}}>{stateName} ({data.length} sub-unit)</h5>
         <div className='row m-0 p-0'>
           <Table striped bordered hover size='sm'>
             <thead>
@@ -317,52 +433,30 @@ export function TheChart({ country, data, indicator, selected, pass }){
         </div>
       </div>
 
-      <div className='row m-0 p-0 mt-4'>
-        <div className='float-start' style={{marginBottom:'10px'}}>
-          <label className='page-tab'>
-            <input className='page-radio' type='radio' name='content-type' id={'radio_Chart'} defaultChecked onClick={() => {setOpenChart(true); setOpenTable(false)}}/>
-            <span className='page-label' style={{borderRadius:'10px 10px 0 0'}} title='show chart'>Chart</span>
-          </label>
-          <label className='page-tab'>
-            <input className='page-radio' type='radio' name='content-type' id={'radio_Table'} onClick={() => {setOpenChart(false); setOpenTable(true)}}/>
-            <span className='page-label' style={{borderRadius:'10px 10px 0 0'}} title='show table'>Table</span>
-          </label>
-        </div>
-        <Collapse in={openTable}>
-          <div id='table' className='framed-content'>
-            <div>
-            <div className='m-0 p-0'><h6>{visDict[indicator]['Indicator']}</h6></div>
-            <div className='m-0 p-0 pb-3' style={{fontSize:'90%'}}>The table below summarizes the indicator values (in percentage) aggregated at district level. Click the header to sort the data accordingly.</div>
-            </div>
-            {<MakeTable columns={columns} data={data} palette={palette}/>}
-          </div>
-        </Collapse>
-        <Collapse in={openChart}>
-          <div id='the-chart' className='row m-0 framed-content'>
-            <div className='col m-0' style={{fontSize:'80%'}}>
-              <div className='float-end'>{twopointchart}</div>
-              <div className='float-end row' style={{position:'absolute', width:'140px'}}>
-                <div className='m-1 p-0'><h6>{visDict[indicator]['Indicator']}</h6></div>
-                <div className='m-1 mt-0 p-0' style={{fontSize:'90%'}}>
-                  <p>Figure on the right shows the distribution of indicator values from the sub-units in the selected administrative unit.</p>
-                  <p>The values per sub-unit are displayed below. The graph can be arranged by district, R<sub>1</sub>, R<sub>2</sub>, or the change.</p>
-                </div>
-                <div className='m-0 mb-3 p-0'>
-                  <SimpleSelect 
-                    items={['Sort by District', 'Sort by R1', 'Sort by R2', 'Sort by Change']} 
-                    defaultOpt={'SortbyDistrict'}
-                    noDefault={true}
-                    name={'sortChart'}
-                    pass={setSortChart}
-                  />
-                </div>
-                {<Legend indicator={indicator}/>}
-              </div>
-            </div>
-          </div>
-        </Collapse>
-
+      <div className='m-0 mt-3'>
+        <ul className="nav nav-tabs" role='tablist'>
+          <li className="nav-item">
+            <a className="nav-link active" data-bs-toggle="tab" href="#summaryTab">Summary</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" data-bs-toggle="tab" href="#indicatorsTab">All Indicators</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" data-bs-toggle="tab" href="#chartTab">Chart</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" data-bs-toggle="tab" href="#tableTab">Table</a>
+          </li>
+        </ul>
       </div>
+
+      <div className='tab-content framed-content'>
+        <div id='summaryTab' className='container tab-pane active'>{summaryTab}</div>
+        <div id='indicatorsTab' className='container tab-pane fade'>{indicatorsTab}</div>
+        <div id='chartTab' className='container tab-pane fade'>{chartTab}</div>
+        <div id='tableTab' className='container tab-pane fade'>{tableTab}</div>
+      </div>
+
     </div>
   )
 }

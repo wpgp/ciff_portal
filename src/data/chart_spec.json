@@ -1015,5 +1015,540 @@
         "paddingOuter": 0.05
       }
     ]
+  },
+
+  "StateAggregate": {
+    "$schema": "https://vega.github.io/schema/vega/v5.json",
+    "background": "white",
+    "padding": 5,
+    "title": {
+      "text": "An increase in the indicator below means improvement",
+      "fontSize": 12,
+      "anchor": "start"
+    },
+    "data": [
+      {"name": "input_data", "values": []},
+      {
+        "name": "data_0",
+        "source": "input_data",
+        "transform": [
+          {"type": "filter", "expr": "(datum.Proportional === true)"},
+          {
+            "type": "filter",
+            "expr": "isValid(datum[\"Mean\"]) && isFinite(+datum[\"Mean\"])"
+          }
+        ]
+      },
+      {
+        "name": "row_domain",
+        "source": "data_0",
+        "transform": [{"type": "aggregate", "groupby": ["Indicator"]}]
+      }
+    ],
+    "signals": [
+      {"name": "child_width", "value": 200},
+      {"name": "child_height", "value": 20}
+    ],
+    "layout": {
+      "padding": {"row": 2, "column": 20},
+      "columns": 1,
+      "bounds": "full",
+      "align": "all"
+    },
+    "marks": [
+      {
+        "name": "row_header",
+        "type": "group",
+        "role": "row-header",
+        "from": {"data": "row_domain"},
+        "sort": {"field": "datum[\"Indicator\"]", "order": "ascending"},
+        "title": {
+          "text": {
+            "signal": "isValid(parent[\"Indicator\"]) ? parent[\"Indicator\"] : \"\"+parent[\"Indicator\"]"
+          },
+          "orient": "left",
+          "style": "guide-label",
+          "frame": "group",
+          "baseline": "middle",
+          "align": "left",
+          "anchor": "middle",
+          "angle": 0,
+          "offset": 10
+        },
+        "encode": {"update": {"height": {"signal": "child_height"}}},
+        "axes": [
+          {
+            "scale": "y",
+            "orient": "left",
+            "grid": false,
+            "labels": false,
+            "zindex": 0
+          }
+        ]
+      },
+      {
+        "name": "column_footer",
+        "type": "group",
+        "role": "column-footer",
+        "encode": {"update": {"width": {"signal": "child_width"}}},
+        "axes": [
+          {
+            "scale": "x",
+            "orient": "bottom",
+            "grid": false,
+            "labelFlush": true,
+            "labelOverlap": true,
+            "tickCount": {"signal": "ceil(child_width/40)"},
+            "zindex": 0
+          }
+        ]
+      },
+      {
+        "name": "cell",
+        "type": "group",
+        "style": "cell",
+        "from": {
+          "facet": {"name": "facet", "data": "data_0", "groupby": ["Indicator"]}
+        },
+        "sort": {"field": ["datum[\"Indicator\"]"], "order": ["ascending"]},
+        "encode": {
+          "update": {
+            "width": {"signal": "child_width"},
+            "height": {"signal": "child_height"}
+          }
+        },
+        "marks": [
+          {
+            "name": "child_marks",
+            "type": "rect",
+            "style": ["bar"],
+            "from": {"data": "facet"},
+            "encode": {
+              "update": {
+                "fill": {"scale": "color", "field": "Round"},
+                "tooltip": {
+                  "signal": "{\"Round\": isValid(datum[\"Round\"]) ? datum[\"Round\"] : \"\"+datum[\"Round\"], \"Mean\": format(datum[\"Mean\"], \".1f\"), \"Std\": format(datum[\"Std\"], \".1f\")}"
+                },
+                "ariaRoleDescription": {"value": "bar"},
+                "description": {
+                  "signal": "\"Round: \" + (isValid(datum[\"Round\"]) ? datum[\"Round\"] : \"\"+datum[\"Round\"]) + \"; Mean: \" + (format(datum[\"Mean\"], \".1f\")) + \"; Std: \" + (format(datum[\"Std\"], \".1f\"))"
+                },
+                "x": [
+                  {
+                    "test": "!isValid(datum[\"Mean\"]) || !isFinite(+datum[\"Mean\"])",
+                    "value": 0
+                  },
+                  {"scale": "x", "field": "Mean"}
+                ],
+                "x2": {"value": 0},
+                "y": {"scale": "y", "field": "Round"},
+                "height": {"scale": "y", "band": 1}
+              }
+            }
+          }
+        ],
+        "axes": [
+          {
+            "scale": "x",
+            "orient": "bottom",
+            "gridScale": "y",
+            "grid": true,
+            "tickCount": {"signal": "ceil(child_width/40)"},
+            "domain": false,
+            "labels": false,
+            "aria": false,
+            "maxExtent": 0,
+            "minExtent": 0,
+            "ticks": false,
+            "zindex": 0
+          }
+        ]
+      }
+    ],
+    "scales": [
+      {
+        "name": "x",
+        "type": "linear",
+        "domain": {"data": "data_0", "field": "Mean"},
+        "range": [0, {"signal": "child_width"}],
+        "zero": false,
+        "nice": true
+      },
+      {
+        "name": "y",
+        "type": "band",
+        "domain": {"data": "data_0", "field": "Round", "sort": true},
+        "range": [0, {"signal": "child_height"}],
+        "paddingInner": 0.1,
+        "paddingOuter": 0.05
+      },
+      {
+        "name": "color",
+        "type": "ordinal",
+        "domain": {"data": "data_0", "field": "Round", "sort": true},
+        "range": ["#2b2b2b", "#e90051"]
+      }
+    ],
+    "legends": [{"orient": "top", "columns": 2, "fill": "color", "symbolType": "square", "title": ""}]
+  },
+
+  "StateAggDistribution": {
+    "$schema": "https://vega.github.io/schema/vega/v5.json",
+    "background": "white",
+    "padding": 5,
+    "title": {
+      "text": "An increase in the indicator below means improvement",
+      "fontSize": 12,
+      "subtitle": " ",
+      "anchor": "start"
+    },
+    "data": [
+      {"name": "input_data", "values": []},
+      {
+        "name": "data_0",
+        "source": "input_data",
+        "transform": [
+          {"type": "formula", "expr": "datum.Mean - 2.5*datum.Std", "as": "X1"},
+          {"type": "formula", "expr": "datum.Mean + 2.5*datum.Std", "as": "X2"},
+          {"type": "filter", "expr": "(datum.Proportional === true)"},
+          {
+            "type": "filter",
+            "expr": "isValid(datum[\"X1\"]) && isFinite(+datum[\"X1\"])"
+          }
+        ]
+      },
+      {
+        "name": "row_domain",
+        "source": "data_0",
+        "transform": [{"type": "aggregate", "groupby": ["Indicator"]}]
+      }
+    ],
+    "signals": [
+      {"name": "child_width", "value": 200},
+      {"name": "child_height", "value": 20}
+    ],
+    "layout": {
+      "padding": {"row": 2, "column": 20},
+      "columns": 1,
+      "bounds": "full",
+      "align": "all"
+    },
+    "marks": [
+      {
+        "name": "row_header",
+        "type": "group",
+        "role": "row-header",
+        "from": {"data": "row_domain"},
+        "sort": {"field": "datum[\"Indicator\"]", "order": "ascending"},
+        "title": {
+          "text": {
+            "signal": "isValid(parent[\"Indicator\"]) ? parent[\"Indicator\"] : \"\"+parent[\"Indicator\"]"
+          },
+          "orient": "left",
+          "style": "guide-label",
+          "frame": "group",
+          "baseline": "middle",
+          "align": "left",
+          "anchor": "middle",
+          "angle": 0,
+          "offset": 10
+        },
+        "encode": {"update": {"height": {"signal": "child_height"}}},
+        "axes": [
+          {
+            "scale": "y",
+            "orient": "left",
+            "grid": false,
+            "labelFontSize": 8,
+            "zindex": 1
+          }
+        ]
+      },
+      {
+        "name": "column_footer",
+        "type": "group",
+        "role": "column-footer",
+        "encode": {"update": {"width": {"signal": "child_width"}}},
+        "axes": [
+          {
+            "scale": "x",
+            "orient": "bottom",
+            "grid": false,
+            "labelFlush": true,
+            "labelOverlap": true,
+            "tickCount": {"signal": "ceil(child_width/40)"},
+            "zindex": 0
+          }
+        ]
+      },
+      {
+        "name": "cell",
+        "type": "group",
+        "style": "cell",
+        "from": {
+          "facet": {"name": "facet", "data": "data_0", "groupby": ["Indicator"]}
+        },
+        "sort": {"field": ["datum[\"Indicator\"]"], "order": ["ascending"]},
+        "encode": {
+          "update": {
+            "width": {"signal": "child_width"},
+            "height": {"signal": "child_height"}
+          }
+        },
+        "marks": [
+          {
+            "name": "child_marks",
+            "type": "rect",
+            "style": ["rect"],
+            "from": {"data": "facet"},
+            "encode": {
+              "update": {
+                "fill": {
+                  "value": {
+                    "gradient": "radial",
+                    "stops": [
+                      {"color": "#e90051", "offset": 0},
+                      {"color": "#ffffff", "offset": 1}
+                    ],
+                    "r1": 0,
+                    "r2": 0.5
+                  }
+                },
+                "tooltip": {
+                  "signal": "{\"Round\": isValid(datum[\"Round\"]) ? datum[\"Round\"] : \"\"+datum[\"Round\"], \"Mean\": format(datum[\"Mean\"], \".1f\"), \"Std\": format(datum[\"Std\"], \".1f\")}"
+                },
+                "description": {
+                  "signal": "\"Round: \" + (isValid(datum[\"Round\"]) ? datum[\"Round\"] : \"\"+datum[\"Round\"]) + \"; Mean: \" + (format(datum[\"Mean\"], \".1f\")) + \"; Std: \" + (format(datum[\"Std\"], \".1f\")) + \"; X1: \" + (format(datum[\"X1\"], \"\")) + \"; X2: \" + (format(datum[\"X2\"], \"\"))"
+                },
+                "x": {"scale": "x", "field": "X1"},
+                "x2": {"scale": "x", "field": "X2"},
+                "y": {"scale": "y", "field": "Round"},
+                "height": {"scale": "y", "band": 1}
+              }
+            }
+          }
+        ],
+        "axes": [
+          {
+            "scale": "x",
+            "orient": "bottom",
+            "gridScale": "y",
+            "grid": true,
+            "tickCount": {"signal": "ceil(child_width/40)"},
+            "domain": false,
+            "labels": false,
+            "aria": false,
+            "maxExtent": 0,
+            "minExtent": 0,
+            "ticks": false,
+            "zindex": 0
+          }
+        ]
+      }
+    ],
+    "scales": [
+      {
+        "name": "x",
+        "type": "linear",
+        "domain": [0, 100],
+        "range": [0, {"signal": "child_width"}],
+        "nice": true,
+        "zero": true
+      },
+      {
+        "name": "y",
+        "type": "band",
+        "domain": {"data": "data_0", "field": "Round", "sort": true},
+        "range": [0, {"signal": "child_height"}],
+        "paddingInner": 0,
+        "paddingOuter": 0
+      }
+    ]
+  },
+
+  "DistrictBars": {
+    "$schema": "https://vega.github.io/schema/vega/v5.json",
+    "background": "white",
+    "padding": 5,
+    "data": [
+      {"name": "input_data", "values": []},
+      {
+        "name": "data_0",
+        "source": "input_data",
+        "transform": [
+          {"type": "formula", "expr": "datum.LBW_R1", "as": "R1"},
+          {"type": "formula", "expr": "datum.LBW_R2", "as": "R2"},
+          {"type": "fold", "fields": ["R1", "R2"], "as": ["Round", "Value"]},
+          {
+            "type": "filter",
+            "expr": "isValid(datum[\"Value\"]) && isFinite(+datum[\"Value\"])"
+          }
+        ]
+      },
+      {
+        "name": "row_domain",
+        "source": "data_0",
+        "transform": [
+          {
+            "type": "aggregate",
+            "groupby": ["district"],
+            "fields": ["LBW_CH"],
+            "ops": ["min"],
+            "as": ["LBW_CH"]
+          }
+        ]
+      }
+    ],
+    "signals": [
+      {"name": "child_width", "value": 200},
+      {"name": "child_height", "value": 20}
+    ],
+    "layout": {
+      "padding": {"row": 2, "column": 20},
+      "columns": 1,
+      "bounds": "full",
+      "align": "all"
+    },
+    "marks": [
+      {
+        "name": "row_header",
+        "type": "group",
+        "role": "row-header",
+        "from": {"data": "row_domain"},
+        "sort": {"field": "datum[\"LBW_CH\"]", "order": "ascending"},
+        "title": {
+          "text": {
+            "signal": "isValid(parent[\"district\"]) ? parent[\"district\"] : \"\"+parent[\"district\"]"
+          },
+          "orient": "left",
+          "style": "guide-label",
+          "frame": "group",
+          "baseline": "middle",
+          "align": "left",
+          "anchor": "middle",
+          "angle": 0,
+          "offset": 10
+        },
+        "encode": {"update": {"height": {"signal": "child_height"}}},
+        "axes": [
+          {
+            "scale": "y",
+            "orient": "left",
+            "grid": false,
+            "labels": false,
+            "zindex": 0
+          }
+        ]
+      },
+      {
+        "name": "column_footer",
+        "type": "group",
+        "role": "column-footer",
+        "encode": {"update": {"width": {"signal": "child_width"}}},
+        "axes": [
+          {
+            "scale": "x",
+            "orient": "bottom",
+            "grid": false,
+            "labelFlush": true,
+            "labelOverlap": true,
+            "tickCount": {"signal": "ceil(child_width/40)"},
+            "zindex": 0
+          }
+        ]
+      },
+      {
+        "name": "cell",
+        "type": "group",
+        "style": "cell",
+        "from": {
+          "facet": {
+            "name": "facet",
+            "data": "data_0",
+            "groupby": ["district"],
+            "aggregate": {
+              "fields": ["LBW_CH"],
+              "ops": ["min"],
+              "as": ["LBW_CH_by_district"]
+            }
+          }
+        },
+        "sort": {
+          "field": ["datum[\"LBW_CH_by_district\"]"],
+          "order": ["ascending"]
+        },
+        "encode": {
+          "update": {
+            "width": {"signal": "child_width"},
+            "height": {"signal": "child_height"}
+          }
+        },
+        "marks": [
+          {
+            "name": "child_marks",
+            "type": "rect",
+            "style": ["bar"],
+            "from": {"data": "facet"},
+            "encode": {
+              "update": {
+                "fill": {"scale": "color", "field": "Round"},
+                "tooltip": {
+                  "signal": "{\"Round\": isValid(datum[\"Round\"]) ? datum[\"Round\"] : \"\"+datum[\"Round\"], \"Value\": format(datum[\"Value\"], \".1f\")}"
+                },
+                "ariaRoleDescription": {"value": "bar"},
+                "description": {
+                  "signal": "\"Round: \" + (isValid(datum[\"Round\"]) ? datum[\"Round\"] : \"\"+datum[\"Round\"]) + \"; Value: \" + (format(datum[\"Value\"], \".1f\"))"
+                },
+                "x": {"scale": "x", "field": "Value"},
+                "x2": {"scale": "x", "value": 0},
+                "y": {"scale": "y", "field": "Round"},
+                "height": {"scale": "y", "band": 1}
+              }
+            }
+          }
+        ],
+        "axes": [
+          {
+            "scale": "x",
+            "orient": "bottom",
+            "gridScale": "y",
+            "grid": true,
+            "tickCount": {"signal": "ceil(child_width/40)"},
+            "domain": false,
+            "labels": false,
+            "aria": false,
+            "maxExtent": 0,
+            "minExtent": 0,
+            "ticks": false,
+            "zindex": 0
+          }
+        ]
+      }
+    ],
+    "scales": [
+      {
+        "name": "x",
+        "type": "linear",
+        "domain": [0, 40],
+        "range": [0, {"signal": "child_width"}],
+        "nice": true,
+        "zero": true
+      },
+      {
+        "name": "y",
+        "type": "band",
+        "domain": {"data": "data_0", "field": "Round", "sort": true},
+        "range": [0, {"signal": "child_height"}],
+        "paddingInner": 0.1,
+        "paddingOuter": 0.05
+      },
+      {
+        "name": "color",
+        "type": "ordinal",
+        "domain": {"data": "data_0", "field": "Round", "sort": true},
+        "range": ["#2b2b2b", "#e90051"]
+      }
+    ],
+    "legends": [{"orient": "top", "columns": 2, "fill": "color", "symbolType": "square", "title": ""}]
   }
 }

@@ -1,15 +1,13 @@
 import { React, useState, useMemo } from 'react';
 import { GroupSelect, SimpleSelect } from './Utils';
-import { TheChart, AllIndicators } from './Chart';
+import { TheChart } from './Chart';
 import { TheMap } from './Map';
 
 import 'leaflet/dist/leaflet.css';
 import './index.css';
 
-import { dataTable, indDict, visDict } from './Config';
+import { indDict, visDict } from './Config';
 import indicators from './data/indicators.json';
-
-console.log(document.getElementsByClassName('leaflet-control-zoom-in'));
 
 const countries = [
   {'Country':'default', 'Abbreviation':'', 'Center':[0, 0], 'Zoom':4},
@@ -37,43 +35,49 @@ export function App(){
   const country = useMemo(() => (countryDict[countryShort]), [countryShort]);
   const stateBoundary = useMemo(() => (require(`./data/${country.Abbreviation}_adm1.json`)), [country]);
   const data = useMemo(() => (require(`./data/${country.Abbreviation}_data.json`)), [country]);
+  const agg_data = useMemo(() => (require(`./data/${country.Abbreviation}_aggregate.json`)), [country]);
+  const dataTable = useMemo(() => (data.features.map((item) => item.properties)), [data]);
 
-  var filteredData = data
+  var filteredData = dataTable
+  var filteredAggData = agg_data
+
   if (region) {
     filteredData = dataTable.filter((item) => {
         return item.state.replaceAll(' ','') === region
+    })
+    filteredAggData = agg_data.filter((item) => {
+        return item.State.replaceAll(' ','') === region
     })
   }
 
   const chart = useMemo(() => {
     if (region !== ''){      
       return (
-      <TheChart country={country} data={filteredData} selected={region} pass={setIndicator} indicator={indicator}/>
+      <TheChart country={country} data={filteredData} aggData={filteredAggData} selected={region} pass={setIndicator} indicator={indicator}/>
     )} else {
       return (<></>)
     }
-  }, [filteredData, indicator, country, region])
+  }, [filteredData, filteredAggData, indicator, country, region])
 
   const map = useMemo(() => (
     <TheMap country={country} boundary={stateBoundary} data={data} selected={region} pass={setRegion} indicator={indicator}/>
   ), [indicator, country, region, data, stateBoundary])
 
-  const allindicators = useMemo(() => {
-    if (region){
-      return (<AllIndicators data={filteredData} country={country} selected={region} pass={setIndicator} />)
-    } else {
-      return (<></>)
-    }
-  }, [country, region, filteredData])
-
   return (
-    <div className='row m-0 p-5 pt-1 pb-1'>
-      <div className='row m-0 p-0 mb-2'>
-        <div className='col-8 m-0 p-3'>
-          In vitae massa at nisl rhoncus fermentum. Cras suscipit sagittis dictum. In eleifend velit non fermentum maximus. Cras varius ante lacus, ac malesuada quam scelerisque et. Mauris accumsan metus libero, id consequat orci finibus et. Sed malesuada justo venenatis justo gravida, quis fringilla enim blandit. Maecenas sed tempor nisl. Sed dictum mauris vitae odio viverra imperdiet. Nunc sed enim ac neque mollis imperdiet. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    <div className='container-fluid main-body'>
+      <hr/>
+      <blockquote className='blockquote text-center p-3'>
+        <q><i>Subnational mapping of child and maternal health and development indicators in selected low- and middle-income countries</i></q>
+      </blockquote>
+      <hr/>
+
+      <div className='row pt-2 pb-2' style={{backgroundColor:'#f0f0f0', borderRadius:'10px'}}>
+        <div className='col-lg-7'>
+          <p>This web application presents a summary of the family health conditions at subnational level. Multiple indicators are presented in map, chart, and tabulated form.</p>
+          <p style={{color:'red', fontWeight:'bold', border:'2px solid red', padding:'10px'}}>The data used for this prototype are not real data but made up for the purpose of purely presenting the design of the application, and therefore no inference should be made about any of the indicator's values, distributions, and patterns.</p>
         </div>
-        <div className='col-4 m-0 p-1 pt-3 pb-2' id='selection'>
-          Select country from the list
+        <div className='col-lg-3' id='selection'>
+          Select country
           <SimpleSelect
             name='Country'
             items={['India']}
@@ -82,7 +86,7 @@ export function App(){
             noDefault={true}/>
           <br/>
 
-          Select indicator from the list
+          Select indicator
           <GroupSelect
             items={indicators} 
             keys={['Theme', 'Indicator']} 
@@ -92,19 +96,14 @@ export function App(){
             defaultOpt={visDict[indicator]['Short']}
             pass={(short) => {setIndicator(indDict[short]['Abbreviation']); window.location='#mapContainer';}}/>
         </div>
-
-        <hr/>
       </div>
 
-      <div className='row m-0 p-0'>
-        <div className='col' style={{marginLeft:'20px'}}>
-          <div className='row'>
-            {map}
-            {allindicators}
-          </div>
+      <div className='row'>
+        <div className='col-lg-7'>
+          {map}
         </div>
 
-        <div className='col-5'>
+        <div className='col-lg-5'>
           {chart}
         </div>
       </div>
