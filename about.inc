@@ -2,17 +2,13 @@
 This web application presents a summary of the family health conditions at subnational level. Multiple indicators are presented in map, chart, and tabulated form.
 </p>
 
-<p>
-Maps used on this website are for general illustration only, and are not intended to be used for reference purposes. 
-</p>
-
-<p>
-The representation of political boundaries does not necessarily reflect the position of the author(s) or their organisation's view on the legal status of a country or territory.
-</p>
-
 <h5>Methods</h5>
 <p>The estimates presented on this portal are the result of a methodological approach for estimating high resolution maps and there might be deviations from aggregated measures published elsewhere.</p>
 <p>For more information please refer to <a href="#pezzulo">Pezzulo <i>et al.</i> (2023)</a>.
+
+<h5>Disclaimer</h5>
+<p>Maps used on this website are for general illustration only, and are not intended to be used for reference purposes.</p>
+<p>The representation of political boundaries does not necessarily reflect the organization's view on the legal status of a country or territory.</p>
 
 <h5>Acknowledgement</h5>
 <ul>
