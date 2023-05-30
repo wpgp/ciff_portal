@@ -280,7 +280,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
             <a className="nav-link" data-bs-toggle="tab" href="#tableTab">Table</a>
           </li>
           <li className="nav-item">
-            <a className="nav-link" data-bs-toggle="tab" href="#indicatorsTab">All Indicators</a>
+            <a className="nav-link" data-bs-toggle="tab" href="#indicatorsTab" style={{fontWeight:'bold'}}>All Indicators</a>
           </li>
         </ul>
       </div>

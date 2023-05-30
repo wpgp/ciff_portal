@@ -350,7 +350,7 @@ export function TheMap({ country, boundary, data, selected, pass, indicator }){
         zoomControl={false}
         center={country.Center}
         zoom={country.Zoom}
-        style={{width:'100%', height:'400px', background:'#fff', borderRadius:'10px'}}
+        style={{width:'96%', height:'400px', background:'#fff', borderRadius:'10px'}}
         >
 
         <DefineMap />
