@@ -45,29 +45,6 @@ export function LookupTable(props){
     }
 }
 
-export function GroupSelecta({ items, lead, end, defaultOpt, pass }){
-    const group = [...new Set(items.map((item) => item[lead]))];
-
-    function handleChange(e){
-        pass(e.target.value)
-    }
-    
-    return (
-        <div>
-            <Form.Select defaultValue={defaultOpt} onChange={handleChange}>
-                {group.map((item) => {
-                    const itm = (items.filter((i) => i[lead] === item)).map((i) => i[end]);
-                    return (
-                        <optgroup key={'group'+item} label={item}>
-                            {itm.map((i) => <option key={'opt'+i} value={i.replaceAll(' ','')}>{i}</option>)}
-                        </optgroup>
-                    )
-                })}
-            </Form.Select>
-        </div>
-    )
-}
-
 export function GroupSelect(props){
     const [itm, setItm] = useState(props.items);
     const fixed = props.fixed ? props.fixed : ['none'];
@@ -129,14 +106,16 @@ export function GroupSelect(props){
     )
 }
 
-export function SimpleSelect({ name, items, defaultOpt, pass, noDefault }){
+export function SimpleSelect({ name, items, defaultOpt, value, pass, noDefault }){
+    if (value === undefined) {value = defaultOpt};
+
     function handleChange(e){
         pass(e.target.value)
     }
   
     return (
         <div>
-            <Form.Select id={'select'+name} key={'select'+name} defaultValue={defaultOpt} onChange={handleChange}>
+            <Form.Select id={'select'+name} key={'select'+name} value={value} onChange={handleChange}>
                 {noDefault ? '' : <option key={'default'+defaultOpt} value={''}>Select {name}</option>}
                 {items.map((item) => {
                     const value = item.replaceAll(' ','')

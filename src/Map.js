@@ -1,6 +1,6 @@
 import { React, useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { MapContainer, GeoJSON, Pane, useMap } from 'react-leaflet';
-import { BsFillGridFill, BsSquareFill, BsFill1CircleFill, BsFill2CircleFill, BsSubtract, BsDashCircleFill, BsPlusCircleFill, BsArrowLeftCircleFill } from 'react-icons/bs';
+import { BsFullscreenExit, BsFullscreen, BsFillGridFill, BsSquareFill, BsFill1CircleFill, BsFill2CircleFill, BsSubtract, BsDashCircleFill, BsPlusCircleFill, BsArrowLeftCircleFill } from 'react-icons/bs';
 
 import { visDict } from './Config.js'
 import { ArgMin, FloatFormat, LookupTable, GetColor, SimpleSelect } from './Utils.js';
@@ -38,6 +38,18 @@ function ZoomPanel({ country }){
         <button className='map-btn' title='zoom in' onClick={() => main_map.zoomIn()}><BsPlusCircleFill /></button>
         <button className='map-btn' title='zoom out' onClick={() => main_map.zoomOut()}><BsDashCircleFill /></button>
         <button className='map-btn' title='reset view' onClick={() => main_map.setView(country.Center, country.Zoom)}><BsArrowLeftCircleFill /></button>
+      </div>
+    </div>
+  )
+}
+
+function FullScreenControl({ fullscreen, pass }){
+  return (
+    <div className='leaflet-top leaflet-right'>
+      <div className='leaflet-control btn-group-vertical'>
+        <button className='map-btn' title='full screen' onClick={() => pass(!fullscreen)}>
+          {fullscreen ? <BsFullscreenExit /> : <BsFullscreen />}
+        </button>
       </div>
     </div>
   )
@@ -175,13 +187,13 @@ function DistrictPopup(obj, col){
 
 function GriddedData({ country, indicator, band }){
   const palette = (band === 'CH') ? 'Palette2' : 'Palette1';
-
+  
   let path = 'https://raw.githubusercontent.com/rhorom/ciff_portal/main/'
   path += `./data/${country.Abbreviation}_LBW_R1.tif`;
   
+  document.getElementById('loadRaster').setAttribute('style', 'display:block !important');
   fetch(path)
-      .then(resp => resp.arrayBuffer())
-      .then(arr => {
+      .then(resp => resp.arrayBuffer()).then(arr => {
           parseG(arr).then(georaster => {
               var layer = new GeoRasterLayer({
                   georaster: georaster,
@@ -192,7 +204,8 @@ function GriddedData({ country, indicator, band }){
               });
 
               main_map.addLayer(layer)
-          });
+              document.getElementById('loadRaster').setAttribute('style', 'display:none !important');
+            });
       });
 
   return (null);
@@ -202,13 +215,15 @@ export function TheMap({ country, boundary, data, selected, pass, indicator }){
     const [opt, setOpt] = useState('R1')
     const [raster, setRaster] = useState(false)
     const [autoZoom, setAutoZoom] = useState(true)
-    
+    const [fullscreen, setFullscreen] = useState(false)
+
     const DefineMap = () => {
       main_map = useMap();
       return null
     }
   
     const field = useMemo(() => (indicator + '_' + opt), [indicator, opt])
+    const adm = String(country.Adm1).toLowerCase();
 
     var minmax = visDict[indicator]['Minmax']
     if (opt === 'CH') {
@@ -223,15 +238,16 @@ export function TheMap({ country, boundary, data, selected, pass, indicator }){
     , [autoZoom])
     
     const states = boundary.features.map((item) => item.properties.state);
-    const selectStates = useMemo(() => (
+    const selectStates = (
       <SimpleSelect 
-        name='Admin-1'
+        name={adm}
         items={states}
         defaultOpt={selected}
+        value={selected}
         pass={pass}
         noDefault={false}
       />
-    ), [states, selected, pass])
+    )
 
     const onEachState = (feature, layer) => {
       layer.on({
@@ -319,11 +335,10 @@ export function TheMap({ country, boundary, data, selected, pass, indicator }){
             Data from Round 1, Round 2, or the change between rounds can be selected. 
             </p>
             <p>
-            To get deeper information on a specific administrative unit, click a region on the map or select it from the options below.
+            To get deeper information on a specific {adm}, click a region on the map or select it from the options below.
             </p>
           </div>
           <div className='float-end p-2 pt-0 pb-0'>
-            Select administrative unit
             {selectStates}
           </div>
         </div>
@@ -335,8 +350,7 @@ export function TheMap({ country, boundary, data, selected, pass, indicator }){
         zoomControl={false}
         center={country.Center}
         zoom={country.Zoom}
-        style={{width:'96%', height:'400px', background:'#fff', borderRadius:'10px'}}
-        fullscreenControl={true}
+        style={{width:'100%', height:'400px', background:'#fff', borderRadius:'10px'}}
         >
 
         <DefineMap />
@@ -345,8 +359,8 @@ export function TheMap({ country, boundary, data, selected, pass, indicator }){
   
         <ZoomPanel country={country}/>
 
-        {/*<ZoomControl position='bottomleft' zoomInText='<span aria-hidden="true">A</span>'/>*/}
-        
+        <FullScreenControl fullscreen={fullscreen} pass={setFullscreen}/>
+
         {/*<TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"/>*/}
         
         <Pane name='tiles' style={{zIndex:1}}> {rasterLayer} </Pane>
@@ -366,6 +380,12 @@ export function TheMap({ country, boundary, data, selected, pass, indicator }){
             />
         </Pane>
       </MapContainer>
+
+      <div id='loadRaster' className="d-flex justify-content-center" style={{display:'none',color:'red'}}>
+        <div className="spinner-border" role="status">
+          <span className="sr-only">Loading...</span>
+        </div>
+      </div>
 
       <div className='col m-0'>
         <div className='form-check form-switch' style={{fontSize:'12px', marginRight:'20px'}}>

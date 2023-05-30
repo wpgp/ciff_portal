@@ -6,33 +6,18 @@ import { TheMap } from './Map';
 import 'leaflet/dist/leaflet.css';
 import './index.css';
 
-import { indDict, visDict } from './Config';
+import { indDict, visDict, countries } from './Config';
 import indicators from './data/indicators.json';
-
-const countries = [
-  {'Country':'default', 'Abbreviation':'', 'Center':[0, 0], 'Zoom':4},
-  {'Country':'Burkina Faso', 'Abbreviation':'BFA', 'Center':[12.7, -1.8], 'Zoom':6},
-  {'Country':'Cambodia', 'Abbreviation':'KHM', 'Center':[12.7, 104.9], 'Zoom':6},
-  {'Country':'India', 'Abbreviation':'IND', 'Center':[22.9, 79.6], 'Zoom':4},
-  {'Country':'Kenya', 'Abbreviation':'KEN', 'Center':[0.6, 37.8], 'Zoom':5},
-  {'Country':'Nigeria', 'Abbreviation':'NGA', 'Center':[9.5, 8.0], 'Zoom':5},
-]
-const countryDict = {};
-countries.forEach((item) => {
-  const short = item.Country.replaceAll(' ','');
-  countryDict[short] = {};
-  countryDict[short]['Name'] = item.Country;
-  countryDict[short]['Abbreviation'] = item.Abbreviation;
-  countryDict[short]['Center'] = item.Center;
-  countryDict[short]['Zoom'] = item.Zoom;
-});
 
 export function App(){
   const [countryShort, setCountryShort] = useState('India');
   const [region, setRegion] = useState('');
   const [indicator, setIndicator] = useState('LBW');
 
-  const country = useMemo(() => (countryDict[countryShort]), [countryShort]);
+  const country = useMemo(() => {
+    return countries.filter((item) => item.Short === countryShort)[0]
+  }, [countryShort]);
+
   const stateBoundary = useMemo(() => (require(`./data/${country.Abbreviation}_adm1.json`)), [country]);
   const data = useMemo(() => (require(`./data/${country.Abbreviation}_data.json`)), [country]);
   const agg_data = useMemo(() => (require(`./data/${country.Abbreviation}_aggregate.json`)), [country]);
