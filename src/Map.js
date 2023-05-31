@@ -44,10 +44,20 @@ function ZoomPanel({ country }){
 }
 
 function FullScreenControl({ fullscreen, pass }){
+  function FullScreen(set){
+    if (set) {
+      console.log('maximize')
+    } else {
+      console.log('minimize')
+    }
+
+    //window.location.href = '#mapContainer'
+  }
+  
   return (
     <div className='leaflet-top leaflet-right'>
       <div className='leaflet-control btn-group-vertical'>
-        <button className='map-btn' title='full screen' onClick={() => pass(!fullscreen)}>
+        <button className='map-btn' title='full screen' onClick={() => {pass(!fullscreen); FullScreen(!fullscreen)}}>
           {fullscreen ? <BsFullscreenExit /> : <BsFullscreen />}
         </button>
       </div>
@@ -209,7 +219,7 @@ function GriddedData({ country, indicator, band }){
       });
 
   return (null);
-};
+}
 
 export function TheMap({ country, boundary, data, selected, pass, indicator }){
     const [opt, setOpt] = useState('R1')
@@ -311,14 +321,16 @@ export function TheMap({ country, boundary, data, selected, pass, indicator }){
       }
     }, [ref, district])
 
+    const theraster = useMemo(() => <GriddedData country={country} indicator={indicator} band={opt}/>, [country, indicator, opt]);
+
     const rasterLayer = useMemo(() => {
       if (raster) {
         //return <TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"/>
-        return (<GriddedData country={country} indicator={indicator} band={opt}/>)
+        return theraster
       } else {
         return <GeoJSON data={data} style={TileStyle}/>
       }
-    }, [country, indicator, opt, raster, data, TileStyle])
+    }, [raster, theraster, data, TileStyle])
   
     const legend = useMemo(() => (
         <Legend indicator={indicator} opt={opt}/>
@@ -344,55 +356,57 @@ export function TheMap({ country, boundary, data, selected, pass, indicator }){
         </div>
       </div>
 
-      <div id='mapContainer' className='row m-0 mb-3'>{legend}</div>
+      <div id='mapContainer' className='row m-0 mb-3'>
+        {legend}
       
-      <MapContainer 
-        zoomControl={false}
-        center={country.Center}
-        zoom={country.Zoom}
-        style={{width:'96%', height:'400px', background:'#fff', borderRadius:'10px'}}
-        >
+        <MapContainer 
+          zoomControl={false}
+          center={country.Center}
+          zoom={country.Zoom}
+          style={{width:'96%', height:'400px', background:'#fff', borderRadius:'10px'}}
+          >
 
-        <DefineMap />
-        
-        <RadioPanel passOpt={setOpt} passRaster={setRaster}/>
-  
-        <ZoomPanel country={country}/>
+          <DefineMap />
+          
+          <RadioPanel passOpt={setOpt} passRaster={setRaster}/>
+    
+          <ZoomPanel country={country}/>
 
-        <FullScreenControl fullscreen={fullscreen} pass={setFullscreen}/>
+          <FullScreenControl fullscreen={fullscreen} pass={setFullscreen}/>
 
-        {/*<TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"/>*/}
-        
-        <Pane name='tiles' style={{zIndex:1}}> {rasterLayer} </Pane>
-  
-        <Pane name='boundary' style={{zIndex:10}}>
-          <GeoJSON
-            data={boundary}
-            style={StateStyle}
-            onEachFeature={onEachState}
-            />
-  
-          <GeoJSON
-            data={district}
-            ref={ref}
-            style={DistrictStyle}
-            onEachFeature={onEachDistrict}
-            />
-        </Pane>
-      </MapContainer>
-
-      <div id='loadRaster' className="d-flex justify-content-center" style={{display:'none',color:'red'}}>
-        <div className="spinner-border" role="status">
-          <span className="sr-only">Loading...</span>
-        </div>
+          {/*<TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"/>*/}
+          
+          <Pane name='tiles' style={{zIndex:1}}> {rasterLayer} </Pane>
+    
+          <Pane name='boundary' style={{zIndex:10}}>
+            <GeoJSON
+              data={boundary}
+              style={StateStyle}
+              onEachFeature={onEachState}
+              />
+    
+            <GeoJSON
+              data={district}
+              ref={ref}
+              style={DistrictStyle}
+              onEachFeature={onEachDistrict}
+              />
+          </Pane>
+        </MapContainer>
       </div>
 
-      <div className='col m-0'>
+      <div className='col m-0' style={{height:'20px'}}>
         <div className='form-check form-switch' style={{fontSize:'12px', marginRight:'20px'}}>
           <label className='form-check-label'>
             <input className='form-check-input' type="checkbox" checked={autoZoom} disabled onChange={() => {setAutoZoom(!autoZoom)}}/>
             toggle auto-zoom
           </label>
+        </div>
+      </div>
+
+      <div id='loadRaster' className="row" style={{display:'none'}}>
+        <div className="spinner-border" role="status">
+          <span className="sr-only">Loading...</span>
         </div>
       </div>
 
