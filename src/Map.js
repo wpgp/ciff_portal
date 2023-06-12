@@ -2,14 +2,15 @@ import { React, useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { MapContainer, GeoJSON, Pane, useMap } from 'react-leaflet';
 import { BsFullscreenExit, BsFullscreen, BsFillGridFill, BsSquareFill, BsFill1CircleFill, BsFill2CircleFill, BsSubtract, BsDashCircleFill, BsPlusCircleFill, BsArrowLeftCircleFill } from 'react-icons/bs';
 
-import { visDict } from './Config.js'
-import { ArgMin, FloatFormat, LookupTable, GetColor, SimpleSelect } from './Utils.js';
+import { indDict, visDict } from './Config.js'
+import { ArgMin, FloatFormat, LookupTable, GetColor, SimpleSelect, BasicSelect } from './Utils.js';
 import GeoRasterLayer from 'georaster-layer-for-leaflet';
 
 import 'leaflet/dist/leaflet.css';
 import indicators from './data/indicators.json';
 import colormaps from './data/colormaps.json';
 
+const optIndicator = indicators.map((item) => item.Indicator);
 const parseG = require('georaster');
 var main_map;
 
@@ -103,7 +104,7 @@ function RadioPanel({ passOpt, passRaster }){
     )
 }
 
-function Legend({ indicator, opt }){
+function Legend({ indicator, opt, pass }){
     let palette = ''
     let minmax = visDict[indicator]['Minmax']
   
@@ -159,7 +160,18 @@ function Legend({ indicator, opt }){
     
     return (
       <div className='row pt-2 mb-2' style={{background:'#f0f0f0', borderRadius:'10px', minHeight:'125px'}}>
-        <div className='p-0'><h5>{info[0]}</h5></div>
+        <div className='p-0'>
+          <div style={{display:'inline-block',background:'#cfcccc',borderRadius:'5px',padding:'2px',marginBottom:'10px'}}>
+          <BasicSelect
+            name={'legendIndicator'}
+            items={optIndicator} 
+            noDefault={true}
+            value={visDict[indicator]['Short']}
+            pass={pass}
+            style={{background:'none',border:'none',fontSize:'larger',fontWeight:'600',padding:'0px'}}
+          />
+          </div>
+        </div>
         
         <div className='col-5 p-0 m-0' style={{fontSize:'75%'}}>
           <p>
@@ -199,7 +211,7 @@ function GriddedData({ country, indicator, band }){
   const palette = (band === 'CH') ? 'Palette2' : 'Palette1';
   
   let path = 'https://raw.githubusercontent.com/rhorom/ciff_portal/main/'
-  path += `./data/${country.Abbreviation}_LBW_R1.tif`;
+  path += `./data/${country.Abbreviation}_${indicator}_${band}.tif`;
   
   document.getElementById('loadRaster').setAttribute('style', 'display:block !important');
   fetch(path)
@@ -216,12 +228,12 @@ function GriddedData({ country, indicator, band }){
               main_map.addLayer(layer)
               document.getElementById('loadRaster').setAttribute('style', 'display:none !important');
             });
-      });
+      }).catch(error => alert(error));
 
   return (null);
 }
 
-export function TheMap({ country, boundary, data, selected, pass, indicator }){
+export function TheMap({ country, boundary, data, selected, pass, indicator, passIndicator }){
     const [opt, setOpt] = useState('R1')
     const [raster, setRaster] = useState(false)
     const [autoZoom, setAutoZoom] = useState(true)
@@ -333,8 +345,8 @@ export function TheMap({ country, boundary, data, selected, pass, indicator }){
     }, [raster, theraster, data, TileStyle])
   
     const legend = useMemo(() => (
-        <Legend indicator={indicator} opt={opt}/>
-    ), [indicator, opt])
+        <Legend indicator={indicator} opt={opt} pass={(short) => {passIndicator(indDict[short]['Abbreviation'])}}/>
+    ), [indicator, passIndicator, opt])
 
     return (
       <div className='row'>

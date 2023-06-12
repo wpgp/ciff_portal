@@ -45,7 +45,7 @@ export function App(){
   }, [filteredData, filteredAggData, indicator, country, region])
 
   const map = useMemo(() => (
-    <TheMap country={country} boundary={stateBoundary} data={data} selected={region} pass={setRegion} indicator={indicator}/>
+    <TheMap country={country} boundary={stateBoundary} data={data} selected={region} pass={setRegion} indicator={indicator} passIndicator={setIndicator}/>
   ), [indicator, country, region, data, stateBoundary])
 
   return (
@@ -58,7 +58,7 @@ export function App(){
 
       <div className='row mt-4 pt-2 pb-2' style={{backgroundColor:'#f0f0f0', borderRadius:'10px'}}>
         <div className='col-lg-7'>
-          <p>This web application presents a summary of the family health conditions at subnational level. Multiple indicators are presented in map, chart, and tabulated form.</p>
+          <p>This web application presents a summary of the child and maternal health and development indicators at subnational level. Multiple indicators are presented in map, chart, and tabulated form.</p>
           <p style={{color:'red', fontWeight:'bold', border:'2px solid red', padding:'10px'}}>The data used for this prototype are not real data but made up for the purpose of purely presenting the design of the application, and therefore no inference should be made about any of the indicator's values, distributions, and patterns.</p>
         </div>
         <div className='col-lg-3' id='selection'>

@@ -9,14 +9,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":50,
-    "Palette1":"ciff_pink_yellow",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"All women",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"U_Pregn",
@@ -28,14 +28,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":20,
-    "Palette1":"ciff_white_amber",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"TBD",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Unsafe_Ab",
@@ -47,14 +47,14 @@
     "Unit":"Percent",
     "Min":20,
     "Max":80,
-    "Palette1":"ciff_white_amber",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"TBD",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"NAR_prim",
@@ -66,14 +66,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":40,
-    "Palette1":"ciff_white_amber",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"De facto household population of primary school age (this varies by Country)",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"NAR_sec",
@@ -85,14 +85,14 @@
     "Unit":"Percent",
     "Min":30,
     "Max":60,
-    "Palette1":"ciff_white_amber",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"De facto household population of secondary school age (this varies by Country)",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Child_m",
@@ -104,14 +104,14 @@
     "Unit":"Percent",
     "Min":10,
     "Max":60,
-    "Palette1":"ciff_white_amber",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"women aged 15\u201349",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Teen_Pregn",
@@ -123,14 +123,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":60,
-    "Palette1":"ciff_white_amber",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"women aged 15\u201349",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Labour_fem",
@@ -142,14 +142,14 @@
     "Unit":"Percent",
     "Min":60,
     "Max":100,
-    "Palette1":"ciff_white_amber",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"women currently in a union",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Lab_child",
@@ -161,14 +161,14 @@
     "Unit":"Percent",
     "Min":10,
     "Max":60,
-    "Palette1":"ciff_white_amber",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"TBD",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Stunting",
@@ -180,14 +180,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":60,
-    "Palette1":"ciff_white_amber",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"Children under age five",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Sever_wast",
@@ -199,14 +199,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":10,
-    "Palette1":"ciff_white_amber",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"Children under age five",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Min_diet",
@@ -218,14 +218,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"children aged 6 to 23 months",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Wash_sanit",
@@ -237,14 +237,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"household level",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Wash_water",
@@ -256,14 +256,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"household level",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"NTDs",
@@ -275,14 +275,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"TBD",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"CHMR",
@@ -294,14 +294,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"district level",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"LBW",
@@ -313,14 +313,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":40,
-    "Palette1":"ciff_divergent",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"Live births in the five (or three) years preceding the survey with a reported birth weight",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Stillbirth",
@@ -332,14 +332,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"district level",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"NMR",
@@ -351,14 +351,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"district level",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"ANC_timing",
@@ -370,14 +370,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"Women who had a live birth in the five (or three) years preceding the survey",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"ANC_4plus",
@@ -389,14 +389,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"Women who had a live birth in the five (or three) years preceding the survey",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"ANC_urine",
@@ -408,14 +408,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"Women who had a live birth in the five (or three) years preceding the survey and received ANC",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"ANC_blood",
@@ -427,14 +427,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"Women who had a live birth in the five (or three) years preceding the survey and received ANC",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"ANC_suppl",
@@ -446,14 +446,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"Women who had a live birth in the five (or three) years preceding the survey",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Anaemia",
@@ -465,14 +465,14 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
-    "Palette2":"ciff_divergent",
+    "Palette1":"ciff_divergent_r",
+    "Palette2":"ciff_divergent_r",
     "Denominator":"Women interviewed (check with DHS if it's all women 15 ot 49 or a subsample of women who were asked about anaemia",
     "Proportional":false,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   },
   {
     "Abbreviation":"Breastfeed",
@@ -484,13 +484,13 @@
     "Unit":"Percent",
     "Min":0,
     "Max":80,
-    "Palette1":"ciff_white_amber",
+    "Palette1":"ciff_divergent",
     "Palette2":"ciff_divergent",
     "Denominator":"Children under age 6 months",
     "Proportional":true,
     "R1":"NFHS-4",
     "R2":"NFHS-5",
     "Y1":"2015-2016",
-    "Y2":"2020-2021"
+    "Y2":"2019-2021"
   }
 ]

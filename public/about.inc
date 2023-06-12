@@ -4,7 +4,7 @@ This web application presents a summary of the family health conditions at subna
 
 <h5>Methods</h5>
 <p>The estimates presented on this portal are the result of a methodological approach for estimating high resolution maps and there might be deviations from aggregated measures published elsewhere.</p>
-<p>For more information please refer to <a href="#pezzulo">Pezzulo <i>et al.</i> (2023)</a>.
+<p>For more information please refer to <a href="https://doi.org/10.1038/s41597-023-01961-2" target='_blank'>Pezzulo <i>et al.</i> (2023)</a>.
 
 <h5>Disclaimer</h5>
 <p>Maps used on this website are for general illustration only, and are not intended to be used for reference purposes.</p>
@@ -27,7 +27,7 @@ This web application presents a summary of the family health conditions at subna
 <p>
 <ul>
     <li id="pezzulo">
-        Pezzulo, C., Tejedor-Garavito, N., Chan, H.M.T. et al. A subnational reproductive, maternal, newborn, child, and adolescent health and development atlas of India. Sci Data 10, 86 (2023). (<a href="https://doi.org/10.1038/s41597-023-01961-2">DOI:10.1038/s41597-023-01961-2</a>).
+        Pezzulo, C., Tejedor-Garavito, N., Chan, H.M.T. et al. A subnational reproductive, maternal, newborn, child, and adolescent health and development atlas of India. Sci Data 10, 86 (2023). (<a href="https://doi.org/10.1038/s41597-023-01961-2" target='_blank'>DOI:10.1038/s41597-023-01961-2</a>).
     </li>
 </ul>
 </p>

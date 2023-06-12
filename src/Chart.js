@@ -189,7 +189,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
   const indicatorsTab = (
     <>
       <p style={{fontSize:'90%'}}>
-      Overall improvement in the selected {adm1} can also be assessed by comparing the aggregated (mean) values of all indicators.
+      Overall improvement in the selected {adm1} can also be assessed by comparing the aggregated (average) values of all indicators.
       </p>
       <hr/>
       {allindicators}
@@ -199,7 +199,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
   const chartTab = (
     <div id="charte">
       <p style={{fontSize:'90%'}}>
-      The chart below summarizes the indicator values (in percentage) aggregated at {adm2} level.
+      The chart below summarises the indicator values aggregated at {adm2} level.
       </p>
       <hr/>
       <div className='col m-0 p-0'>
@@ -223,7 +223,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
   const tableTab = (
     <>
       <p style={{fontSize:'90%'}}>
-      The table below summarizes the indicator values (in percentage) aggregated at {adm2} level.
+      The table below summarises the indicator values aggregated at {adm2} level.
       </p>
       <hr/>
       {<MakeTable columns={columns} data={data} palette={palette}/>}
@@ -245,7 +245,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
       </div>
     
       <div className='row m-0 info'>
-        <h5 style={{padding:'5px', borderRadius:'5px', background:'#cfcccc', color:'#000'}}>{stateName} ({data.length} sub-unit)</h5>
+        <h5 style={{padding:'5px', borderRadius:'5px', background:'#cfcccc', color:'#000'}}>{stateName} ({data.length} {adm2}s)</h5>
         <div className='row m-0 p-0'>
           <Table striped bordered hover size='sm'>
             <thead>
@@ -255,7 +255,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
             </thead>
             <tbody>
               <tr>
-                <td>Average</td><td>{hilite[0]['avg']}</td><td>{hilite[1]['avg']}</td><td>{hilite[2]['avg']}</td>
+                <td>Average ({adm1}-level)</td><td>{hilite[0]['avg']}</td><td>{hilite[1]['avg']}</td><td>{hilite[2]['avg']}</td>
               </tr>
               <tr>
                 <td>Highest Performing</td><td>{hilite[0]['best']}</td><td>{hilite[1]['best']}</td><td>{hilite[2]['best']}</td>
