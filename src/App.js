@@ -52,13 +52,15 @@ export function App(){
     <div className='container-fluid main-body'>
       <hr/>
       <blockquote className='blockquote text-center p-3'>
-        <q><i>Subnational mapping of child and maternal health and development indicators in selected low- and middle-income countries</i></q>
+        <i>Subnational mapping of child and maternal health and development indicators in selected low- and middle-income countries</i>
       </blockquote>
       <hr/>
 
       <div className='row mt-4 pt-2 pb-2' style={{backgroundColor:'#f0f0f0', borderRadius:'10px'}}>
         <div className='col-lg-7'>
-          <p>This web application presents a summary of the child and maternal health and development indicators at subnational level. Multiple indicators are presented in map, chart, and tabulated form.</p>
+          <p>This web application presents a summary of the child and maternal health and development indicators calculated at subnational level (geographic areas below the national level) for a selection of countries of interest to CIFF.</p>
+          <p>Multiple indicators are presented in map, chart, and tabulated form, and for multiple time points based on data availability. Changes over time for each indicator are also presented.</p>
+          <p>Please consult the Guide (top right) and the About (top right) sections for more information on how to use this portal.</p>
           <p style={{color:'red', fontWeight:'bold', border:'2px solid red', padding:'10px'}}>The data used for this prototype are not real data but made up for the purpose of purely presenting the design of the application, and therefore no inference should be made about any of the indicator's values, distributions, and patterns.</p>
         </div>
         <div className='col-lg-3' id='selection'>

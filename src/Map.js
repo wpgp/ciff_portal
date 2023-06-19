@@ -36,9 +36,9 @@ function ZoomPanel({ country }){
   return (
     <div className='leaflet-bottom leaflet-left'>
       <div className='leaflet-control btn-group-vertical'>
-        <button className='map-btn' title='zoom in' onClick={() => main_map.zoomIn()}><BsPlusCircleFill /></button>
-        <button className='map-btn' title='zoom out' onClick={() => main_map.zoomOut()}><BsDashCircleFill /></button>
-        <button className='map-btn' title='reset view' onClick={() => main_map.setView(country.Center, country.Zoom)}><BsArrowLeftCircleFill /></button>
+        <button className='map-btn' title='Zoom-in' onClick={() => main_map.zoomIn()}><BsPlusCircleFill /></button>
+        <button className='map-btn' title='Zoom-out' onClick={() => main_map.zoomOut()}><BsDashCircleFill /></button>
+        <button className='map-btn' title='Reset View' onClick={() => main_map.setView(country.Center, country.Zoom)}><BsArrowLeftCircleFill /></button>
       </div>
     </div>
   )
@@ -91,12 +91,12 @@ function RadioPanel({ passOpt, passRaster }){
           <>
             <label className='new-container'>
               <input className='new-radio' type='radio' name='layerOpt' id={'radio_R1'} defaultChecked onClick={() => passRaster(false)}/>
-              <span className='new-label' title='aggregated data'><BsSquareFill /></span>
+              <span className='new-label' title='Aggregated Data'><BsSquareFill /></span>
             </label><br/>
   
             <label className='new-container'>
               <input className='new-radio' type='radio' name='layerOpt' id={'radio_CH'} onClick={() => passRaster(true)}/>
-              <span className='new-label' title='gridded data'><BsFillGridFill /></span>
+              <span className='new-label' title='Gridded Data'><BsFillGridFill /></span>
             </label>
           </>
         </div>
@@ -173,24 +173,30 @@ function Legend({ indicator, opt, pass }){
           </div>
         </div>
         
-        <div className='col-5 p-0 m-0' style={{fontSize:'75%'}}>
-          <p>
-            <b>Definition</b><br/>{info[1]}
-          </p>
-        </div>
-        
-        <div className='col-7' style={{fontSize:'75%'}}>
-          <div className='row p-0 m-0'>
-            <div className='col-md-5 p-1 m-0'>
-              <b>Remarks</b><br/>
-              <b>R<sub>1</sub>{'\u25B9'}</b> {info[4]}, {info[6]}
-              <br/><b>R<sub>2</sub>{'\u25B9'}</b> {info[5]}, {info[7]}
-              <br/><b>Ch{'\u25B9'}</b> (R<sub>2</sub> - R<sub>1</sub>)
-            </div>
+        <div className='row p-0 m-0'>
+          <div className='col-5 p-0 m-0' style={{fontSize:'75%'}}>
+            <p>
+              <b>Definition</b><br/>{info[1]}
+            </p>
+          </div>
+          
+          <div className='col-7' style={{fontSize:'75%'}}>
+            <div className='row p-0 m-0'>
+              <div className='col-md-5 p-1 m-0'>
+                <b>Remarks</b><br/>
+                <b>R<sub>1</sub>{'\u25B9'}</b> {info[4]}, {info[6]}
+                <br/><b>R<sub>2</sub>{'\u25B9'}</b> {info[5]}, {info[7]}
+                <br/><b>Ch{'\u25B9'}</b> (R<sub>2</sub> - R<sub>1</sub>)
+              </div>
 
-            <div className='col-md-7 p-1 m-0'>
-              {cbar}
+              <div className='col-md-7 p-1 m-0'>
+                {cbar}
+              </div>
             </div>
+          </div>
+
+          <div className='row p-0' style={{fontSize:'60%'}}>
+            <p><b>Note:</b> Irrespective of the direction of each indicator (i.e. increasing value meaning better condition like % of contraceptive prevalence, increasing value meaning worse condition like % of low birth weight) the legend displays a better condition relative to other areas in the country (improvement over time when looking at time change) in blue, and a worse condition relative to other areas in the country (worsening over time when looking at time change) in red. </p>
           </div>
         </div>
       </div>
@@ -348,19 +354,18 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
         <Legend indicator={indicator} opt={opt} pass={(short) => {passIndicator(indDict[short]['Abbreviation'])}}/>
     ), [indicator, passIndicator, opt])
 
+    const info = LookupTable({'items':indicators, 'first':'Abbreviation', 'second':['Source','R1','R2','Y1','Y2'], 'value':indicator})
+    
     return (
       <div className='row'>
-      <div className='title'>Subnational Map of {country.Name}</div>
+      <div className='title'>Map of {country.Name}</div>
       <div className='row' style={{minHeight:'100px'}}>
         <div className='frame' style={{fontSize:'100%'}}>
 
           <div>
-            <p>The map below displays the choropleth of aggregated or gridded data of a particular indicator in the selected country.
-            Data from Round 1, Round 2, or the change between rounds can be selected. 
-            </p>
-            <p>
-            To get deeper information on a specific {adm}, click a region on the map or select it from the options below.
-            </p>
+            <p>The map below displays surfaces of subnational areas (either {country.Adm1} and {country.Adm2} level or high-resolution 5x5km - pixel level data) of a particular indicator in {country.Name}.</p>
+            <p>Data from Round 1 ({info[1]}, {info[3]}), Round 2 ({info[2]}, {info[4]}), or the change between rounds (Round 2 - Round 1) for {country.Name} can be selected and displayed.</p>
+            <p>To get deeper information on a specific {country.Adm1} or {country.Adm2} in {country.Name}, click on an area on the map or use the drop-down menu below. Once an area on the map has been selected, an additional set of information including tables and graphs to facilitate the interpretation of the data is displayed on the right side panel (Summary, Chart, Table, All indicators tabs).</p>
           </div>
           <div className='float-end p-2 pt-0 pb-0'>
             {selectStates}

@@ -2,6 +2,7 @@ import { React, useState, useMemo } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import { Vega } from 'react-vega';
 import Table from 'react-bootstrap/Table';
+import { BsInfoCircleFill } from 'react-icons/bs';
 import { SimpleSelect, DecimalFormat, FloatFormat, GetColor, ArgMax, ArgMin } from './Utils';
 import { visDict, pIndicator } from './Config';
 
@@ -103,6 +104,24 @@ function AllIndicators({ input, proportional }){
 
   spec.signals[0].value = 150;
   return <Vega spec={spec} actions={false} />
+}
+
+function howToTable(){
+  var modal = document.getElementById("modal");
+  var modalTitle = document.getElementById("modalTitle");
+  var modalBody = document.getElementById("modalBody")
+
+  var content = '<h5>For indicators where an increase in the value means improvement over time</h5>'
+  content += '<p>An area presenting the smallest increase (or a decrease in value) over time of the selected indicator is classified as being <i>the least performing</i>. An area presenting the highest increase over time of the selected indicator is classified as being <i>the highest performing</i>.</p>'
+
+  content += '<h5>For indicators where a decrease in the value means improvement over time</h5>'
+  content += '<p>An area presenting the highest decrease over time of the selected indicator is classified as being <i>the highest performing</i>. An area presenting the smallest decrease over time of the selected indicator (or an increase in value) is classified as being <i>the least performing</i>.</p>'
+
+  modal.style.display = "block";
+  modalTitle.innerHTML = '<h4>How to read tables and charts</h4>';
+  modalBody.innerHTML = content;
+
+  return
 }
 
 export function TheChart({ country, data, aggData, indicator, pass }){
@@ -235,12 +254,8 @@ export function TheChart({ country, data, aggData, indicator, pass }){
       <div className='title'>Detailed Data</div>
       <div className='pt-1 pb-2 frame' style={{fontSize:'100%'}}>
         <div>
-          <p>
-            The indicator values from the first and second round survey are presented, including the change between the rounds. Those values are aggregated at {adm2} level.
-          </p>
-          <p>
-            All indicators values are aggregated at {adm1} level.
-          </p>
+          <p>{country.Adm2} and {adm1} level summary estimates are presented for the selected indicators and for each survey round and for the change between the two rounds.</p>
+          <p>A summary chart for all indicators is also displayed, and it shows {country.Adm1} level aggregated values for all indicators and for each of the selected {country.Adm1}.</p>
         </div>
       </div>
     
@@ -250,12 +265,12 @@ export function TheChart({ country, data, aggData, indicator, pass }){
           <Table striped bordered hover size='sm'>
             <thead>
               <tr>
-                <td></td><td>Round 1</td><td>Round 2</td><td>Change</td>
+                <td><span onClick={howToTable} title='How to read'><BsInfoCircleFill /></span></td><td>Round 1</td><td>Round 2</td><td>Change</td>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Average ({adm1}-level)</td><td>{hilite[0]['avg']}</td><td>{hilite[1]['avg']}</td><td>{hilite[2]['avg']}</td>
+                <td>{country.Adm1} Level Average</td><td>{hilite[0]['avg']}</td><td>{hilite[1]['avg']}</td><td>{hilite[2]['avg']}</td>
               </tr>
               <tr>
                 <td>Highest Performing</td><td>{hilite[0]['best']}</td><td>{hilite[1]['best']}</td><td>{hilite[2]['best']}</td>
@@ -269,7 +284,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
       </div>
 
       <div className='m-0 mt-3'>
-        <ul className="nav nav-tabs" role='tablist'>
+        <ul className="nav nav-tabs float-start" role='tablist'>
           <li className="nav-item">
             <a className="nav-link active" data-bs-toggle="tab" href="#summaryTab">Summary</a>
           </li>
