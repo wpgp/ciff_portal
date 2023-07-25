@@ -27,6 +27,7 @@ ul {
 
 thead {
   font-weight: bold;
+  font-size: small;
   background-color: #8d8d8d;
   color: #fff;
 }
@@ -65,7 +66,6 @@ table {
   top: 0;
   width: 100%;
   max-height: 100%;
-  overflow: auto;
   background-color: rgba(0,0,0,0.4);
 }
 
@@ -77,7 +77,6 @@ table {
   border-radius: 20px;
   width: 80%;
   max-height: 75%;
-  overflow-y: scroll;
 }
 
 .form-select{

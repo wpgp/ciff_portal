@@ -87,9 +87,7 @@ export function GroupSelect(props){
                 const items = (fixed.includes(key)) ? [...new Set(props.items.map((item) => item[key]))] : [...new Set(itm.map((item) => item[key]))];
                 const defaultOpt = ((key === end) && (props.defaultOpt)) ? props.defaultOpt : 'default';
                 const disabled_ = (key === end) ? true : false;
-  
-                return (
-                  <div className='col' key={'div'+key}>
+                const formSelect = (
                     <Form.Select id={'select'+key} key={'select'+key} onChange={handleChange} defaultValue={defaultOpt}>
                         <option key={'default'+key} value={'default'} disabled={disabled_}>{'Select '+key}</option>
                         {items.map((item) => {
@@ -99,18 +97,22 @@ export function GroupSelect(props){
                             )
                         })}
                     </Form.Select>
-                  </div>
+                )
+
+                return (
+                  <div className='col' key={'div'+key}> {formSelect} </div>
                 )
             })}
         </div>
     )
 }
 
-export function SimpleSelect({ name, items, defaultOpt, value, pass, noDefault }){
+export function SimpleSelect({ name, items, defaultOpt, value, pass, noDefault, extras }){
     if (value === undefined) {value = defaultOpt};
 
     function handleChange(e){
         pass(e.target.value)
+        if (extras) {extras()}
     }
   
     return (

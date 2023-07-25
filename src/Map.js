@@ -1,17 +1,18 @@
 import { React, useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { MapContainer, GeoJSON, Pane, useMap } from 'react-leaflet';
-import { BsFullscreenExit, BsFullscreen, BsFillGridFill, BsSquareFill, BsFill1CircleFill, BsFill2CircleFill, BsSubtract, BsDashCircleFill, BsPlusCircleFill, BsArrowLeftCircleFill } from 'react-icons/bs';
+import { MapContainer, GeoJSON, Pane, TileLayer, useMap } from 'react-leaflet';
+import { BsInfoCircleFill, BsFullscreenExit, BsFullscreen, BsFillGridFill, BsSquareFill, BsFill1CircleFill, BsFill2CircleFill, BsSubtract, BsDashCircleFill, BsPlusCircleFill, BsArrowLeftCircleFill } from 'react-icons/bs';
+import { TiledMapLayer } from 'react-esri-leaflet';
 
-import { indDict, visDict } from './Config.js'
+import { indDict, visDict, pIndicator } from './Config.js'
 import { ArgMin, FloatFormat, LookupTable, GetColor, SimpleSelect, BasicSelect } from './Utils.js';
-import GeoRasterLayer from 'georaster-layer-for-leaflet';
+//import GeoRasterLayer from 'georaster-layer-for-leaflet';
 
 import 'leaflet/dist/leaflet.css';
 import indicators from './data/indicators.json';
 import colormaps from './data/colormaps.json';
 
 const optIndicator = indicators.map((item) => item.Indicator);
-const parseG = require('georaster');
+//const parseG = require('georaster');
 var main_map;
 
 const StateStyle = () => {
@@ -44,45 +45,62 @@ function ZoomPanel({ country }){
   )
 }
 
+/*
 function FullScreenControl({ fullscreen, pass }){
   function FullScreen(set){
-    if (set) {
-      console.log('maximize')
-    } else {
-      console.log('minimize')
-    }
-
-    //window.location.href = '#mapContainer'
+    return
   }
-  
+
   return (
     <div className='leaflet-top leaflet-right'>
       <div className='leaflet-control btn-group-vertical'>
-        <button className='map-btn' title='full screen' onClick={() => {pass(!fullscreen); FullScreen(!fullscreen)}}>
+        <button id='btn-fullScreen' className='map-btn' title='Full Screen' onClick={() => {pass(!fullscreen); FullScreen(!fullscreen)}}>
           {fullscreen ? <BsFullscreenExit /> : <BsFullscreen />}
         </button>
       </div>
     </div>
   )
 }
+*/
 
-function RadioPanel({ passOpt, passRaster }){
+function RadioPanel({ passOpt, passRaster, indicator }){
+  let available = ['LBW', 'ANC_4plus'];
+  let disabled = available.includes(indicator) ? false : true;
+  let gridTitle = available.includes(indicator) ? 'Gridded Data' : 'Gridded Data (Unavailable)';
+
+  let optClick = (val) => {
+    passOpt(val);
+    passRaster(false);
+    if (val === 'CH') {
+      document.getElementById('optionCI').style.display = 'block'
+    } else {
+      document.getElementById('optionCI').style.display = 'none'
+    }
+    document.getElementById('radio_agg').checked = true;
+    document.getElementById('radio_grid').checked = false;
+  }
+
+  let showGridded = () => {
+    passRaster(true)
+    document.getElementById('optionCI').style.display = 'none'
+  }
+
     return (
       <div className='leaflet-top leaflet-left'>
         <div className='leaflet-control'>
           <>
             <label className='new-container'>
-              <input className='new-radio' type='radio' name='dataOpt' id={'radio_R1'} defaultChecked onClick={() => passOpt('R1')}/>
+              <input className='new-radio' type='radio' name='dataOpt' id={'radio_R1'} defaultChecked onClick={() => optClick('R1')}/>
               <span className='new-label' title='Round 1'><BsFill1CircleFill /></span>
             </label><br/>
   
             <label className='new-container'>
-              <input className='new-radio' type='radio' name='dataOpt' id={'radio_R2'} onClick={() => passOpt('R2')}/>
+              <input className='new-radio' type='radio' name='dataOpt' id={'radio_R2'} onClick={() => optClick('R2')}/>
               <span className='new-label' title='Round 2'><BsFill2CircleFill /></span>
             </label><br/>
   
             <label className='new-container'>
-              <input className='new-radio' type='radio' name='dataOpt' id={'radio_CH'} onClick={() => passOpt('CH')}/>
+              <input className='new-radio' type='radio' name='dataOpt' id={'radio_CH'} onClick={() => optClick('CH')}/>
               <span className='new-label' title='R2 - R1'><BsSubtract /></span>
             </label>
           </>
@@ -90,13 +108,13 @@ function RadioPanel({ passOpt, passRaster }){
         <div className='leaflet-control' style={{paddingTop:'15px'}}>
           <>
             <label className='new-container'>
-              <input className='new-radio' type='radio' name='layerOpt' id={'radio_R1'} defaultChecked onClick={() => passRaster(false)}/>
+              <input className='new-radio' type='radio' name='layerOpt' id={'radio_agg'} defaultChecked onClick={() => passRaster(false)}/>
               <span className='new-label' title='Aggregated Data'><BsSquareFill /></span>
             </label><br/>
   
             <label className='new-container'>
-              <input className='new-radio' type='radio' name='layerOpt' id={'radio_CH'} onClick={() => passRaster(true)}/>
-              <span className='new-label' title='Gridded Data'><BsFillGridFill /></span>
+              <input className='new-radio' type='radio' name='layerOpt' id={'radio_grid'} disabled={disabled} onClick={showGridded}/>
+              <span className='new-label' title={gridTitle}><BsFillGridFill /></span>
             </label>
           </>
         </div>
@@ -158,8 +176,10 @@ function Legend({ indicator, opt, pass }){
       </svg>
     )
     
+    const updateIndicator = (value) => {}
+
     return (
-      <div className='row pt-2 mb-2' style={{background:'#f0f0f0', borderRadius:'10px', minHeight:'125px'}}>
+      <div className='row m-0 pt-2 mb-2' style={{background:'#f0f0f0', borderRadius:'10px', minHeight:'125px'}}>
         <div className='p-0'>
           <div style={{display:'inline-block',background:'#cfcccc',borderRadius:'5px',padding:'2px',marginBottom:'10px'}}>
           <BasicSelect
@@ -168,6 +188,7 @@ function Legend({ indicator, opt, pass }){
             noDefault={true}
             value={visDict[indicator]['Short']}
             pass={pass}
+            extras={updateIndicator(visDict[indicator]['Short'])}
             style={{background:'none',border:'none',fontSize:'larger',fontWeight:'600',padding:'0px'}}
           />
           </div>
@@ -213,6 +234,22 @@ function DistrictPopup(obj, col){
     return (content)
 }
 
+function infoCI(indicator){
+  var modal = document.getElementById("modal");
+  var modalTitle = document.getElementById("modalTitle");
+  var modalBody = document.getElementById("modalBody");
+  const file = pIndicator.includes(indicator) ? './aboutCI_pIndicator.inc' : './aboutCI_nIndicator.inc';
+
+  modal.style.display = "block";
+  modalTitle.innerHTML = '<h4>About the confidence limit</h4>';
+  
+  fetch(file).then(resp => resp.text()).then(text => {
+    let content = text;
+    modalBody.innerHTML = content;
+  });
+}
+
+/*
 function GriddedData({ country, indicator, band }){
   const palette = (band === 'CH') ? 'Palette2' : 'Palette1';
   
@@ -238,12 +275,13 @@ function GriddedData({ country, indicator, band }){
 
   return (null);
 }
+*/
 
 export function TheMap({ country, boundary, data, selected, pass, indicator, passIndicator }){
     const [opt, setOpt] = useState('R1')
     const [raster, setRaster] = useState(false)
-    const [autoZoom, setAutoZoom] = useState(true)
-    const [fullscreen, setFullscreen] = useState(false)
+    const [showLabel, setShowLabel] = useState(false)
+    //const [fullscreen, setFullscreen] = useState(false)
 
     const DefineMap = () => {
       main_map = useMap();
@@ -260,11 +298,7 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
       minmax = [a,b]
     }
   
-    const zoomFit = useCallback((bounds) => {
-      if (autoZoom) {main_map.fitBounds(bounds)}
-    }
-    , [autoZoom])
-    
+    const zoomFit = (bounds) => {main_map.fitBounds(bounds)}    
     const states = boundary.features.map((item) => item.properties.state);
     const selectStates = (
       <SimpleSelect 
@@ -330,7 +364,6 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
     }, [indicator, opt, field, minmax])
 
     const district = data.features.filter((item) => (item.properties.state.replaceAll(' ','') === selected))
-    
     const ref = useRef()
     useEffect(() => {
       if (ref.current) {
@@ -339,16 +372,17 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
       }
     }, [ref, district])
 
-    const theraster = useMemo(() => <GriddedData country={country} indicator={indicator} band={opt}/>, [country, indicator, opt]);
-
-    const rasterLayer = useMemo(() => {
+    //const theraster = useMemo(() => <GriddedData country={country} indicator={indicator} band={opt}/>, [country, indicator, opt]);
+    
+    const mainLayer = useMemo(() => {
       if (raster) {
-        //return <TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"/>
-        return theraster
+        let url = "https://tiles.arcgis.com/tiles/DP1uf58TYllWKwpl/arcgis/rest/services/";
+        url += `${country.Abbreviation}_${indicator}_${opt}/MapServer`;
+        return <TiledMapLayer url={url}/>;
       } else {
         return <GeoJSON data={data} style={TileStyle}/>
       }
-    }, [raster, theraster, data, TileStyle])
+    }, [raster, country, indicator, opt, data, TileStyle])
   
     const legend = useMemo(() => (
         <Legend indicator={indicator} opt={opt} pass={(short) => {passIndicator(indDict[short]['Abbreviation'])}}/>
@@ -356,6 +390,13 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
 
     const info = LookupTable({'items':indicators, 'first':'Abbreviation', 'second':['Source','R1','R2','Y1','Y2'], 'value':indicator})
     
+    const changeCI = () => {
+      let val = document.getElementById('rangeCI').value
+      const label = {'0':' (very low)', '25':' (low)', '50':' (medium)', '75':' (high)', '100':' (very high)'}
+      let text = val + label[val]
+      document.getElementById('valueCI').innerText = text
+    }
+
     return (
       <div className='row'>
       <div className='title'>Map of {country.Name}</div>
@@ -373,27 +414,31 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
         </div>
       </div>
 
-      <div id='mapContainer' className='row m-0 mb-3'>
+      <div id='mapContainer' className='row m-0' style={{paddingLeft:'0px', paddingRight:'25px'}}>
         {legend}
       
         <MapContainer 
           zoomControl={false}
           center={country.Center}
           zoom={country.Zoom}
-          style={{width:'96%', height:'400px', background:'#fff', borderRadius:'10px'}}
+          minZoom={3}
+          maxZoom={9}
+          style={{width:'100%', height:'60vh', background:'#fff', borderRadius:'10px'}}
           >
 
           <DefineMap />
           
-          <RadioPanel passOpt={setOpt} passRaster={setRaster}/>
+          <RadioPanel passOpt={setOpt} passRaster={setRaster} indicator={indicator}/>
     
           <ZoomPanel country={country}/>
 
-          <FullScreenControl fullscreen={fullscreen} pass={setFullscreen}/>
+          {/*<FullScreenControl fullscreen={fullscreen} pass={setFullscreen}/>*/}
 
           {/*<TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"/>*/}
           
-          <Pane name='tiles' style={{zIndex:1}}> {rasterLayer} </Pane>
+          <Pane name='tiles' style={{zIndex:1}}>
+            {mainLayer} 
+          </Pane>
     
           <Pane name='boundary' style={{zIndex:10}}>
             <GeoJSON
@@ -409,21 +454,48 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
               onEachFeature={onEachDistrict}
               />
           </Pane>
+
+          {showLabel ? <TileLayer url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png" zIndex={500}/> : <></>}
         </MapContainer>
-      </div>
 
-      <div className='col m-0' style={{height:'20px'}}>
-        <div className='form-check form-switch' style={{fontSize:'12px', marginRight:'20px'}}>
-          <label className='form-check-label'>
-            <input className='form-check-input' type="checkbox" checked={autoZoom} disabled onChange={() => {setAutoZoom(!autoZoom)}}/>
-            toggle auto-zoom
-          </label>
+        <div className='row m-0 p-0 pt-2'  style={{fontSize:'small', minHeight:'55px'}}>
+          <div className='col-3 m-0 p-2'>
+            <div className='form-check form-switch' style={{marginRight:'20px'}}>
+              <label className='form-check-label'>
+                <input className='form-check-input' type="checkbox" checked={showLabel} onChange={() => {setShowLabel(!showLabel)}}/>
+                toggle labels
+              </label>
+            </div>
+
+          </div>
+
+          <div className='col-9 m-0 p-0 pt-2 pb-1' id='optionCI' style={{display:'none', background:'#f0f0f0', borderRadius:'5px'}}>
+            <div className='row m-0 p-0'>
+              <div className='col-5'>
+                <div className='form-check row'>
+                  <label className='form-check-label'>
+                    <input className='form-check-input' type='radio' defaultChecked value='improvement' id='showImprove' name='showImprove'/>
+                    show improvement
+                  </label>
+                  <label className='form-check-label'>
+                    <input className='form-check-input' type='radio' value='worsening' id='showWorse' name='showImprove'/>
+                    show worsening
+                  </label>
+                </div>
+              </div>
+              <div className='col-7'>
+                <label className='form-check-label'>confidence limit: <span id='valueCI'>0 (very low)</span></label>
+                  <div className='float-end' onClick={infoCI} title='More info'><BsInfoCircleFill /></div>
+                <input className='form-range' type='range' id='rangeCI' defaultValue='0' min='0' max='100' step='25' name='CIRange' onChange={changeCI}/><br/>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div id='loadRaster' className="row" style={{display:'none'}}>
-        <div className="spinner-border" role="status">
-          <span className="sr-only">Loading...</span>
+        <div id='loadRaster' className="row" style={{display:'none'}}>
+          <div className="spinner-border" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
         </div>
       </div>
 

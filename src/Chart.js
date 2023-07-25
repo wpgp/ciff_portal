@@ -7,6 +7,7 @@ import { SimpleSelect, DecimalFormat, FloatFormat, GetColor, ArgMax, ArgMin } fr
 import { visDict, pIndicator } from './Config';
 
 import specs from './data/chart_spec.json';
+import indicators from './data/indicators.json';
 
 function Average(array) {
   return array.reduce((a, b) => a + b) / array.length;
@@ -26,6 +27,7 @@ function MakeTable({ columns, data, palette }) {
   )
 
   return (
+    <div style={{fontSize:'small'}}>
       <Table bordered hover size='sm'>
           <thead>
               {headerGroups.map((headerGroup, i) => (
@@ -34,7 +36,7 @@ function MakeTable({ columns, data, palette }) {
                       <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                       {column.render('Header')}
                       <span>
-                      {column.isSorted ? column.isSortedDesc ? ' \u2bc5' : ' \u2bc6' : ' \u2bc8'}
+                      {column.isSorted ? column.isSortedDesc ? ' \u2bc5' : ' \u2bc6' : ' '}
                       </span>
                       </th>
                   ))}
@@ -61,9 +63,11 @@ function MakeTable({ columns, data, palette }) {
               )}
           </tbody>
       </Table>
+    </div>
   )
 }
 
+/*
 function DistrictChart({ input, field, sorter, sorttype }){
   const fields = [field + "_R1", field + "_R2", field + "_CH"];
   const mapper = {
@@ -89,7 +93,35 @@ function DistrictChart({ input, field, sorter, sorttype }){
   spec.scales[0].domain = minmax;
   return <Vega spec={spec} actions={false} />
 }
+*/
 
+function RangeChart({ input, field, sorter, sorttype }){
+  const fields = [field + "_R1", field + "_R2", field + "_CH"];
+  const mapper = {
+    'SortbyName':'district',
+    'SortbyLocation':'r',
+    'SortbyR1': fields[0],
+    'SortbyR2': fields[1],
+    'SortbyChange': fields[2],
+  };
+
+  let spec = JSON.parse(JSON.stringify(specs['DistrictRanges']));
+
+  spec.height = 20*input.length;
+  spec.data[0].values = input;
+  spec.data[1].transform[0].expr = "datum." + field + '_R1L';
+  spec.data[1].transform[1].expr = "datum." + field + '_R1';
+  spec.data[1].transform[2].expr = "datum." + field + '_R1U';
+  spec.data[1].transform[3].expr = "datum." + field + '_R2L';
+  spec.data[1].transform[4].expr = "datum." + field + '_R2';
+  spec.data[1].transform[5].expr = "datum." + field + '_R2U';
+  spec.data[1].transform[6].expr = "datum." + mapper[sorter];
+  spec.scales[1].domain.sort.order = sorttype;
+
+  return <Vega spec={spec} actions={false} />
+}
+
+/*
 function AllIndicators({ input, proportional }){
   let spec = JSON.parse(JSON.stringify(specs['StateAggregate']));
   spec.data[0].values = input;
@@ -105,23 +137,20 @@ function AllIndicators({ input, proportional }){
   spec.signals[0].value = 150;
   return <Vega spec={spec} actions={false} />
 }
+*/
 
 function howToTable(){
   var modal = document.getElementById("modal");
   var modalTitle = document.getElementById("modalTitle");
-  var modalBody = document.getElementById("modalBody")
-
-  var content = '<h5>For indicators where an increase in the value means improvement over time</h5>'
-  content += '<p>An area presenting the smallest increase (or a decrease in value) over time of the selected indicator is classified as being <i>the least performing</i>. An area presenting the highest increase over time of the selected indicator is classified as being <i>the highest performing</i>.</p>'
-
-  content += '<h5>For indicators where a decrease in the value means improvement over time</h5>'
-  content += '<p>An area presenting the highest decrease over time of the selected indicator is classified as being <i>the highest performing</i>. An area presenting the smallest decrease over time of the selected indicator (or an increase in value) is classified as being <i>the least performing</i>.</p>'
+  var modalBody = document.getElementById("modalBody");
+  var content;
 
   modal.style.display = "block";
   modalTitle.innerHTML = '<h4>How to read tables and charts</h4>';
-  modalBody.innerHTML = content;
-
-  return
+  fetch('./aboutSummary.inc').then(resp => resp.text()).then(text => {
+    content = text;
+    modalBody.innerHTML = content;
+  });
 }
 
 export function TheChart({ country, data, aggData, indicator, pass }){
@@ -132,6 +161,9 @@ export function TheChart({ country, data, aggData, indicator, pass }){
 
   const adm1 = String(country.Adm1).toLowerCase()
   const adm2 = String(country.Adm2).toLowerCase()
+  const description = useMemo(() => {
+    return indicators.filter((item) => item.Abbreviation === indicator)[0]
+  }, [indicator]);
 
   let palette = useMemo(() => {
     let obj = {}
@@ -145,7 +177,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
         obj[item]['Palette'] = visDict[indicator]['Palette1']
         obj[item]['Minmax'] = minmax
       }
-      return 0
+      return null
     })
 
     return obj
@@ -154,15 +186,18 @@ export function TheChart({ country, data, aggData, indicator, pass }){
   const columns = [
     {Header:`${country.Adm2} Name`, accessor:'district'},
     {Header:`R1`, accessor: `${indicator}_R1`, Cell:DecimalFormat, sortType:'basic'},
+    {Header:`CI_R1`, accessor: `${indicator}_R1CI`, disableSortBy: true},
     {Header:'R2', accessor:`${indicator}_R2`, Cell:DecimalFormat, sortType:'basic'},
+    {Header:`CI_R2`, accessor: `${indicator}_R2CI`, disableSortBy: true},
     {Header:'CH', accessor:`${indicator}_CH`, Cell:DecimalFormat, sortType:'basic'}
   ]
   
   const districtchart = useMemo(() => {
     return (
-    <DistrictChart input={data} field={indicator} sorter={sortChart} sorttype={sorttype}/>
+    <RangeChart input={data} field={indicator} sorter={sortChart} sorttype={sorttype}/>
   )}, [data, indicator, sortChart, sorttype])
 
+  /*
   const allindicators = useMemo(() => (
     <div className='row m-0 p-0'>
       <div className='float-end m-0 p-0'>
@@ -174,22 +209,34 @@ export function TheChart({ country, data, aggData, indicator, pass }){
       </div>
     </div>
   ), [aggData])
+  */
 
-  const hilite = ['_R1', '_R2', '_CH'].map((item) => {
-    let obj = {}
-    const y = data.map((x) => x[indicator+item])
-    const z = data.map((x) => x['district'])
-    obj['avg'] = FloatFormat(Average(y), 1) + '%';
-    if (pIndicator.includes(indicator)){
-      obj['best'] = z[ArgMax(y)]
-      obj['worst'] = z[ArgMin(y)]
-    } else {
-      obj['best'] = z[ArgMin(y)]
-      obj['worst'] = z[ArgMax(y)]
-    }
-    return obj
-  })
+  const hilite = useMemo(() => {
+    return (
+      ['_R1', '_R2', '_CH'].map((item) => {
+        let obj = {}
+        const y = data.map((x) => x[indicator+item])
+        const z = data.map((x) => x['district'])
+        const maxi = ArgMax(y)
+        const mini = ArgMin(y)
 
+        obj['avg'] = FloatFormat(Average(y), 1)// + description['Unit'];
+        if (pIndicator.includes(indicator)){
+          obj['best'] = z[maxi]
+          obj['worst'] = z[mini]
+          obj['bestVal'] = FloatFormat(y[maxi], 1)
+          obj['worstVal'] = FloatFormat(y[mini], 1)
+        } else {
+          obj['best'] = z[mini]
+          obj['worst'] = z[maxi]
+          obj['bestVal'] = FloatFormat(y[mini], 1)
+          obj['worstVal'] = FloatFormat(y[maxi], 1)
+        }
+        return obj
+      })
+    )
+  }, [data, indicator])
+  
   const sortButton = (
     <div className='float-end p-2' style={{marginLeft:'10px'}}>
       <button className='map-btn' title={'reverse sort'} onClick={() => {setSorttype(sorttype === 'ascending' ? 'descending' : 'ascending')}}>
@@ -197,14 +244,19 @@ export function TheChart({ country, data, aggData, indicator, pass }){
       </button>
     </div>
   )
+
   const summaryTab = (
     <>
       <p style={{fontSize:'90%'}}>
-        Descriptive summary about the indicators from the selected {adm1} goes here.
+        In the {adm1} of <b>{stateName}</b>, approximately {hilite[0]['avg']}{description['Unit']} {description['Statement']} in {description['Y1']} ({description['R1']}) and {hilite[1]['avg']}{description['Unit']} in {description['Y2']} ({description['R2']}).
+      </p>
+      <p>
+        The {adm2} of <b>{hilite[2]['best']}</b> experienced the highest {pIndicator.includes(indicator) ? 'increase': 'decrease (lowest increase)'} in {description['Unit']} of {description['Indicator']} with a {hilite[2]['bestVal']}{description['Unit']} change from round 1 to round 2, showing an improvement in conditions.
       </p>
     </>
   )
 
+  /*
   const indicatorsTab = (
     <>
       <p style={{fontSize:'90%'}}>
@@ -214,6 +266,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
       {allindicators}
     </>
   )
+  */
 
   const chartTab = (
     <div id="charte">
@@ -241,6 +294,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
 
   const tableTab = (
     <>
+      <div className='float-end'><span onClick={howToTable} title='How to read'><BsInfoCircleFill /></span></div>
       <p style={{fontSize:'90%'}}>
       The table below summarises the indicator values aggregated at {adm2} level.
       </p>
@@ -250,7 +304,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
   )
 
   return (
-    <div className='row'>
+    <div className='row m-0 p-0'>
       <div className='title'>Detailed Data</div>
       <div className='pt-1 pb-2 frame' style={{fontSize:'100%'}}>
         <div>
@@ -294,17 +348,19 @@ export function TheChart({ country, data, aggData, indicator, pass }){
           <li className="nav-item">
             <a className="nav-link" data-bs-toggle="tab" href="#tableTab">Table</a>
           </li>
+          {/*
           <li className="nav-item">
             <a className="nav-link" data-bs-toggle="tab" href="#indicatorsTab" style={{fontWeight:'bold'}}>All Indicators</a>
           </li>
+          */}
         </ul>
       </div>
 
       <div className='tab-content framed-content'>
         <div id='summaryTab' className='container tab-pane active'>{summaryTab}</div>
-        <div id='indicatorsTab' className='container tab-pane fade'>{indicatorsTab}</div>
         <div id='chartTab' className='container tab-pane fade'>{chartTab}</div>
         <div id='tableTab' className='container tab-pane fade'>{tableTab}</div>
+        {/*<div id='indicatorsTab' className='container tab-pane fade'>{indicatorsTab}</div>*/}
       </div>
 
     </div>

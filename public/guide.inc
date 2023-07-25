@@ -1,10 +1,10 @@
 <div class='row p-0 m-0'>
 <div class='col-6'>
 <ol>
-    <li>Select a country and indicator to display. Subnational map associated to the indicator will be displayed on the left.</li>
-    <li>By default, indicator value from the round 1 survey is displayed on the map.
+    <li>Select a country and indicator to display. A subnational map of the indicator will be displayed on the left.</li>
+    <li>By default, indicator value from the Round 1 survey is displayed on the map.
         <ul>
-            <li>Click <i class="fa fa-circle"></i> to see the value from the round 2 survey.</li>
+            <li>Click <i class="fa fa-circle"></i> to see the value from the Round 2 survey.</li>
             <li>Click <i class="fa fa-clone"></i> to see the difference between the values from two rounds.</li>
         </ul>
     </li>
