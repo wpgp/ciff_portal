@@ -1,6 +1,6 @@
 import { React, useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { MapContainer, GeoJSON, Pane, TileLayer, useMap } from 'react-leaflet';
-import { BsInfoCircleFill, BsFullscreenExit, BsFullscreen, BsFillGridFill, BsSquareFill, BsFill1CircleFill, BsFill2CircleFill, BsSubtract, BsDashCircleFill, BsPlusCircleFill, BsArrowLeftCircleFill } from 'react-icons/bs';
+import { BsQuestionCircleFill, BsFullscreenExit, BsFullscreen, BsFillGridFill, BsSquareFill, BsFill1CircleFill, BsFill2CircleFill, BsSubtract, BsDashCircleFill, BsPlusCircleFill, BsArrowLeftCircleFill } from 'react-icons/bs';
 import { TiledMapLayer } from 'react-esri-leaflet';
 
 import { indDict, visDict, pIndicator } from './Config.js'
@@ -19,7 +19,7 @@ const StateStyle = () => {
     return {
         weight: 0.5,
         opacity: 0.5,
-        color: 'red',
+        color: 'purple',
         fillOpacity: 0,
     }
 }
@@ -28,7 +28,7 @@ const DistrictStyle = () => {
   return {
       weight: 1.5,
       opacity: 1,
-      color: 'red',
+      color: 'purple',
       fillOpacity: 0,
   }
 }
@@ -281,6 +281,9 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
     const [opt, setOpt] = useState('R1')
     const [raster, setRaster] = useState(false)
     const [showLabel, setShowLabel] = useState(false)
+    const [showImprove, setShowImprove] = useState('')
+    //const [probLimit, setProbLimit] = useState(0)
+    
     //const [fullscreen, setFullscreen] = useState(false)
 
     const DefineMap = () => {
@@ -290,6 +293,13 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
   
     const field = useMemo(() => (indicator + '_' + opt), [indicator, opt])
     const adm = String(country.Adm1).toLowerCase();
+
+    if (opt === 'CH'){
+      console.log(data.features[0])
+      //data = data.features.filter((feature) => {
+      //  if (feature.properties[indicator + '_CH'] > 0){return feature}
+      //})
+    }
 
     var minmax = visDict[indicator]['Minmax']
     if (opt === 'CH') {
@@ -380,7 +390,11 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
         url += `${country.Abbreviation}_${indicator}_${opt}/MapServer`;
         return <TiledMapLayer url={url}/>;
       } else {
-        return <GeoJSON data={data} style={TileStyle}/>
+        return <GeoJSON 
+          data={data}
+          style={TileStyle}
+          attribution='Powered by <a href="https://www.esri.com">Esri</a>'
+          />
       }
     }, [raster, country, indicator, opt, data, TileStyle])
   
@@ -391,9 +405,12 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
     const info = LookupTable({'items':indicators, 'first':'Abbreviation', 'second':['Source','R1','R2','Y1','Y2'], 'value':indicator})
     
     const changeCI = () => {
-      let val = document.getElementById('rangeCI').value
-      const label = {'0':' (very low)', '25':' (low)', '50':' (medium)', '75':' (high)', '100':' (very high)'}
-      let text = val + label[val]
+      const val = document.getElementById('rangeCI').value
+      const label = {'0':'low', '1':'medium', '2':'high', '3':'very high'}
+      const limit = {'0':0.8, '1':0.9, '2':0.95, '3':0.99}
+      const text = label[val]
+      //setProbLimit(limit[val])
+      console.log(val)
       document.getElementById('valueCI').innerText = text
     }
 
@@ -472,21 +489,17 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
           <div className='col-9 m-0 p-0 pt-2 pb-1' id='optionCI' style={{display:'none', background:'#f0f0f0', borderRadius:'5px'}}>
             <div className='row m-0 p-0'>
               <div className='col-5'>
-                <div className='form-check row'>
-                  <label className='form-check-label'>
-                    <input className='form-check-input' type='radio' defaultChecked value='improvement' id='showImprove' name='showImprove'/>
-                    show improvement
-                  </label>
-                  <label className='form-check-label'>
-                    <input className='form-check-input' type='radio' value='worsening' id='showWorse' name='showImprove'/>
-                    show worsening
-                  </label>
-                </div>
+              <BasicSelect
+                name={'Filter'}
+                items={['Show Improvement', 'Show Worsening']} 
+                value={showImprove}
+                pass={setShowImprove}
+              />
               </div>
-              <div className='col-7'>
-                <label className='form-check-label'>confidence limit: <span id='valueCI'>0 (very low)</span></label>
-                  <div className='float-end' onClick={infoCI} title='More info'><BsInfoCircleFill /></div>
-                <input className='form-range' type='range' id='rangeCI' defaultValue='0' min='0' max='100' step='25' name='CIRange' onChange={changeCI}/><br/>
+              <div className='col-7' style={{minWidth:'50px'}}>
+                <label className='form-check-label'>confidence limit: <span id='valueCI'>low</span></label>
+                  <div className='float-end' onClick={infoCI} title='More info'><BsQuestionCircleFill /></div>
+                <input className='form-range' type='range' id='rangeCI' defaultValue='0' min='0' max='3' step='1' name='CIRange' onChange={changeCI}/><br/>
               </div>
             </div>
           </div>

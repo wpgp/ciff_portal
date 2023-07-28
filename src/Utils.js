@@ -130,17 +130,18 @@ export function SimpleSelect({ name, items, defaultOpt, value, pass, noDefault, 
     )
 }
 
-export function BasicSelect({ name, items, defaultOpt, value, pass, noDefault, style={} }){
+export function BasicSelect({ name, items, defaultOpt, value, pass, noDefault, extras, style={} }){
     if (value === undefined) {value = defaultOpt};
 
     function handleChange(e){
-        pass(e.target.value)
+        if (pass) {pass(e.target.value)}
+        if (extras) {extras()}
     }
   
     return (
         <div>
             <select id={'select'+name} key={'select'+name} value={value} onChange={handleChange} style={style}>
-                {noDefault ? '' : <option key={'default'+defaultOpt} value={''}>Select {name}</option>}
+                {noDefault ? '' : <option key={'default'+defaultOpt} value={''} defaultChecked>Select {name}</option>}
                 {items.map((item) => {
                     const value = item.replaceAll(' ','')
                     return (

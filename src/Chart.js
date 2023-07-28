@@ -2,7 +2,7 @@ import { React, useState, useMemo } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import { Vega } from 'react-vega';
 import Table from 'react-bootstrap/Table';
-import { BsInfoCircleFill } from 'react-icons/bs';
+import { BsQuestionCircleFill } from 'react-icons/bs';
 import { SimpleSelect, DecimalFormat, FloatFormat, GetColor, ArgMax, ArgMin } from './Utils';
 import { visDict, pIndicator } from './Config';
 
@@ -246,14 +246,14 @@ export function TheChart({ country, data, aggData, indicator, pass }){
   )
 
   const summaryTab = (
-    <>
-      <p style={{fontSize:'90%'}}>
-        In the {adm1} of <b>{stateName}</b>, approximately {hilite[0]['avg']}{description['Unit']} {description['Statement']} in {description['Y1']} ({description['R1']}) and {hilite[1]['avg']}{description['Unit']} in {description['Y2']} ({description['R2']}).
+    <div style={{fontSize:'90%'}}>
+      <p>
+        In the {adm1} of <b>{stateName}</b>, approximately {hilite[0]['avg']}{description['Unit']} {description['Statement']} in round 1 ({description['R1']}, {description['Y1']}) and {hilite[1]['avg']}{description['Unit']} in round 2 ({description['R2']}, {description['Y2']}).
       </p>
       <p>
-        The {adm2} of <b>{hilite[2]['best']}</b> experienced the highest {pIndicator.includes(indicator) ? 'increase': 'decrease (lowest increase)'} in {description['Unit']} of {description['Indicator']} with a {hilite[2]['bestVal']}{description['Unit']} change from round 1 to round 2, showing an improvement in conditions.
+        The {adm2} of <b>{hilite[2]['best']}</b> experienced the highest {pIndicator.includes(indicator) ? 'increase': 'decrease (lowest increase)'} in {description['Unit']} of {(description['Indicator']).toLowerCase()} with a {hilite[2]['bestVal']}{description['Unit']} change from round 1 ({description['R1']}, {description['Y1']}) to round 2 ({description['R2']}, {description['Y2']}), showing an improvement in conditions.
       </p>
-    </>
+    </div>
   )
 
   /*
@@ -271,7 +271,10 @@ export function TheChart({ country, data, aggData, indicator, pass }){
   const chartTab = (
     <div id="charte">
       <p style={{fontSize:'90%'}}>
-      The chart below summarises the indicator values aggregated at {adm2} level.
+      The chart below summarises the indicator values aggregated at {adm2} level. Confidence intervals (95% significance) for round 1 and round 2 are represented as washout rectangles around the mean values. 
+      </p>
+      <p style={{fontSize:'80%'}}>
+      The data can be sorted by name, round 1 values, round 2 values and change values. 
       </p>
       <hr/>
       <div className='col m-0 p-0'>
@@ -294,9 +297,12 @@ export function TheChart({ country, data, aggData, indicator, pass }){
 
   const tableTab = (
     <>
-      <div className='float-end'><span onClick={howToTable} title='How to read'><BsInfoCircleFill /></span></div>
+      <div className='float-end'><span onClick={howToTable} title='How to read'><BsQuestionCircleFill /></span></div>
       <p style={{fontSize:'90%'}}>
-      The table below summarises the indicator values aggregated at {adm2} level.
+      The table below summarises the indicator values aggregated at {adm2} level. Confidence intervals (95% significance) for round 1 and round 2 can be found in brackets.
+      </p>
+      <p style={{fontSize:'80%'}}>
+      The data can be sorted by name, round 1 values, round 2 values and change values by clicking on each heading. 
       </p>
       <hr/>
       {<MakeTable columns={columns} data={data} palette={palette}/>}
@@ -319,7 +325,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
           <Table striped bordered hover size='sm'>
             <thead>
               <tr>
-                <td><span onClick={howToTable} title='How to read'><BsInfoCircleFill /></span></td><td>Round 1</td><td>Round 2</td><td>Change</td>
+                <td><span onClick={howToTable} title='How to read'><BsQuestionCircleFill /></span></td><td>Round 1</td><td>Round 2</td><td>Change</td>
               </tr>
             </thead>
             <tbody>
