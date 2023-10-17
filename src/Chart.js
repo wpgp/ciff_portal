@@ -1,9 +1,10 @@
 import { React, useState, useMemo } from 'react';
+import ReactDOM from 'react-dom/client';
 import { useTable, useSortBy } from 'react-table';
 import { Vega } from 'react-vega';
 import Table from 'react-bootstrap/Table';
-import { BsQuestionCircleFill } from 'react-icons/bs';
-import { SimpleSelect, DecimalFormat, FloatFormat, GetColor, ArgMax, ArgMin } from './Utils';
+import { BsQuestionCircleFill, BsBarChartFill } from 'react-icons/bs';
+import { SimpleSelect, DecimalFormat, FloatFormat, GetColor, ArgMax, ArgMin, getInfo } from './Utils';
 import { visDict, pIndicator } from './Config';
 
 import specs from './data/chart_spec.json';
@@ -121,7 +122,6 @@ function RangeChart({ input, field, sorter, sorttype }){
   return <Vega spec={spec} actions={false} />
 }
 
-/*
 function AllIndicators({ input, proportional }){
   let spec = JSON.parse(JSON.stringify(specs['StateAggregate']));
   spec.data[0].values = input;
@@ -137,27 +137,15 @@ function AllIndicators({ input, proportional }){
   spec.signals[0].value = 150;
   return <Vega spec={spec} actions={false} />
 }
-*/
 
-function howToTable(){
-  var modal = document.getElementById("modal");
-  var modalTitle = document.getElementById("modalTitle");
-  var modalBody = document.getElementById("modalBody");
-  var content;
+const modalRoot = ReactDOM.createRoot(document.getElementById('modalBody'));
 
-  modal.style.display = "block";
-  modalTitle.innerHTML = '<h4>How to read tables and charts</h4>';
-  fetch('./aboutSummary.inc').then(resp => resp.text()).then(text => {
-    content = text;
-    modalBody.innerHTML = content;
-  });
-}
-
-export function TheChart({ country, data, aggData, indicator, pass }){
+export function TheChart({ country, data, data0, aggData, indicator, pass, exceed }){
   const [sortChart, setSortChart] = useState('SortbyName');
   const [sorttype, setSorttype] = useState('ascending');
 
-  const stateName = data[0].state;
+  const stateName = data0[0].state;
+  const nodata = data.length === 0 ? <kbd>No data displayed. Modify the filter.</kbd> : ''
 
   const adm1 = String(country.Adm1).toLowerCase()
   const adm2 = String(country.Adm2).toLowerCase()
@@ -197,26 +185,33 @@ export function TheChart({ country, data, aggData, indicator, pass }){
     <RangeChart input={data} field={indicator} sorter={sortChart} sorttype={sorttype}/>
   )}, [data, indicator, sortChart, sorttype])
 
-  /*
-  const allindicators = useMemo(() => (
-    <div className='row m-0 p-0'>
-      <div className='float-end m-0 p-0'>
-        <AllIndicators input={aggData} proportional={true}/>
+  const showIndicators = () => {
+    console.log('show modal')
+    modalRoot.render(
+      <div>
+        <div className='p-0 m-0 mb-2'>
+          The charts below summarise the average values of all indicators at the selected administrative unit.
+        </div>
+        <div>
+          <div className='float-start m-0 p-0'>
+            <AllIndicators input={aggData} proportional={true}/>
+          </div>
+          <div className='float-end m-0 p-0'>
+            <AllIndicators input={aggData} proportional={false}/>
+          </div>
+        </div>
       </div>
-      <hr/>
-      <div className='float-end m-0 p-0'>
-        <AllIndicators input={aggData} proportional={false}/>
-      </div>
-    </div>
-  ), [aggData])
-  */
+    )
+    document.getElementById('modal').style.display = "block";
+    document.getElementById('modalTitle').innerHTML = `<h4>All Indicator Comparison</h4>`;
+  }
 
   const hilite = useMemo(() => {
     return (
       ['_R1', '_R2', '_CH'].map((item) => {
         let obj = {}
-        const y = data.map((x) => x[indicator+item])
-        const z = data.map((x) => x['district'])
+        const y = data0.map((x) => x[indicator+item])
+        const z = data0.map((x) => x['district'])
         const maxi = ArgMax(y)
         const mini = ArgMin(y)
 
@@ -235,7 +230,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
         return obj
       })
     )
-  }, [data, indicator])
+  }, [data0, indicator])
   
   const sortButton = (
     <div className='float-end p-2' style={{marginLeft:'10px'}}>
@@ -253,25 +248,15 @@ export function TheChart({ country, data, aggData, indicator, pass }){
       <p>
         The {adm2} of <b>{hilite[2]['best']}</b> experienced the highest {pIndicator.includes(indicator) ? 'increase': 'decrease (lowest increase)'} in {description['Unit']} of {(description['Indicator']).toLowerCase()} with a {hilite[2]['bestVal']}{description['Unit']} change from round 1 ({description['R1']}, {description['Y1']}) to round 2 ({description['R2']}, {description['Y2']}), showing an improvement in conditions.
       </p>
+      <p><span onClick={() => showIndicators()}><BsBarChartFill/></span> Compare with other indicators</p>
     </div>
   )
 
-  /*
-  const indicatorsTab = (
-    <>
-      <p style={{fontSize:'90%'}}>
-      Overall improvement in the selected {adm1} can also be assessed by comparing the aggregated (average) values of all indicators.
-      </p>
-      <hr/>
-      {allindicators}
-    </>
-  )
-  */
-
   const chartTab = (
     <div id="charte">
+      <div className='float-end'><span onClick={() => getInfo('How to read chart', './aboutTable.inc')} title='How to read'><BsQuestionCircleFill /></span></div>
       <p style={{fontSize:'90%'}}>
-      The chart below summarises the indicator values aggregated at {adm2} level. Confidence intervals (95% significance) for round 1 and round 2 are represented as washout rectangles around the mean values. 
+      The chart below summarises the indicator values aggregated at {adm2} level. Credible intervals (95% significance) for round 1 and round 2 are represented as washout rectangles around the mean values. 
       </p>
       <p style={{fontSize:'80%'}}>
       The data can be sorted by name, round 1 values, round 2 values and change values. 
@@ -292,20 +277,27 @@ export function TheChart({ country, data, aggData, indicator, pass }){
         </div>
       </div>
       {districtchart}
+      <div style={{fontSize:'90%'}}>
+        {nodata}
+      </div>
     </div>
   )
 
   const tableTab = (
     <>
-      <div className='float-end'><span onClick={howToTable} title='How to read'><BsQuestionCircleFill /></span></div>
+      <div className='float-end'><span onClick={() => getInfo('How to read table', './aboutTable.inc')} title='How to read'><BsQuestionCircleFill /></span></div>
       <p style={{fontSize:'90%'}}>
-      The table below summarises the indicator values aggregated at {adm2} level. Confidence intervals (95% significance) for round 1 and round 2 can be found in brackets.
+      The table below summarises the indicator values aggregated at {adm2} level. Credible intervals (95% significance) for round 1 and round 2 can be found in brackets.
       </p>
       <p style={{fontSize:'80%'}}>
       The data can be sorted by name, round 1 values, round 2 values and change values by clicking on each heading. 
       </p>
       <hr/>
+      <div className='float-start pt-2'><h6>{visDict[indicator]['Indicator']}</h6></div>
       {<MakeTable columns={columns} data={data} palette={palette}/>}
+      <div style={{fontSize:'90%'}}>
+        {nodata}
+      </div>
     </>
   )
 
@@ -320,12 +312,14 @@ export function TheChart({ country, data, aggData, indicator, pass }){
       </div>
     
       <div className='row m-0 info'>
-        <h5 style={{padding:'5px', borderRadius:'5px', background:'#cfcccc', color:'#000'}}>{stateName} ({data.length} {adm2}s)</h5>
+        <h5 style={{padding:'5px', borderRadius:'5px', background:'#cfcccc', color:'#000'}}>{stateName} ({data0.length} {adm2}s)</h5>
         <div className='row m-0 p-0'>
           <Table striped bordered hover size='sm'>
             <thead>
               <tr>
-                <td><span onClick={howToTable} title='How to read'><BsQuestionCircleFill /></span></td><td>Round 1</td><td>Round 2</td><td>Change</td>
+                <td>
+                  <span onClick={() => getInfo('How to read table', './aboutTable.inc')} title='Note on to read'><BsQuestionCircleFill /></span>
+                </td><td>Round 1</td><td>Round 2</td><td>Change</td>
               </tr>
             </thead>
             <tbody>
@@ -362,7 +356,7 @@ export function TheChart({ country, data, aggData, indicator, pass }){
         </ul>
       </div>
 
-      <div className='tab-content framed-content'>
+      <div className='tab-content framed-content mb-5'>
         <div id='summaryTab' className='container tab-pane active'>{summaryTab}</div>
         <div id='chartTab' className='container tab-pane fade'>{chartTab}</div>
         <div id='tableTab' className='container tab-pane fade'>{tableTab}</div>

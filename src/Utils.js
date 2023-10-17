@@ -26,11 +26,59 @@ export function GetColor(d, minmax, cmapID){
         d = (d - minmax[0])/(minmax[1] - minmax[0])
         const palette = colormaps[cmapID]
         const val = Math.min(Math.max(0, parseInt(19*d)), 19)
-        const idx = String(val)    
-        return palette[idx]
+        const idx = String(val)
+        let res = palette[idx]
+        return res
     }
 }
 
+export function hexToRGB(hex) {
+    hex = hex.substring(1);
+    let [r, g, b] = hex.split('');
+
+    r = parseInt(r, 16);
+    g = parseInt(g, 16);
+    b = parseInt(b, 16);
+
+    return [r, g, b];
+}
+
+export function GetXFromRGB(rgb, palette, minmax) {
+    const len = palette.length;
+
+    let minIndex = 0;
+    let minDistance = Infinity;
+    for (let i = 0; i < len; i++) {
+        //const rgbPalette = hexToRGB(palette[i])
+        const rgbPalette = palette[i]
+        const distance = Math.sqrt(Math.pow(rgb[0] - rgbPalette[0], 2) +
+        Math.pow(rgb[1] - rgbPalette[1], 2) +
+        Math.pow(rgb[2] - rgbPalette[2], 2));
+        if (distance < minDistance) {
+        minIndex = i;
+        minDistance = distance;
+        }
+    }
+
+    let x = minIndex / len;
+    let scaledX = x*(minmax[1]-minmax[0]) + minmax[0];
+    return scaledX;
+}
+
+export function getInfo(title, path){
+    let modal = document.getElementById("modal");
+    let modalTitle = document.getElementById("modalTitle");
+    let modalBody = document.getElementById("modalBody");
+  
+    modal.style.display = "block";
+    modalTitle.innerHTML = `<h4>${title}</h4>`;
+    
+    fetch(path).then(resp => resp.text()).then(text => {
+      let content = text;
+      modalBody.innerHTML = content;
+    });
+}
+  
 export function LookupTable(props){
     const second = props.second === undefined ? props.first : props.second
     const filtered = props.items.filter((item) => item[props.first].replaceAll(' ','') === props.value.replaceAll(' ',''))

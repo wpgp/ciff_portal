@@ -6,12 +6,13 @@ import { TheMap } from './Map';
 import 'leaflet/dist/leaflet.css';
 import './index.css';
 
-import { indDict, countries } from './Config';
+import { indDict, countries, pIndicator } from './Config';
 import indicators from './data/indicators.json';
 
 export function App(){
   const [countryShort, setCountryShort] = useState('India');
   const [region, setRegion] = useState('');
+  const [exceedance, setExceedance] = useState({'level':'disabled', 'prob':0.0, 'direction':''})
   const [indicator, setIndicator] = useState('');
 
   const country = useMemo(() => {
@@ -24,13 +25,30 @@ export function App(){
   const agg_data = useMemo(() => (require(`./data/${country.Abbreviation}_aggregate.json`)), [country]);
   //const dataTable = useMemo(() => (data.features.map((item) => item.properties)), [data]);
 
+  var selectedData = dataTable
   var filteredData = dataTable
   var filteredAggData = agg_data
 
   if (region) {
-    filteredData = dataTable.filter((item) => {
-        return item.state.replaceAll(' ','') === region
+    selectedData = dataTable.filter((item) => {
+      return item.state.replaceAll(' ','') === region
     })
+
+    filteredData = selectedData.filter((item) => {
+      let res = item.state.replaceAll(' ','') === region
+      const val = item[`${indicator}_CH`]
+      const pval = item[`${indicator}_CH_P`]
+
+      const st = pIndicator.includes(indicator) ? ['ShowImprovement','ShowWorsening'] : ['ShowWorsening', 'ShowImprovement']
+      if (exceedance.direction === st[0]) {
+        res = res && (val > 0 && pval > exceedance.prob)
+      } else if (exceedance.direction === st[1]) {
+        res = res && (val <= 0 && pval < (1-exceedance.prob))
+      }
+      
+      return res
+    })
+
     filteredAggData = agg_data.filter((item) => {
         return item.State.replaceAll(' ','') === region
     })
@@ -39,16 +57,16 @@ export function App(){
   const chart = useMemo(() => {
     if (region !== '' && indicator !== ''){      
       return (
-      <TheChart country={country} data={filteredData} aggData={filteredAggData} selected={region} pass={setIndicator} indicator={indicator}/>
+      <TheChart country={country} data={filteredData} data0={selectedData} aggData={filteredAggData} selected={region} pass={setIndicator} exceed={exceedance} indicator={indicator}/>
     )} else {
       return (<></>)
     }
-  }, [filteredData, filteredAggData, indicator, country, region])
+  }, [filteredData, filteredAggData, indicator, country, region, exceedance, selectedData])
 
   const map = useMemo(() => {
     if (indicator !== ''){      
       return (
-        <TheMap country={country} boundary={stateBoundary} data={data} selected={region} pass={setRegion} indicator={indicator} passIndicator={setIndicator}/>
+        <TheMap country={country} boundary={stateBoundary} data={data} selected={region} pass={setRegion} passExceed={setExceedance} indicator={indicator} passIndicator={setIndicator}/>
       )} else {
       return (<></>)
     }

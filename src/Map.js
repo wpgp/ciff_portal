@@ -1,17 +1,18 @@
 import { React, useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { MapContainer, GeoJSON, Pane, TileLayer, useMap } from 'react-leaflet';
-import { BsQuestionCircleFill, BsFullscreenExit, BsFullscreen, BsFillGridFill, BsSquareFill, BsFill1CircleFill, BsFill2CircleFill, BsSubtract, BsDashCircleFill, BsPlusCircleFill, BsArrowLeftCircleFill } from 'react-icons/bs';
+import { MapContainer, GeoJSON, Circle, Pane, TileLayer, useMap } from 'react-leaflet';
+import { BsQuestionCircleFill, BsFillGridFill, BsSquareFill, BsFill1CircleFill, BsFill2CircleFill, BsSubtract, BsDashCircleFill, BsPlusCircleFill, BsArrowLeftCircleFill } from 'react-icons/bs';
 import { TiledMapLayer } from 'react-esri-leaflet';
 
 import { indDict, visDict, pIndicator } from './Config.js'
-import { ArgMin, FloatFormat, LookupTable, GetColor, SimpleSelect, BasicSelect } from './Utils.js';
+import { getInfo, ArgMin, FloatFormat, LookupTable, GetColor, GetXFromRGB, SimpleSelect, BasicSelect } from './Utils.js';
 //import GeoRasterLayer from 'georaster-layer-for-leaflet';
 
 import 'leaflet/dist/leaflet.css';
 import indicators from './data/indicators.json';
 import colormaps from './data/colormaps.json';
+import colorList from './data/colorList.json';
 
-const optIndicator = indicators.map((item) => item.Indicator);
+//const optIndicator = indicators.map((item) => item.Indicator);
 //const parseG = require('georaster');
 var main_map;
 
@@ -35,7 +36,7 @@ const DistrictStyle = () => {
 
 function ZoomPanel({ country }){
   return (
-    <div className='leaflet-bottom leaflet-left'>
+    <div id='zoomPanel' className='leaflet-bottom leaflet-left'>
       <div className='leaflet-control btn-group-vertical'>
         <button className='map-btn' title='Zoom-in' onClick={() => main_map.zoomIn()}><BsPlusCircleFill /></button>
         <button className='map-btn' title='Zoom-out' onClick={() => main_map.zoomOut()}><BsDashCircleFill /></button>
@@ -63,6 +64,21 @@ function FullScreenControl({ fullscreen, pass }){
 }
 */
 
+function InspectPanel({ coords }){
+  return (
+    <div id='inspectPanel' className='m-1 p-1 leaflet-top leaflet-right' style={{zIndex:1100, textAlign:'center', background:'#f0f0f0', borderRadius:'5px', minWidth:'100px'}}>
+      <div>
+        ({coords.lng?.toFixed(2)}, {coords.lat?.toFixed(2)})
+      </div>
+      <div>
+        <b style={{fontSize:'larger'}}>
+          {coords.remark} : {coords.val}
+        </b>
+      </div>
+    </div>
+  )
+}
+
 function RadioPanel({ passOpt, passRaster, indicator }){
   let available = ['LBW', 'ANC_4plus'];
   let disabled = available.includes(indicator) ? false : true;
@@ -71,11 +87,12 @@ function RadioPanel({ passOpt, passRaster, indicator }){
   let optClick = (val) => {
     passOpt(val);
     passRaster(false);
-    if (val === 'CH') {
-      document.getElementById('optionCI').style.display = 'block'
-    } else {
-      document.getElementById('optionCI').style.display = 'none'
-    }
+    document.getElementById('optionCI').style.display = 'block'
+    //if (val === 'CH') {
+    //  document.getElementById('optionCI').style.display = 'block'
+    //} else {
+    //  document.getElementById('optionCI').style.display = 'none'
+    //}
     document.getElementById('radio_agg').checked = true;
     document.getElementById('radio_grid').checked = false;
   }
@@ -108,7 +125,7 @@ function RadioPanel({ passOpt, passRaster, indicator }){
         <div className='leaflet-control' style={{paddingTop:'15px'}}>
           <>
             <label className='new-container'>
-              <input className='new-radio' type='radio' name='layerOpt' id={'radio_agg'} defaultChecked onClick={() => passRaster(false)}/>
+              <input className='new-radio' type='radio' name='layerOpt' id={'radio_agg'} defaultChecked onClick={() => {passRaster(false); document.getElementById('optionCI').style.display = 'block';}}/>
               <span className='new-label' title='Aggregated Data'><BsSquareFill /></span>
             </label><br/>
   
@@ -160,6 +177,7 @@ function Legend({ indicator, opt, pass }){
     }
 
     const cbar = (
+      <>
       <svg width='100%' height='95'>
         {ids.slice(0,18).map((item) => (
           <rect key={item} x={(5+item*5)+'%'} y='0%' rx='5px' ry='5px' width='5%' height='30' stroke='#2b2b2b' fill={colormap[item]}/>
@@ -174,14 +192,16 @@ function Legend({ indicator, opt, pass }){
         <text x='50%' y='70' textAnchor='middle'>{remark}</text>
         <text x='50%' y='83' textAnchor='middle' fontSize='90%'>{proportional}</text>
       </svg>
+      </>
     )
     
-    const updateIndicator = (value) => {}
+    //const updateIndicator = (value) => {}
 
     return (
       <div className='row m-0 pt-2 mb-2' style={{background:'#f0f0f0', borderRadius:'10px', minHeight:'125px'}}>
         <div className='p-0'>
           <div style={{display:'inline-block',background:'#cfcccc',borderRadius:'5px',padding:'2px',marginBottom:'10px'}}>
+          {/*
           <BasicSelect
             name={'legendIndicator'}
             items={optIndicator} 
@@ -191,6 +211,8 @@ function Legend({ indicator, opt, pass }){
             extras={updateIndicator(visDict[indicator]['Short'])}
             style={{background:'none',border:'none',fontSize:'larger',fontWeight:'600',padding:'0px'}}
           />
+          */}
+          {visDict[indicator]['Indicator']}
           </div>
         </div>
         
@@ -211,97 +233,97 @@ function Legend({ indicator, opt, pass }){
               </div>
 
               <div className='col-md-7 p-1 m-0'>
+                <div className='float-end' onClick={() => getInfo('Note on the color scale', './aboutChange.inc')} title='More info'><BsQuestionCircleFill /></div>
                 {cbar}
               </div>
             </div>
           </div>
 
-          <div className='row p-0' style={{fontSize:'60%'}}>
-            <p><b>Note:</b> Irrespective of the direction of each indicator (i.e. increasing value meaning better condition like % of contraceptive prevalence, increasing value meaning worse condition like % of low birth weight) the legend displays a better condition relative to other areas in the country (improvement over time when looking at time change) in blue, and a worse condition relative to other areas in the country (worsening over time when looking at time change) in red. </p>
-          </div>
         </div>
       </div>
     )
 }
 
 function DistrictPopup(obj, col){
-    let content = `<div><b>${obj.district}</b>`;
-    content += `<br/>${obj.state}<br/>`
-    content += `<br/>R<sub>1</sub>\u25b9 ${FloatFormat(obj[col+'_R1'], 1)}%`
-    content += `<br/>R<sub>2</sub>\u25b9 ${FloatFormat(obj[col+'_R2'], 1)}%`
-    content += `<br/>Change\u25b9 ${FloatFormat(obj[col+'_CH'], 1)}%`
-    content += '</div>'
-    return (content)
+  let content = `<div><b>${obj.district}</b>`;
+  content += `<br/>${obj.state}<br/>`
+  content += `<br/>R<sub>1</sub>\u25b9 ${FloatFormat(obj[col+'_R1'], 1)}`
+  content += `<br/>R<sub>2</sub>\u25b9 ${FloatFormat(obj[col+'_R2'], 1)}`
+  content += `<br/>Change\u25b9 ${FloatFormat(obj[col+'_CH'], 1)}`
+  content += '</div>'
+  return (content)
 }
 
 function infoCI(indicator){
-  var modal = document.getElementById("modal");
-  var modalTitle = document.getElementById("modalTitle");
-  var modalBody = document.getElementById("modalBody");
-  const file = pIndicator.includes(indicator) ? './aboutCI_pIndicator.inc' : './aboutCI_nIndicator.inc';
-
-  modal.style.display = "block";
-  modalTitle.innerHTML = '<h4>About the confidence limit</h4>';
-  
-  fetch(file).then(resp => resp.text()).then(text => {
-    let content = text;
-    modalBody.innerHTML = content;
-  });
+  const path = pIndicator.includes(indicator) ? './aboutCI_pIndicator.inc' : './aboutCI_nIndicator.inc';
+  getInfo('Note on the credible limit', path);
 }
 
-/*
-function GriddedData({ country, indicator, band }){
-  const palette = (band === 'CH') ? 'Palette2' : 'Palette1';
-  
-  let path = 'https://raw.githubusercontent.com/rhorom/ciff_portal/main/'
-  path += `./data/${country.Abbreviation}_${indicator}_${band}.tif`;
-  
-  document.getElementById('loadRaster').setAttribute('style', 'display:block !important');
-  fetch(path)
-      .then(resp => resp.arrayBuffer()).then(arr => {
-          parseG(arr).then(georaster => {
-              var layer = new GeoRasterLayer({
-                  georaster: georaster,
-                  opacity: 1,
-                  pixelValuesToColorFn: x => GetColor(x, [0.0,0.4], visDict[indicator][palette]),
-                  resolution: 128,
-                  pane: 'tiles'
-              });
-
-              main_map.addLayer(layer)
-              document.getElementById('loadRaster').setAttribute('style', 'display:none !important');
-            });
-      }).catch(error => alert(error));
-
-  return (null);
-}
-*/
-
-export function TheMap({ country, boundary, data, selected, pass, indicator, passIndicator }){
+export function TheMap({ country, boundary, data, selected, pass, passExceed, indicator, passIndicator }){
     const [opt, setOpt] = useState('R1')
     const [raster, setRaster] = useState(false)
     const [showLabel, setShowLabel] = useState(false)
     const [showImprove, setShowImprove] = useState('')
-    //const [probLimit, setProbLimit] = useState(0)
-    
+    const [coords, setCoords] = useState({lat:0, lng:0, val:0, remark:'Value'});
+    const [probLimit, setProbLimit] = useState(0)
     //const [fullscreen, setFullscreen] = useState(false)
 
+    const setShowImprove_ = (x) => {setShowImprove(x); passExceed({'level':'', 'prob':probLimit, 'direction':x})}
+    const field = useMemo(() => (indicator + '_' + opt), [indicator, opt])
+    const adm = String(country.Adm1).toLowerCase();
+    var minmax = visDict[indicator]['Minmax']
+    
     const DefineMap = () => {
       main_map = useMap();
       return null
     }
   
-    const field = useMemo(() => (indicator + '_' + opt), [indicator, opt])
-    const adm = String(country.Adm1).toLowerCase();
+    useEffect(() => {
+      if (!main_map) {return}
+      const inspectMap = (e) => {
+        let layer = e.target._layers;
+        const key = Object.keys(layer).filter((k) => {
+          return layer[k].options.name === 'thisRaster';
+        });
 
-    if (opt === 'CH'){
-      console.log(data.features[0])
-      //data = data.features.filter((feature) => {
-      //  if (feature.properties[indicator + '_CH'] > 0){return feature}
-      //})
-    }
+        try {
+          //Getting the RGB value of the clicked pixel
+          layer = layer[key];
+          let size = layer._tileSize;
+          let point = layer._map.project(e.latlng, layer._tileZoom).floor();
+          let coords = point.unscaleBy(size).floor();
+          let offset = point.subtract(coords.scaleBy(size));
+          coords.z = layer._tileZoom;
+          let tile = layer._tiles[layer._tileCoordsToKey(coords)];
 
-    var minmax = visDict[indicator]['Minmax']
+          if (!tile || !tile.loaded) return;
+          tile.el.crossOrigin = 'anonymous';
+
+          let canvas = document.createElement('canvas');
+          let context = canvas.getContext('2d');
+          canvas.width = 1;
+          canvas.height = 1;
+          context.drawImage(tile.el, -offset.x, -offset.y, size.x, size.y);
+
+          const a = context.getImageData(0, 0, 1, 1).data;
+          const palette = (opt === 'CH') ? colorList[visDict[indicator]['Palette2']] : colorList[visDict[indicator]['Palette1']];
+          const val = GetXFromRGB(a, palette, minmax);
+          setCoords({ lat: e.latlng.lat, lng: e.latlng.lng, val:val, remark:opt });
+          
+        } catch {
+          console.log('error')
+        }
+      }
+
+      if (showLabel) {
+        main_map.addEventListener("click", (e) => {inspectMap(e)})
+      } else {
+        main_map.removeEventListener('click');
+      };
+
+      return
+    }, [showLabel, indicator, minmax, opt]);
+
     if (opt === 'CH') {
       let a = 0.5*(minmax[0] - minmax[1])
       let b = 0.5*(minmax[1] - minmax[0])
@@ -310,6 +332,7 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
   
     const zoomFit = (bounds) => {main_map.fitBounds(bounds)}    
     const states = boundary.features.map((item) => item.properties.state);
+
     const selectStates = (
       <SimpleSelect 
         name={adm}
@@ -373,7 +396,8 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
       }
     }, [indicator, opt, field, minmax])
 
-    const district = data.features.filter((item) => (item.properties.state.replaceAll(' ','') === selected))
+    const district = data.features.filter((item) => (item.properties.state.replaceAll(' ','') === selected));
+  
     const ref = useRef()
     useEffect(() => {
       if (ref.current) {
@@ -382,16 +406,41 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
       }
     }, [ref, district])
 
-    //const theraster = useMemo(() => <GriddedData country={country} indicator={indicator} band={opt}/>, [country, indicator, opt]);
-    
-    const mainLayer = useMemo(() => {
+    //const theraster = useMemo(() => <GriddedData country={country} indicator={indicator} band={opt}/>, [country, indicator, opt]);    
+
+    const choropleth = useRef()
+    useEffect(() => {
+      const filterData = (feature) => {
+        const val = feature.properties[`${indicator}_CH`];
+        const pval = feature.properties[`${indicator}_CH_P`];
+        let res = true
+        if (pIndicator.includes(indicator)){
+          res = showImprove === 'ShowImprovement' ? (val > 0 && pval > probLimit)  : showImprove === 'ShowWorsening' ? (val <= 0 && pval < (1-probLimit)) : true
+        } else {
+          res = showImprove === 'ShowWorsening' ? (val > 0 && pval > probLimit)  : showImprove === 'ShowImprovement' ? (val <= 0 && pval < (1-probLimit)) : true
+        }
+        return res
+      }
+
+      let filteredData = {};
+      filteredData.features = data.features.filter(filterData);
+
+      if (choropleth.current) {
+        choropleth.current.clearLayers()
+        choropleth.current.addData(filteredData)
+        choropleth.current.setStyle(TileStyle)
+      }
+    }, [showImprove, indicator, data, TileStyle, probLimit])
+
+    const mainLayer = useMemo(() => {  
       if (raster) {
         let url = "https://tiles.arcgis.com/tiles/DP1uf58TYllWKwpl/arcgis/rest/services/";
         url += `${country.Abbreviation}_${indicator}_${opt}/MapServer`;
-        return <TiledMapLayer url={url}/>;
-      } else {
-        return <GeoJSON 
+        return <TiledMapLayer name='thisRaster' url={url}/>;
+      } else {  
+        return <GeoJSON
           data={data}
+          ref={choropleth}
           style={TileStyle}
           attribution='Powered by <a href="https://www.esri.com">Esri</a>'
           />
@@ -406,11 +455,11 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
     
     const changeCI = () => {
       const val = document.getElementById('rangeCI').value
-      const label = {'0':'low', '1':'medium', '2':'high', '3':'very high'}
-      const limit = {'0':0.8, '1':0.9, '2':0.95, '3':0.99}
+      const label = {'0':'disabled', '1':'low (80%)', '2':'medium (90%)', '3':'high (95%)', '4':'very high (99%)'}
+      const limit = {'0':0.00, '1':0.80, '2':0.90, '3':0.95, '4':0.99}
       const text = label[val]
-      //setProbLimit(limit[val])
-      console.log(val)
+      setProbLimit(limit[val])
+      passExceed({'level':label[val], 'prob':limit[val], 'direction':showImprove})
       document.getElementById('valueCI').innerText = text
     }
 
@@ -445,6 +494,8 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
 
           <DefineMap />
           
+          {raster && showLabel ? <InspectPanel coords={coords}/> : <></>}
+
           <RadioPanel passOpt={setOpt} passRaster={setRaster} indicator={indicator}/>
     
           <ZoomPanel country={country}/>
@@ -454,52 +505,64 @@ export function TheMap({ country, boundary, data, selected, pass, indicator, pas
           {/*<TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"/>*/}
           
           <Pane name='tiles' style={{zIndex:1}}>
-            {mainLayer} 
+            {mainLayer}
+            <GeoJSON
+              data={boundary}
+              style={StateStyle}
+              />
           </Pane>
     
-          <Pane name='boundary' style={{zIndex:10}}>
+          {showLabel ? null :
+          <Pane name='boundary' style={{zIndex:10}}>    
             <GeoJSON
               data={boundary}
               style={StateStyle}
               onEachFeature={onEachState}
               />
-    
+
             <GeoJSON
               data={district}
               ref={ref}
               style={DistrictStyle}
               onEachFeature={onEachDistrict}
-              />
-          </Pane>
+            />
+          </Pane>}
+
+          <Circle center={[coords.lat, coords.lng]} radius={1000} color={'#000'} fill={true} fillColor={'#000'} fillOpacity={1}>
+          </Circle>
 
           {showLabel ? <TileLayer url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png" zIndex={500}/> : <></>}
         </MapContainer>
 
-        <div className='row m-0 p-0 pt-2'  style={{fontSize:'small', minHeight:'55px'}}>
+        <div className='row m-0 p-0 pt-2 mb-5'  style={{fontSize:'small', minHeight:'55px'}}>
           <div className='col-3 m-0 p-2'>
             <div className='form-check form-switch' style={{marginRight:'20px'}}>
               <label className='form-check-label'>
-                <input className='form-check-input' type="checkbox" checked={showLabel} onChange={() => {setShowLabel(!showLabel)}}/>
-                toggle labels
+                <input id='showLabelSwitch' className='form-check-input' type="checkbox" checked={showLabel} onChange={() => {
+                  setShowLabel(!showLabel)
+                  setCoords({lat:0, lng:0, val:0, remark:'Value'})
+                  }}/>
+                inspect map
               </label>
             </div>
 
           </div>
 
-          <div className='col-9 m-0 p-0 pt-2 pb-1' id='optionCI' style={{display:'none', background:'#f0f0f0', borderRadius:'5px'}}>
+          <div className='col-9 m-0 p-0 pt-2 pb-1' id='optionCI' style={{display:'block', background:'#f0f0f0', borderRadius:'5px'}}>
             <div className='row m-0 p-0'>
               <div className='col-5'>
+              <div className='pb-1' style={{fontWeight:'bold'}}>Filter</div>
               <BasicSelect
                 name={'Filter'}
-                items={['Show Improvement', 'Show Worsening']} 
+                items={['Show Improvement', 'Show Worsening', 'Show All']} 
                 value={showImprove}
-                pass={setShowImprove}
+                pass={setShowImprove_}
               />
               </div>
               <div className='col-7' style={{minWidth:'50px'}}>
-                <label className='form-check-label'>confidence limit: <span id='valueCI'>low</span></label>
+                <label className='form-check-label'>credible limit: <span id='valueCI'>disabled</span></label>
                   <div className='float-end' onClick={infoCI} title='More info'><BsQuestionCircleFill /></div>
-                <input className='form-range' type='range' id='rangeCI' defaultValue='0' min='0' max='3' step='1' name='CIRange' onChange={changeCI}/><br/>
+                <input className='form-range' type='range' id='rangeCI' defaultValue='0' min='0' max='4' step='1' name='CIRange' onChange={changeCI}/><br/>
               </div>
             </div>
           </div>

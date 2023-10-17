@@ -17,6 +17,9 @@
 <p>
     The representation of political boundaries does not necessarily reflect the organization's view on the legal status of a country or territory.
 </p>
+<p>
+    Check <a href="./technical.html">Technical Notes</a>
+</p>
 
 <h5>Acknowledgement</h5>
 <ul>
@@ -30,7 +33,3 @@
         <b>NFHS-5 data:</b> International Institute for Population Sciences (IIPS) and ICF. 2021. National Family Health Survey (NFHS-5), India, 2019-21: India. Mumbai: IIPS.
     </li>
 </ul>
-
-<div display='none'>
-    Pezzulo, C., Tejedor-Garavito, N., Chan, H.M.T. et al. A subnational reproductive, maternal, newborn, child, and adolescent health and development atlas of India. Sci Data 10, 86 (2023). (<a href="https://doi.org/10.1038/s41597-023-01961-2" target='_blank'>DOI:10.1038/s41597-023-01961-2</a>).
-</div>
