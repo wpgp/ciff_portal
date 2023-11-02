@@ -1,4 +1,3 @@
-<h5>Layperson:</h5>
 <p>
     The slider allows the user to choose the probability that there is meaningful improvement/worsening. The map greys out areas where it is unlikely that there have been meaningful improvements.
 </p>

@@ -1,7 +1,8 @@
 import { React, useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { MapContainer, GeoJSON, Circle, Pane, TileLayer, useMap } from 'react-leaflet';
-import { BsQuestionCircleFill, BsFillGridFill, BsSquareFill, BsFill1CircleFill, BsFill2CircleFill, BsSubtract, BsDashCircleFill, BsPlusCircleFill, BsArrowLeftCircleFill } from 'react-icons/bs';
+import { BsQuestionCircleFill, BsCaretUpFill, BsArrowDownCircleFill, BsPrinterFill, BsDashCircleFill, BsPlusCircleFill, BsHouseFill, BsCaretDownFill } from 'react-icons/bs';
 import { TiledMapLayer } from 'react-esri-leaflet';
+import { Form } from 'react-bootstrap';
 
 import { indDict, visDict, pIndicator } from './Config.js'
 import { getInfo, ArgMin, FloatFormat, LookupTable, GetColor, GetXFromRGB, SimpleSelect, BasicSelect } from './Utils.js';
@@ -16,6 +17,12 @@ import colorList from './data/colorList.json';
 //const parseG = require('georaster');
 var main_map;
 
+const basemaps = {
+  'esri':'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+  'label':'https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',
+  'positron': 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png'
+}
+
 const StateStyle = () => {
     return {
         weight: 0.5,
@@ -25,11 +32,21 @@ const StateStyle = () => {
     }
 }
 
-const DistrictStyle = () => {
+const StateStyle2 = () => {
   return {
-      weight: 1.5,
+      weight: 3,
       opacity: 1,
       color: 'purple',
+      fillOpacity: 0,
+  }
+}
+
+const DistrictStyle = () => {
+  return {
+      weight: 0.5,
+      opacity: 1,
+      color: 'purple',
+      fillColor: 'purple',
       fillOpacity: 0,
   }
 }
@@ -40,7 +57,7 @@ function ZoomPanel({ country }){
       <div className='leaflet-control btn-group-vertical'>
         <button className='map-btn' title='Zoom-in' onClick={() => main_map.zoomIn()}><BsPlusCircleFill /></button>
         <button className='map-btn' title='Zoom-out' onClick={() => main_map.zoomOut()}><BsDashCircleFill /></button>
-        <button className='map-btn' title='Reset View' onClick={() => main_map.setView(country.Center, country.Zoom)}><BsArrowLeftCircleFill /></button>
+        <button className='map-btn' title='Reset View' onClick={() => main_map.setView(country.Center, country.Zoom)}><BsHouseFill /></button>
       </div>
     </div>
   )
@@ -64,76 +81,121 @@ function FullScreenControl({ fullscreen, pass }){
 }
 */
 
-function InspectPanel({ coords }){
-  return (
-    <div id='inspectPanel' className='m-1 p-1 leaflet-top leaflet-right' style={{zIndex:1100, textAlign:'center', background:'#f0f0f0', borderRadius:'5px', minWidth:'100px'}}>
-      <div>
-        ({coords.lng?.toFixed(2)}, {coords.lat?.toFixed(2)})
-      </div>
-      <div>
-        <b style={{fontSize:'larger'}}>
-          {coords.remark} : {coords.val}
-        </b>
-      </div>
-    </div>
-  )
-}
+function RadioPanel({ pass, indicator }){
+  const [showControl, setShowControl] = useState(true);
 
-function RadioPanel({ passOpt, passRaster, indicator }){
-  let available = ['LBW', 'ANC_4plus'];
-  let disabled = available.includes(indicator) ? false : true;
-  let gridTitle = available.includes(indicator) ? 'Gridded Data' : 'Gridded Data (Unavailable)';
+  let availRaster = ['LBW', 'ANC_4plus'];
+  let disabled = availRaster.includes(indicator) ? false : true;
+  let gridTitle = availRaster.includes(indicator) ? 'Show gridded data' : 'Unavailable for this indicator';
 
   let optClick = (val) => {
-    passOpt(val);
-    passRaster(false);
-    document.getElementById('optionCI').style.display = 'block'
-    //if (val === 'CH') {
-    //  document.getElementById('optionCI').style.display = 'block'
-    //} else {
-    //  document.getElementById('optionCI').style.display = 'none'
-    //}
+    pass[0](val);
+    pass[1](false);
+    pass[2](false);
+    pass[4](0);
+
+    if (val === 'CH'){
+      document.getElementById('optionCI').style.display = 'block';
+    } else {
+      document.getElementById('optionCI').style.display = 'none';
+      pass[3]('')
+    }
+    document.getElementById('optionInspect').style.display = 'none';
     document.getElementById('radio_agg').checked = true;
     document.getElementById('radio_grid').checked = false;
   }
 
+  let showAgg = () => {
+    pass[1](false);
+    pass[2](false);
+    document.getElementById('optionCI').style.display = 'block';
+    document.getElementById('optionInspect').style.display = 'none';
+  }
+
   let showGridded = () => {
-    passRaster(true)
-    document.getElementById('optionCI').style.display = 'none'
+    pass[1](true);
+    document.getElementById('optionCI').style.display = 'none';
+    document.getElementById('optionInspect').style.display = 'block';
+  }
+
+  const hideLayerControl = () => {
+    let elem = document.getElementById('layerControl');
+    if (elem.getAttribute('style') === 'display: block;') {
+      elem.style.display = 'none';
+      setShowControl(false);
+    } else {
+      elem.style.display = 'block';
+      setShowControl(true);
+    }
   }
 
     return (
       <div className='leaflet-top leaflet-left'>
-        <div className='leaflet-control'>
-          <>
-            <label className='new-container'>
-              <input className='new-radio' type='radio' name='dataOpt' id={'radio_R1'} defaultChecked onClick={() => optClick('R1')}/>
-              <span className='new-label' title='Round 1'><BsFill1CircleFill /></span>
-            </label><br/>
+        <div className='leaflet-control m-2 pb-0 mb-0'>
+          <div id='layerButton' className='p-1 m-0 text-light' onClick={hideLayerControl}
+            style={{minHeight:'20px', width:'100px', borderRadius:'7px', background:'#e9546e'}}>
+            Layers <span className='float-end'>{showControl ? <BsCaretUpFill/> : <BsCaretDownFill/>}</span>
+            </div>
   
-            <label className='new-container'>
-              <input className='new-radio' type='radio' name='dataOpt' id={'radio_R2'} onClick={() => optClick('R2')}/>
-              <span className='new-label' title='Round 2'><BsFill2CircleFill /></span>
-            </label><br/>
-  
-            <label className='new-container'>
-              <input className='new-radio' type='radio' name='dataOpt' id={'radio_CH'} onClick={() => optClick('CH')}/>
-              <span className='new-label' title='R2 - R1'><BsSubtract /></span>
-            </label>
-          </>
+          <div id='layerControl' style={{display:'block'}}>
+          <Form style={{padding:'5px 5px 0px 5px', borderRadius:'7px', background:'#f0f0f0'}}>
+            <div className='m-0'>
+              <Form.Check 
+                defaultChecked='true'
+                type='radio'
+                id='radio1'
+                label='Round 1'
+                name='dataOpt1'
+                title='Show round 1 data'
+                onClick={() => optClick('R1')}
+              />
+            </div>
+            <div className='m-0'>
+              <Form.Check 
+                type='radio'
+                id='radio2'
+                label='Round 2'
+                name='dataOpt1'
+                title='Show round 2 data'
+                onClick={() => optClick('R2')}
+              />
+            </div>
+            <div className='m-0'>
+              <Form.Check 
+                type='radio'
+                id='radio3'
+                label='Change'
+                name='dataOpt1'
+                title='Show R2 - R1'
+                onClick={() => optClick('CH')}
+              />
+            </div>
+          </Form>
+          <Form style={{padding:'5px 5px 0px 5px', borderRadius:'7px', background:'#f0f0f0'}}>
+            <div>
+              <Form.Check 
+                defaultChecked='true'
+                type='radio'
+                id='radio_agg'
+                label='District Level'
+                name='dataOpt2'
+                title='Show aggregated data'
+                onClick={showAgg}
+              />
+            </div>
+            <div>
+              <Form.Check 
+                disabled={disabled}
+                type='radio'
+                id='radio_grid'
+                label='Grid Level'
+                name='dataOpt2'
+                title={gridTitle}
+                onClick={showGridded}
+              />
+            </div>
+          </Form>
         </div>
-        <div className='leaflet-control' style={{paddingTop:'15px'}}>
-          <>
-            <label className='new-container'>
-              <input className='new-radio' type='radio' name='layerOpt' id={'radio_agg'} defaultChecked onClick={() => {passRaster(false); document.getElementById('optionCI').style.display = 'block';}}/>
-              <span className='new-label' title='Aggregated Data'><BsSquareFill /></span>
-            </label><br/>
-  
-            <label className='new-container'>
-              <input className='new-radio' type='radio' name='layerOpt' id={'radio_grid'} disabled={disabled} onClick={showGridded}/>
-              <span className='new-label' title={gridTitle}><BsFillGridFill /></span>
-            </label>
-          </>
         </div>
       </div>
     )
@@ -198,9 +260,9 @@ function Legend({ indicator, opt, pass }){
     //const updateIndicator = (value) => {}
 
     return (
-      <div className='row m-0 pt-2 mb-2' style={{background:'#f0f0f0', borderRadius:'10px', minHeight:'125px'}}>
-        <div className='p-0'>
-          <div style={{display:'inline-block',background:'#cfcccc',borderRadius:'5px',padding:'2px',marginBottom:'10px'}}>
+      <div className='row m-0 mt-2 pt-2 mb-2' style={{background:'#f0f0f0', borderRadius:'10px', minHeight:'125px'}}>
+        <div className='p-0 text-light'>
+          <div style={{display:'inline-block', background:'#e9546e', borderRadius:'7px', padding:'5px', marginBottom:'10px'}}>
           {/*
           <BasicSelect
             name={'legendIndicator'}
@@ -254,21 +316,32 @@ function DistrictPopup(obj, col){
   return (content)
 }
 
-function infoCI(indicator){
-  const path = pIndicator.includes(indicator) ? './aboutCI_pIndicator.inc' : './aboutCI_nIndicator.inc';
-  getInfo('Note on the credible limit', path);
+function printMap(){
+  const elem = document.getElementById('mapContainer');
 }
 
-export function TheMap({ country, boundary, data, selected, pass, passExceed, indicator, passIndicator }){
-    const [opt, setOpt] = useState('R1')
-    const [raster, setRaster] = useState(false)
-    const [showLabel, setShowLabel] = useState(false)
-    const [showImprove, setShowImprove] = useState('')
-    const [coords, setCoords] = useState({lat:0, lng:0, val:0, remark:'Value'});
-    const [probLimit, setProbLimit] = useState(0)
-    //const [fullscreen, setFullscreen] = useState(false)
+function infoCI(indicator){
+  const path = pIndicator.includes(indicator) ? './aboutCI_pIndicator.inc' : './aboutCI_nIndicator.inc';
+  getInfo('Note on the change certainty', path);
+}
 
-    const setShowImprove_ = (x) => {setShowImprove(x); passExceed({'level':'', 'prob':probLimit, 'direction':x})}
+export function TheMap({ country, boundary, data, selected, setFunc, indicator }){
+
+    const mapper = useMemo(() => ({'R1':'Value in Round 1', 'R2':'Value in Round 2', 'CH':'Change (R2-R1)'}), []);
+    const [opt, setOpt] = useState('R1');
+    const [raster, setRaster] = useState(false);
+    const [showLabel, setShowLabel] = useState(false);
+    const [showImprove, setShowImprove] = useState('');
+    const [coords, setCoords] = useState({lat:0, lng:0, val:0, remark:mapper[opt]});
+    const [probLimit, setProbLimit] = useState(0);
+    
+    const noPE = ['NMR', 'CHMR', 'Teen_Pregn']
+    const disableRange = noPE.includes(indicator);
+
+    const setShowImprove_ = (x) => {
+      setShowImprove(x); 
+      if (setFunc.length === 3) {setFunc[2]({'level':'', 'prob':probLimit, 'direction':x})}
+    }
     const field = useMemo(() => (indicator + '_' + opt), [indicator, opt])
     const adm = String(country.Adm1).toLowerCase();
     var minmax = visDict[indicator]['Minmax']
@@ -278,6 +351,7 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
       return null
     }
   
+    {/* Get grid/pixel value based on the choropleth*/}
     useEffect(() => {
       if (!main_map) {return}
       const inspectMap = (e) => {
@@ -308,7 +382,7 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
           const a = context.getImageData(0, 0, 1, 1).data;
           const palette = (opt === 'CH') ? colorList[visDict[indicator]['Palette2']] : colorList[visDict[indicator]['Palette1']];
           const val = GetXFromRGB(a, palette, minmax);
-          setCoords({ lat: e.latlng.lat, lng: e.latlng.lng, val:val, remark:opt });
+          setCoords({ lat: e.latlng.lat, lng: e.latlng.lng, val:val, remark:mapper[opt] });
           
         } catch {
           console.log('error')
@@ -322,7 +396,7 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
       };
 
       return
-    }, [showLabel, indicator, minmax, opt]);
+    }, [showLabel, indicator, minmax, opt, mapper]);
 
     if (opt === 'CH') {
       let a = 0.5*(minmax[0] - minmax[1])
@@ -339,7 +413,7 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
         items={states}
         defaultOpt={selected}
         value={selected}
-        pass={pass}
+        pass={setFunc[0]}
         noDefault={false}
       />
     )
@@ -349,7 +423,7 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
         mouseover: function(e){
           const prop = e.target.feature.properties;
           let content = `<div><b>${prop.state}</b></div>`;
-          layer.setStyle({weight:2})
+          layer.setStyle({weight:3})
           layer.bindTooltip(content)
           layer.openTooltip()
         },
@@ -359,8 +433,9 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
           layer.closeTooltip()
         },
         click: function(e){
+          layer.setStyle({weight:3})
           zoomFit(e.target._bounds)
-          pass(e.target.feature.properties.state.replaceAll(' ',''))
+          setFunc[0](e.target.feature.properties.state.replaceAll(' ',''))
         }
       })
     }
@@ -371,12 +446,12 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
           const prop = e.target.feature.properties;
           const content = DistrictPopup(prop, indicator);
 
-          layer.setStyle({weight:3})
+          layer.setStyle({weight:3, fillOpacity:0.7})
           layer.bindTooltip(content)
           layer.openTooltip()
         },
         mouseout: function(e){
-          layer.setStyle({weight:1.5})
+          layer.setStyle({weight:0.5, fillOpacity:0})
           //layer.unbindTooltip()
           layer.closeTooltip()
         },
@@ -397,6 +472,7 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
     }, [indicator, opt, field, minmax])
 
     const district = data.features.filter((item) => (item.properties.state.replaceAll(' ','') === selected));
+    const selectedState = boundary.features.filter((item) => (item.properties.state.replaceAll(' ','') === selected));
   
     const ref = useRef()
     useEffect(() => {
@@ -405,6 +481,14 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
         ref.current.addData(district)
       }
     }, [ref, district])
+
+    const refState = useRef()
+    useEffect(() => {
+      if (refState.current) {
+        refState.current.clearLayers()
+        refState.current.addData(selectedState)
+      }
+    }, [ref, selectedState])
 
     //const theraster = useMemo(() => <GriddedData country={country} indicator={indicator} band={opt}/>, [country, indicator, opt]);    
 
@@ -448,27 +532,26 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
     }, [raster, country, indicator, opt, data, TileStyle])
   
     const legend = useMemo(() => (
-        <Legend indicator={indicator} opt={opt} pass={(short) => {passIndicator(indDict[short]['Abbreviation'])}}/>
-    ), [indicator, passIndicator, opt])
+        <Legend indicator={indicator} opt={opt} pass={(short) => {setFunc[1](indDict[short]['Abbreviation'])}}/>
+    ), [indicator, setFunc, opt])
 
     const info = LookupTable({'items':indicators, 'first':'Abbreviation', 'second':['Source','R1','R2','Y1','Y2'], 'value':indicator})
     
     const changeCI = () => {
       const val = document.getElementById('rangeCI').value
-      const label = {'0':'disabled', '1':'low (80%)', '2':'medium (90%)', '3':'high (95%)', '4':'very high (99%)'}
-      const limit = {'0':0.00, '1':0.80, '2':0.90, '3':0.95, '4':0.99}
+      const label = {'0':'any (0-100%)', '1':'low (>90%)', '2':'moderate (>95%)', '3':'high (>98%)', '4':'very high (>99%)'}
+      const limit = {'0':0.00, '1':0.90, '2':0.95, '3':0.98, '4':0.99}
       const text = label[val]
       setProbLimit(limit[val])
-      passExceed({'level':label[val], 'prob':limit[val], 'direction':showImprove})
+      if (setFunc.length === 3){setFunc[2]({'level':label[val], 'prob':limit[val], 'direction':showImprove})}
       document.getElementById('valueCI').innerText = text
     }
 
     return (
       <div className='row'>
       <div className='title'>Map of {country.Name}</div>
-      <div className='row' style={{minHeight:'100px'}}>
+      <div className='row' style={{minHeight:'120px'}}>
         <div className='frame' style={{fontSize:'100%'}}>
-
           <div>
             <p>The map below displays surfaces of subnational areas (either {country.Adm1} and {country.Adm2} level or high-resolution 5x5km - pixel level data) of a particular indicator in {country.Name}.</p>
             <p>Data from Round 1 ({info[1]}, {info[3]}), Round 2 ({info[2]}, {info[4]}), or the change between rounds (Round 2 - Round 1) for {country.Name} can be selected and displayed.</p>
@@ -480,9 +563,66 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
         </div>
       </div>
 
-      <div id='mapContainer' className='row m-0' style={{paddingLeft:'0px', paddingRight:'25px'}}>
-        {legend}
+      <div id='mapContainer' className='row m-0 mb-5' style={{paddingLeft:'0px', paddingRight:'25px'}}>
       
+        {/* PANEL ABOVE THE MAP */}
+        <div className='row m-0 p-0 pt-2 mb-2'  style={{fontSize:'small', minHeight:'55px', background:'#f0f0f0', borderRadius:'10px'}}>
+          <div className='col-10 m-0 p-0'>
+          {/* INSPECT GRID */}
+          <div className='row m-0 p-0' id='optionInspect' style={{display:'none', minWidth:'100px'}}>
+            <div className='row m-0 p-0'>
+              <div className='col-4'>
+                <div className='pb-1' style={{fontWeight:'bold'}}>
+                  Get grid value
+                  <span> </span>
+                  <span title='Toggle to inspect gridded data'><BsQuestionCircleFill /></span>
+                </div>
+                <div className='form-check form-switch' style={{marginRight:'20px'}}>
+                <label className='form-check-label'>
+                  <input id='showLabelSwitch' className='form-check-input' type="checkbox" checked={showLabel} onChange={() => {
+                    setShowLabel(!showLabel)
+                    setCoords({lat:0, lng:0, val:0, remark:mapper[opt]})
+                    }}/>
+                </label>
+                </div>
+              </div>
+              <div className='col-6' style={{display:showLabel ? 'block' : 'none'}}>
+                <b>{coords.remark} : {coords.val}</b>
+              </div>
+            </div>
+          </div>
+
+          {/* FILTER BY CHANGE */}
+          <div className='row m-0 p-0' id='optionCI' style={{display:'none'}}>
+            <div className='row m-0 p-0'>
+              <div className='col-4' style={{minWidth:'50px'}}>
+              <div className='pb-1' style={{fontWeight:'bold'}}>
+                Filter by change
+                <span> </span>
+                <span title='Filtering units based on the change in the indicator'><BsQuestionCircleFill /></span>
+              </div>
+              <BasicSelect
+                name={'Filter'}
+                items={['Show Improvement', 'Show Worsening', 'Show All']} 
+                value={showImprove}
+                pass={setShowImprove_}
+              />
+              </div>
+              <div className='col-6' style={{minWidth:'50px'}}>
+                <label className='form-check-label'><b>Change significance</b>: <span id='valueCI'>any (0-100%)</span></label>
+                  <div className='float-end' onClick={infoCI} title='Selecting significance level of the change [click for more info]'><BsQuestionCircleFill /></div>
+                <input className='form-range' type='range' id='rangeCI' disabled={disableRange} defaultValue='0' min='0' max='4' step='1' name='CIRange' onChange={changeCI}/><br/>
+              </div>
+            </div>
+          </div>
+          
+          </div>
+          <div className='col-2 m-0 float-end' style={{fontSize:'medium'}}>
+            <div className='m-1 float-end'><span title='Download data'><BsArrowDownCircleFill /></span></div>
+            <div className='m-1 float-end'><span title='Print map'><BsPrinterFill /></span></div>
+          </div>
+        </div>
+
         <MapContainer 
           zoomControl={false}
           center={country.Center}
@@ -494,18 +634,27 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
 
           <DefineMap />
           
-          {raster && showLabel ? <InspectPanel coords={coords}/> : <></>}
+          {/* raster && showLabel ? <InspectPanel coords={coords}/> : <></> */}
 
-          <RadioPanel passOpt={setOpt} passRaster={setRaster} indicator={indicator}/>
+          <RadioPanel pass={[setOpt, setRaster, setShowLabel, setShowImprove, setProbLimit]} indicator={indicator}/>
     
           <ZoomPanel country={country}/>
 
           {/*<FullScreenControl fullscreen={fullscreen} pass={setFullscreen}/>*/}
 
-          {/*<TileLayer url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"/>*/}
+          <Pane name='basemap' style={{zIndex:0}}>
+            {<TileLayer url={basemaps['positron']}/>}
+          </Pane>
           
-          <Pane name='tiles' style={{zIndex:1}}>
+          {showLabel ? <TileLayer url={basemaps['label']} zIndex={100}/> : <></>}
+
+          <Pane name='tiles' style={{zIndex:5}}>
             {mainLayer}
+            <GeoJSON
+              data={selectedState}
+              ref={refState}
+              style={StateStyle2}
+            />
             <GeoJSON
               data={boundary}
               style={StateStyle}
@@ -528,46 +677,13 @@ export function TheMap({ country, boundary, data, selected, pass, passExceed, in
             />
           </Pane>}
 
-          <Circle center={[coords.lat, coords.lng]} radius={1000} color={'#000'} fill={true} fillColor={'#000'} fillOpacity={1}>
+          <Circle center={[coords.lat, coords.lng]} radius={1000} color={'#000'} fill={showLabel ? 1 : 0} fillColor={'#000'} fillOpacity={1}>
           </Circle>
 
-          {showLabel ? <TileLayer url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png" zIndex={500}/> : <></>}
         </MapContainer>
 
-        <div className='row m-0 p-0 pt-2 mb-5'  style={{fontSize:'small', minHeight:'55px'}}>
-          <div className='col-3 m-0 p-2'>
-            <div className='form-check form-switch' style={{marginRight:'20px'}}>
-              <label className='form-check-label'>
-                <input id='showLabelSwitch' className='form-check-input' type="checkbox" checked={showLabel} onChange={() => {
-                  setShowLabel(!showLabel)
-                  setCoords({lat:0, lng:0, val:0, remark:'Value'})
-                  }}/>
-                inspect map
-              </label>
-            </div>
-
-          </div>
-
-          <div className='col-9 m-0 p-0 pt-2 pb-1' id='optionCI' style={{display:'block', background:'#f0f0f0', borderRadius:'5px'}}>
-            <div className='row m-0 p-0'>
-              <div className='col-5'>
-              <div className='pb-1' style={{fontWeight:'bold'}}>Filter</div>
-              <BasicSelect
-                name={'Filter'}
-                items={['Show Improvement', 'Show Worsening', 'Show All']} 
-                value={showImprove}
-                pass={setShowImprove_}
-              />
-              </div>
-              <div className='col-7' style={{minWidth:'50px'}}>
-                <label className='form-check-label'>credible limit: <span id='valueCI'>disabled</span></label>
-                  <div className='float-end' onClick={infoCI} title='More info'><BsQuestionCircleFill /></div>
-                <input className='form-range' type='range' id='rangeCI' defaultValue='0' min='0' max='4' step='1' name='CIRange' onChange={changeCI}/><br/>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        {legend}
+      
         <div id='loadRaster' className="row" style={{display:'none'}}>
           <div className="spinner-border" role="status">
             <span className="sr-only">Loading...</span>

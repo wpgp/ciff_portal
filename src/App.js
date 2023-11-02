@@ -66,7 +66,7 @@ export function App(){
   const map = useMemo(() => {
     if (indicator !== ''){      
       return (
-        <TheMap country={country} boundary={stateBoundary} data={data} selected={region} pass={setRegion} passExceed={setExceedance} indicator={indicator} passIndicator={setIndicator}/>
+        <TheMap country={country} boundary={stateBoundary} data={data} selected={region} setFunc={[setRegion, setIndicator]} indicator={indicator}/>
       )} else {
       return (<></>)
     }

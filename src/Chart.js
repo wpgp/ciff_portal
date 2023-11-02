@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { useTable, useSortBy } from 'react-table';
 import { Vega } from 'react-vega';
 import Table from 'react-bootstrap/Table';
-import { BsQuestionCircleFill, BsBarChartFill } from 'react-icons/bs';
+import { BsQuestionCircleFill, BsBarChartFill, BsPrinterFill, BsArrowDownCircleFill} from 'react-icons/bs';
 import { SimpleSelect, DecimalFormat, FloatFormat, GetColor, ArgMax, ArgMin, getInfo } from './Utils';
 import { visDict, pIndicator } from './Config';
 
@@ -37,7 +37,7 @@ function MakeTable({ columns, data, palette }) {
                       <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                       {column.render('Header')}
                       <span>
-                      {column.isSorted ? column.isSortedDesc ? ' \u2bc5' : ' \u2bc6' : ' '}
+                      {column.isSorted ? column.isSortedDesc ? ' \u2bc5' : ' \u2bc6' : ' \u2b24'}
                       </span>
                       </th>
                   ))}
@@ -100,7 +100,6 @@ function RangeChart({ input, field, sorter, sorttype }){
   const fields = [field + "_R1", field + "_R2", field + "_CH"];
   const mapper = {
     'SortbyName':'district',
-    'SortbyLocation':'r',
     'SortbyR1': fields[0],
     'SortbyR2': fields[1],
     'SortbyChange': fields[2],
@@ -190,7 +189,7 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
     modalRoot.render(
       <div>
         <div className='p-0 m-0 mb-2'>
-          The charts below summarise the average values of all indicators at the selected administrative unit.
+          The charts below summarise the average values of all indicators in <b>{stateName}</b>.
         </div>
         <div>
           <div className='float-start m-0 p-0'>
@@ -256,10 +255,10 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
     <div id="charte">
       <div className='float-end'><span onClick={() => getInfo('How to read chart', './aboutTable.inc')} title='How to read'><BsQuestionCircleFill /></span></div>
       <p style={{fontSize:'90%'}}>
-      The chart below summarises the indicator values aggregated at {adm2} level. Credible intervals (95% significance) for round 1 and round 2 are represented as washout rectangles around the mean values. 
+      The chart below summarises the indicator values aggregated at {adm2} level. Credible intervals <b>(CIs)</b> with 95% significance for round 1 <b>(R1)</b> and round 2 <b>(R2)</b> are represented as washout rectangles around the mean values.
       </p>
       <p style={{fontSize:'80%'}}>
-      The data can be sorted by name, round 1 values, round 2 values and change values. 
+      The data can be sorted by name, round 1 <b>(R1)</b> values, round 2 <b>(R2)</b> values and change <b>(CH)</b> values by clicking on each heading.
       </p>
       <hr/>
       <div className='col m-0 p-0'>
@@ -267,7 +266,7 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
         <div className='float-end' >{sortButton}</div>
         <div className='float-end' style={{width:'140px'}}>
           <SimpleSelect 
-            items={['Sort by Name', 'Sort by Location', 'Sort by R1', 'Sort by R2', 'Sort by Change']} 
+            items={['Sort by Name', 'Sort by R1', 'Sort by R2', 'Sort by Change']} 
             defaultOpt={'SortbyName'}
             noDefault={true}
             name={'sortChart'}
@@ -287,10 +286,10 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
     <>
       <div className='float-end'><span onClick={() => getInfo('How to read table', './aboutTable.inc')} title='How to read'><BsQuestionCircleFill /></span></div>
       <p style={{fontSize:'90%'}}>
-      The table below summarises the indicator values aggregated at {adm2} level. Credible intervals (95% significance) for round 1 and round 2 can be found in brackets.
+      The table below summarises the indicator values aggregated at {adm2} level. Credible intervals <b>(CIs)</b> with 95% significance for round 1 <b>(R1)</b> and round 2 <b>(R2)</b> can be found in brackets.
       </p>
       <p style={{fontSize:'80%'}}>
-      The data can be sorted by name, round 1 values, round 2 values and change values by clicking on each heading. 
+      The data can be sorted by name, round 1 <b>(R1)</b> values, round 2 <b>(R2)</b> values and change <b>(CH)</b> values by clicking on each heading.
       </p>
       <hr/>
       <div className='float-start pt-2'><h6>{visDict[indicator]['Indicator']}</h6></div>
@@ -354,6 +353,9 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
           </li>
           */}
         </ul>
+
+        <div className='m-1 float-end'><span title='Download table'><BsArrowDownCircleFill /></span></div>
+        <div className='m-1 float-end'><span title='Print page'><BsPrinterFill /></span></div>
       </div>
 
       <div className='tab-content framed-content mb-5'>
