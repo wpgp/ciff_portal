@@ -176,7 +176,8 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
     {Header:`CI_R1`, accessor: `${indicator}_R1CI`, disableSortBy: true},
     {Header:'R2', accessor:`${indicator}_R2`, Cell:DecimalFormat, sortType:'basic'},
     {Header:`CI_R2`, accessor: `${indicator}_R2CI`, disableSortBy: true},
-    {Header:'CH', accessor:`${indicator}_CH`, Cell:DecimalFormat, sortType:'basic'}
+    {Header:'CH', accessor:`${indicator}_CH`, Cell:DecimalFormat, sortType:'basic'},
+    {Header:`CI_CH`, disableSortBy: true}
   ]
   
   const districtchart = useMemo(() => {
@@ -261,6 +262,7 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
       The data can be sorted by name, round 1 <b>(R1)</b> values, round 2 <b>(R2)</b> values and change <b>(CH)</b> values by clicking on each heading.
       </p>
       <hr/>
+      <div className='row'>
       <div className='col m-0 p-0'>
         <div className='float-start pt-2'><h6>{visDict[indicator]['Indicator']}</h6></div>
         <div className='float-end' >{sortButton}</div>
@@ -275,15 +277,18 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
           />
         </div>
       </div>
-      {districtchart}
+      <div style={{maxHeight:'235px', overflowY:'auto'}}>
+        {districtchart}
+      </div>
       <div style={{fontSize:'90%'}}>
         {nodata}
+      </div>
       </div>
     </div>
   )
 
   const tableTab = (
-    <>
+    <div>
       <div className='float-end'><span onClick={() => getInfo('How to read table', './aboutTable.inc')} title='How to read'><BsQuestionCircleFill /></span></div>
       <p style={{fontSize:'90%'}}>
       The table below summarises the indicator values aggregated at {adm2} level. Credible intervals <b>(CIs)</b> with 95% significance for round 1 <b>(R1)</b> and round 2 <b>(R2)</b> can be found in brackets.
@@ -292,12 +297,16 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
       The data can be sorted by name, round 1 <b>(R1)</b> values, round 2 <b>(R2)</b> values and change <b>(CH)</b> values by clicking on each heading.
       </p>
       <hr/>
+      <div className='row'>
       <div className='float-start pt-2'><h6>{visDict[indicator]['Indicator']}</h6></div>
-      {<MakeTable columns={columns} data={data} palette={palette}/>}
+      <div style={{maxHeight:'265px', overflowY:'auto'}}>
+        {<MakeTable columns={columns} data={data} palette={palette}/>}
+      </div>
       <div style={{fontSize:'90%'}}>
         {nodata}
       </div>
-    </>
+      </div>
+    </div>
   )
 
   return (
