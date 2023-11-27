@@ -93,6 +93,8 @@ function RadioPanel({ pass, indicator }){
     pass[1](false);
     pass[2](false);
     pass[4](0);
+    if (pass.length === 6) {pass[5]({'level':'', 'prob':0, 'direction':''})}
+
 
     if (val === 'CH'){
       document.getElementById('optionCI').style.display = 'block';
@@ -316,13 +318,24 @@ function DistrictPopup(obj, col){
   return (content)
 }
 
-function printMap(){
-  const elem = document.getElementById('mapContainer');
-}
-
 function infoCI(indicator){
   const path = pIndicator.includes(indicator) ? './aboutCI_pIndicator.inc' : './aboutCI_nIndicator.inc';
   getInfo('Note on the change certainty', path);
+}
+
+function PrintMap(){
+  var content = document.getElementById("mapContainer");
+  var pri = document.getElementById("ifmcontentstoprint").contentWindow;
+  pri.document.open();
+  pri.document.write(content.innerHTML);
+  pri.document.close();
+  pri.focus();
+  pri.print();
+}
+
+function DownloadRaster(){
+  const path = './downloadRaster.inc';
+  getInfo('Download Raster Data', path);
 }
 
 export function TheMap({ country, boundary, data, selected, setFunc, indicator }){
@@ -537,15 +550,31 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
 
     const info = LookupTable({'items':indicators, 'first':'Abbreviation', 'second':['Source','R1','R2','Y1','Y2'], 'value':indicator})
     
-    const changeCI = () => {
-      const val = document.getElementById('rangeCI').value
-      const label = {'0':'any (0-100%)', '1':'low (>90%)', '2':'moderate (>95%)', '3':'high (>98%)', '4':'very high (>99%)'}
-      const limit = {'0':0.00, '1':0.90, '2':0.95, '3':0.98, '4':0.99}
+    const changeCI = (val) => {
+      if (val === '-1') {
+        val = document.getElementById('rangeCI').value
+      } else {
+        document.getElementById('rangeCI').value = val
+      }
+        
+      const label = {'0':'any (0-100%)', '1':'low (>90%)', '2':'highly likely (>95%)', '3':'almost certain (>99%)'}
+      const limit = {'0':0.00, '1':0.90, '2':0.95, '3':0.99}
       const text = label[val]
       setProbLimit(limit[val])
       if (setFunc.length === 3){setFunc[2]({'level':label[val], 'prob':limit[val], 'direction':showImprove})}
       document.getElementById('valueCI').innerText = text
     }
+    
+    const displaySlider = useMemo(() => {
+      let show;
+      if (['ShowImprovement', 'ShowWorsening'].includes(showImprove)) {
+        show = 'block'
+        changeCI('0')
+      } else {
+        show = 'none'
+      }
+      return show
+    }, [showImprove])
 
     return (
       <div className='row'>
@@ -608,18 +637,18 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
                 pass={setShowImprove_}
               />
               </div>
-              <div className='col-6' style={{minWidth:'50px'}}>
+              <div className='col-7' style={{minWidth:'50px', display:displaySlider}}>
                 <label className='form-check-label'><b>Change significance</b>: <span id='valueCI'>any (0-100%)</span></label>
                   <div className='float-end' onClick={infoCI} title='Selecting significance level of the change [click for more info]'><BsQuestionCircleFill /></div>
-                <input className='form-range' type='range' id='rangeCI' disabled={disableRange} defaultValue='0' min='0' max='4' step='1' name='CIRange' onChange={changeCI}/><br/>
+                <input className='form-range' type='range' id='rangeCI' disabled={disableRange} defaultValue='0' min='0' max='3' step='1' name='CIRange' onChange={() => changeCI('-1')}/><br/>
               </div>
             </div>
           </div>
           
           </div>
           <div className='col-2 m-0 float-end' style={{fontSize:'medium'}}>
-            <div className='m-1 float-end'><span title='Download data'><BsArrowDownCircleFill /></span></div>
-            <div className='m-1 float-end'><span title='Print map'><BsPrinterFill /></span></div>
+            <div className='m-1 float-end'><span title='Download data' onClick={DownloadRaster}><BsArrowDownCircleFill /></span></div>
+            <div className='m-1 float-end'><span title='Print map' onClick={PrintMap}><BsPrinterFill /></span></div>
           </div>
         </div>
 
@@ -636,7 +665,7 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
           
           {/* raster && showLabel ? <InspectPanel coords={coords}/> : <></> */}
 
-          <RadioPanel pass={[setOpt, setRaster, setShowLabel, setShowImprove, setProbLimit]} indicator={indicator}/>
+          <RadioPanel pass={[setOpt, setRaster, setShowLabel, setShowImprove, setProbLimit, setFunc[2]]} indicator={indicator}/>
     
           <ZoomPanel country={country}/>
 
@@ -646,7 +675,7 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
             {<TileLayer url={basemaps['positron']}/>}
           </Pane>
           
-          {showLabel ? <TileLayer url={basemaps['label']} zIndex={100}/> : <></>}
+          {showLabel ? <TileLayer url={basemaps['label']} zIndex={500}/> : <></>}
 
           <Pane name='tiles' style={{zIndex:5}}>
             {mainLayer}
@@ -658,6 +687,7 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
             <GeoJSON
               data={boundary}
               style={StateStyle}
+              zIndex={500}
               />
           </Pane>
     

@@ -63,10 +63,13 @@ export function App(){
     }
   }, [filteredData, filteredAggData, indicator, country, region, exceedance, selectedData])
 
+  //to filter the table according to the change layer on map,
+  //setFunc={[setRegion, setIndicator, setExceedance]}.
+  //Otherwise, exclude setExceedance in setFunc
   const map = useMemo(() => {
     if (indicator !== ''){      
       return (
-        <TheMap country={country} boundary={stateBoundary} data={data} selected={region} setFunc={[setRegion, setIndicator]} indicator={indicator}/>
+        <TheMap country={country} boundary={stateBoundary} data={data} selected={region} setFunc={[setRegion, setIndicator, setExceedance]} indicator={indicator}/>
       )} else {
       return (<></>)
     }

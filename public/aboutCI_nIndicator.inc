@@ -11,3 +11,4 @@
 </p>
 
 <h5>Illustration:</h5>
+    <img src='./fig/exceedance.PNG' alt='Guide 1' style='width:100%'>
