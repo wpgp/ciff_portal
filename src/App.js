@@ -84,7 +84,7 @@ export function App(){
       </blockquote>
       <hr/>
 
-      <div className='row mt-4 p-0 pt-2 pb-2' style={{backgroundColor:'#f0f0f0', borderRadius:'10px'}}>
+      <div className='row mt-4 p-0 pt-2 pb-2 mb-5' style={{backgroundColor:'#f0f0f0', borderRadius:'10px'}}>
         <div className='col-lg-7'>
           <p>This web application presents a summary of the child and maternal health and development indicators calculated at subnational level (geographic areas below the national level) for a selection of countries of interest to CIFF.</p>
           <p>Multiple indicators are presented in map, chart, and tabulated form, and for multiple time points based on data availability. Changes over time for each indicator are also presented.</p>

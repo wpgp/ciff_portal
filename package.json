@@ -1,5 +1,6 @@
 {
   "name": "ciff_portal",
+  "homepage": "https://wpgp.github.io/ciff_portal",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
