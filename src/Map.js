@@ -557,7 +557,7 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
         document.getElementById('rangeCI').value = val
       }
         
-      const label = {'0':'any (0-100%)', '1':'low (>90%)', '2':'highly likely (>95%)', '3':'almost certain (>99%)'}
+      const label = {'0':'any (0-100%)', '1':'likely (>90%)', '2':'highly likely (>95%)', '3':'almost certain (>99%)'}
       const limit = {'0':0.00, '1':0.90, '2':0.95, '3':0.99}
       const text = label[val]
       setProbLimit(limit[val])
