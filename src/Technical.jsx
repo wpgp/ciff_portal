@@ -12,7 +12,7 @@ export default function Technical() {
             We have produced 5x5km high-resolution (also referred to as grid level) prediction and uncertainty maps illustrating changes over time for health and development indicators within specific subnational areas, such as districts or similar administrative divisions varying by country. Our methodology relies on data from the two most recent rounds of the nationally representative Demographic and Health Surveys (DHS), which are available at the cluster level, and mapped through GPS coordinates of the cluster centres. In the case of India, we utilised the National Family Health Surveys (NFHS), specifically NFHS-4 (2015-16) denoted as Round 1, and NFHS-5 (2019-22) denoted as Round 2. Measuring changes between these survey rounds allows us to track and assess the progress of the health and development indicators over time.
         </p>
         <p>
-            To ensure the reliability of our estimates of the changes within each subnational area, we employed exceedance probability to quantify our confidence in these observed changes. Exceedance probability, commonly applied in environmental and risk analysis <a hfer='#richard2014'>Richards et al., 2014</a>, assesses the likelihood of an event surpassing a specific limit within a defined period (<a href='#soch2020'>Soch, 2020</a>). In simpler terms, exceedance probability helps us assess potential improvements or worsening of our health and development indicators. We express this likelihood as a percentage, indicating the probability of an indicator exceeding our defined threshold. For this work, we use the statistical significance levels of 90% (likely), 95% (highly likely), and 99% (almost certain). 
+            To ensure the reliability of our estimates of the changes within each subnational area, we employed exceedance probability to quantify our confidence in these observed changes. Exceedance probability, commonly applied in environmental and risk analysis <a hfer='#reference'>Richards et al., 2014</a>, assesses the likelihood of an event surpassing a specific limit within a defined period (<a href='#reference'>Soch, 2020</a>). In simpler terms, exceedance probability helps us assess potential improvements or worsening of our health and development indicators. We express this likelihood as a percentage, indicating the probability of an indicator exceeding our defined threshold. For this work, we use the statistical significance levels of 90% (likely), 95% (highly likely), and 99% (almost certain). 
         </p>
 
         <h4>Outline</h4>
@@ -23,7 +23,7 @@ export default function Technical() {
         <h5>Preparation</h5>
         <ol>
             <li>
-                Sample grid-level estimates from the posterior distributions of the models. These models, processed through the Integrated Nested Laplace Approximation – Stochastic Partial Differential Equation method (INLA-SPDE) (<a href='#rue2009'>Rue et al., 2009</a>; <a href='#lindgren2011'>Lindgren et al., 2011</a>; <a href='#marins2013'>Martins et al., 2013</a>), pertain to the two rounds of survey data for ANC4+. 
+                Sample grid-level estimates from the posterior distributions of the models. These models, processed through the Integrated Nested Laplace Approximation – Stochastic Partial Differential Equation method (INLA-SPDE) (<a href='#reference'>Rue et al., 2009</a>; <a href='#reference'>Lindgren et al., 2011</a>; <a href='#reference'>Martins et al., 2013</a>), pertain to the two rounds of survey data for ANC4+. 
             </li>
             <li>
                 Derive grid-level change estimate samples by calculating the difference between the grid-level estimate samples of Round 2 and Round 1. 
@@ -83,18 +83,20 @@ export default function Technical() {
             Our utilisation of exceedance probability establishes a robust framework for interpreting changes over time, offering critical insights into trends and the potential for achieving significant improvements within specified timeframes. For example, assessing the exceedance probability associated with the prevalence of stunting provides valuable insights into the reduction of stunting over time. This methodology empowers policymakers by providing a credible assessment of trends, enabling informed decisions for effective interventions. 
         </p>
 
+        <div id='reference'>
         <h4>Reference</h4>
         <ul>
-            <li id='#dekking2005'><a href='https://link.springer.com/book/10.1007/1-84628-168-7' target='_blank'>Dekking, F. M., Kraaikamp, C., Lopuhaä, H. P., & Meester, L. E. (2005). A Modern Introduction to Probability and Statistics: Understanding why and how (Vol. 488). London: springer.</a></li>
-            <li id='#lindgren2011'><a href='https://doi.org/10.1111/j.1467-9868.2011.00777.x' target='_blank'>Lindgren, F., Rue, H., & Lindström, J. (2011). An explicit link between Gaussian fields and Gaussian Markov random fields: the stochastic partial differential equation approach. Journal of the Royal Statistical Society Series B: Statistical Methodology, 73(4), 423-498.</a></li>
-            <li id='#martins2013'><a href='https://doi.org/10.1016/j.csda.2013.04.014' target='_blank'>Martins, T. G., Simpson, D., Lindgren, F., & Rue, H. (2013). Bayesian computing with INLA: new features. Computational Statistics & Data Analysis, 67, 68-83.</a></li>
-            <li id='#richards2014'><a href='https://doi.org/10.1016/j.sste.2014.08.002' target='_blank'>Richards, K. K., Hazelton, M. L., Stevenson, M. A., Lockhart, C. Y., Pinto, J., & Nguyen, L. (2014). Using exceedance probabilities to detect anomalies in routinely recorded animal health data, with particular reference to foot-and-mouth disease in Viet Nam. Spatial and Spatio-Temporal Epidemiology, 11, 125-133.</a></li>
-            <li id='#rue2009'><a href='https://doi.org/10.1111/j.1467-9868.2008.00700.x' target='_blank'>Rue, H., Martino, S., & Chopin, N. (2009). Approximate Bayesian inference for latent Gaussian models by using integrated nested Laplace approximations. Journal of the Royal Statistical Society Series B: Statistical Methodology, 71(2), 319-392.</a></li>
-            <li id='#soch2020'><a href='https://statproofbook.github.io/D/prob-exc.html' target='_blank'>Soch, J. (2020). Definition: Exceedance probability. The Book of Statistical Proofs.</a></li>
+            <li id='dekking2005'><a href='https://link.springer.com/book/10.1007/1-84628-168-7' target='_blank'>Dekking, F. M., Kraaikamp, C., Lopuhaä, H. P., & Meester, L. E. (2005). A Modern Introduction to Probability and Statistics: Understanding why and how (Vol. 488). London: springer.</a></li>
+            <li id='lindgren2011'><a href='https://doi.org/10.1111/j.1467-9868.2011.00777.x' target='_blank'>Lindgren, F., Rue, H., & Lindström, J. (2011). An explicit link between Gaussian fields and Gaussian Markov random fields: the stochastic partial differential equation approach. Journal of the Royal Statistical Society Series B: Statistical Methodology, 73(4), 423-498.</a></li>
+            <li id='martins2013'><a href='https://doi.org/10.1016/j.csda.2013.04.014' target='_blank'>Martins, T. G., Simpson, D., Lindgren, F., & Rue, H. (2013). Bayesian computing with INLA: new features. Computational Statistics & Data Analysis, 67, 68-83.</a></li>
+            <li id='richards2014'><a href='https://doi.org/10.1016/j.sste.2014.08.002' target='_blank'>Richards, K. K., Hazelton, M. L., Stevenson, M. A., Lockhart, C. Y., Pinto, J., & Nguyen, L. (2014). Using exceedance probabilities to detect anomalies in routinely recorded animal health data, with particular reference to foot-and-mouth disease in Viet Nam. Spatial and Spatio-Temporal Epidemiology, 11, 125-133.</a></li>
+            <li id='rue2009'><a href='https://doi.org/10.1111/j.1467-9868.2008.00700.x' target='_blank'>Rue, H., Martino, S., & Chopin, N. (2009). Approximate Bayesian inference for latent Gaussian models by using integrated nested Laplace approximations. Journal of the Royal Statistical Society Series B: Statistical Methodology, 71(2), 319-392.</a></li>
+            <li id='soch2020'><a href='https://statproofbook.github.io/D/prob-exc.html' target='_blank'>Soch, J. (2020). Definition: Exceedance probability. The Book of Statistical Proofs.</a></li>
         </ul>
-        
-        <h4>.</h4>
+        </div>
+        <br/>
         <hr/>
+        <h4>.</h4>
       </div>
     );
   }

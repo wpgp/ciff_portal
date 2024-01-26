@@ -1,12 +1,10 @@
-import { useState, useMemo } from 'react'
 import { Routes, Route, Outlet, Link } from 'react-router-dom'
-import { Nav, Navbar, Tabs, Tab, Accordion } from 'react-bootstrap'
+import { Nav, Navbar } from 'react-bootstrap'
 import logoWP from './assets/wp_navy.png'
 import logoCIFF from './assets/logo_ciff.png'
 import About from './About'
 import Guide from './Guide'
 import Technical from './Technical'
-import Publication from './Publication'
 import MainApp from './MainApp'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
