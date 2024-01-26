@@ -14,7 +14,7 @@ export default function App() {
   return (
     <div>
       <Routes>
-        <Route path='/' element={<Layout />}>
+        <Route path='/ciff_portal/' element={<Layout />}>
           <Route index element={<MainApp />} />
           <Route path='about' element={<About />} />
           <Route path='guide' element={<Guide />} />
