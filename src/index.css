@@ -1,6 +1,7 @@
 html, body {
   height: 100%;
   font: "Helvetica Neue";
+  font-size: 13pt;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -110,7 +111,7 @@ Table thead{
   border: 1.5px solid #e9546e;
   padding: 10px;
   margin-bottom: 20px;
-  border-radius: 0 10px 10px 10px;
+  border-radius: 0 0 10px 10px;
   font-size: 12px;
 }
 
@@ -126,7 +127,7 @@ Table thead{
   background-color: #e9546e;
   border-radius: 10px 10px 0 0;
   color: white;
-  max-width: 400px;
+  max-width: 200px;
   font-size: larger;
   font-weight: bold;
 }

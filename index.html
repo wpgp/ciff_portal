@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Family Health at Subnational Level" />
+    <meta name="author" content="SDI Worldpop" />
+    <title>Subnational Mapping</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <div class="col p-0">
+          <div id="modalTitle" class="float-start title"></div>
+          <div class="float-end" style="margin-top:20px;">
+            <a href="#" title="Close" id="bclose" style="font-size:x-large;"><span class="fa fa-times-circle"></span></a>
+          </div>
+        </div>
+        <div id="modalBody" class="frame" style="font-size:medium; overflow:auto; border-radius:0 0 0 0;"></div>
+        <div id="modalFoot" class="float-end"></div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    var modal = document.getElementById("modal");
+    var modalTitle = document.getElementById("modalTitle");
+    var modalBody = document.getElementById("modalBody")
+    var btnClose = document.getElementById("bclose");
+
+    btnClose.onclick = () => {
+      modal.style.display = "none";
+    };
+
+    window.onclick = (e) => {if (e.target == modal) {modal.style.display = "none"}};
+  </script>
+
+</html>
