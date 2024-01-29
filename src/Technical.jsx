@@ -1,9 +1,137 @@
+import { Accordion, AccordionBody, AccordionHeader, AccordionItem } from 'react-bootstrap'
 import exceedance from './assets/exceedance.png'
 
-export default function Technical() {
+export default function Technical({which}) {
+    if (which === 'boundary') {
+        return (<FirstNote/>)
+    } else {
+        return (<SecondNote/>)
+    }
+}
+
+function Figure ({src, label, number, caption}){
+    return (
+        <figure id={label}>
+            <div className="blockquote text-center">
+                <img alt={label} src={src} width='80%'/>
+            </div>
+            <figcaption className="blockquote-footer text-center">
+                <b>Figure {number}.</b> {caption}
+            </figcaption>
+        </figure>
+    )
+}
+function FirstNote() {
     return (
       <div className='bg-light rounded-4 p-3'>
+        <h2>Technical Note 1</h2>
+        <h3>
+            Managing Over Time Changing Boundaries
+        </h3>
+        <hr/>
+        <h4>Background</h4>
+        <p>
+            The India NFHS surveys are constructed to be representative at national, province and district level for most of the indicators. In the case of rare events indicators such as stillbirth rates, or where more sophisticated estimation methods were needed such as mortality rates (child and neonatal mortality rates), indicators were constructed and mapped at district level using the surveys. Specifically, for four indicators named, unsafe abortion, neonatal mortality rate, child mortality rate and stillbirth rate we used a two-step approach: <b>Step 1</b>. We followed the methods described in <a href='#reference'>Subramaniam et al. (2021)</a> and <a href='#reference'>Ulahannan et al. (2022)</a> to match the 2015-16 NFHS-4 data to 2019-21 NFHS-5 boundaries (ICF. The Demographic and Health Surveys Program Spatial Data Repository), in order to be able to compare changing districts over time; <b>Step 2</b>. Once all data were available at NFHS-5 boundaries, we rasterised the data for the whole country and then aggregated the data using the district level official boundaries of India (Ministry of Science and Technology, Government of India), which were used for final display on the online portal. Average values for districts were used for aggregation.
+        </p>
+        <p>
+            For child worker, census estimates were used to calculate the indicator, and only had one point in time was available. Since census boundaries aligned with NFHS-4 boundaries, the same two-step approached as described above was applied.
+        </p>
+        <p>
+            While the surveys were designed to be representative at the district level, caution is advised in interpreting and utilizing the findings due to the inherent limitations posed by small sample sizes for the mentioned indicators
+        </p>
+        <p>
+            Furthermore, it is important to note that the indicators discussed herein are rare events, further emphasizing the need for careful consideration and caution in their interpretation, given the limited sample sizes at the district level.
+        </p>
+
+        <h5>Step 1. Harmonising boundaries from round 1 (NFHS-4) to round 2 (NFHS-5) to match round 2 (NFHS-5)</h5>
+        <p>
+            The administrative boundaries of India for the year 2015-2016 (NFHS-4) count a total of 640 districts while the administrative boundaries of India for the year 2019-2021 (NFHS-5) count a total of 707 districts (67 additional districts) (ICF. The Demographic and Health Surveys Program Spatial Data Repository). However, there are 36 states in both years with changes. The boundary changes begin with the addition of new states and the removal of some states, for example, at the state level, a new state Ladakh was created in 2019-2021 from Jammu and Kashmir, as shown in Figure 1 below.
+        </p>
+
+        <Figure src={''} label='dissagregation' number='1' 
+            caption={'States dissagregation example'}/>
+        
+        <p>
+            Meanwhile, Dadra and Nagar Haveli and Daman and Diu, two distinct states have now merged to form a new state called Dadra & Nagar Haveli & Daman & Diu as shown below in Figure 2.
+        </p>
+
+        <Figure src={''} label='aggregation' number='2' 
+            caption={'States agregation example'}/>
+
+        <p>
+            For the additional 67 districts, data from NFHS-4 are not available therefore, to be able to compare changes in indicators aggregated at the district level, we applied a simple methodology to harmonize geographical boundaries across the two time periods and assign the corresponding indicator value following <a href='#reference'>Subramaniam et al. (2021)</a> and <a href='#reference'>Ulahannan et al. (2022)</a>. The methodology that we applied involves re-assigning indicators' values calculated from NFHS-4 data to all the 2019-21 NFHS-5 districts. This approach therefore does not make any alterations to the 2019-21 NFHS-5 data that are reported at the district level.
+        </p>
+
+        <p>
+            The newly created 67 districts were formed from one or more districts included in the NFHS-4 dataset and can be divided into two different categories: type 1 and type 2. Type 1 districts (55 districts) were formed by altering the boundaries of one single district from 2015-16 NFHS-4 administrative boundaries and creating one new district. In comparison, type 2 districts (12 districts) were formed by adding geographical units from two or more parent districts. For the type 1 districts formed from one single parent district we assigned the same indicator's value as the parent district (Figure 3 and table 1)
+        </p>
+
+        <Figure src={''} label='type1' number='3' 
+            caption={'Example of type 1 districts (Assam State)'}/>
+
+        <p>
+            In the example above the type 1 districts Biswanath and Hojai were formed from the parent district Sonitpur and Nagaon, respectively. For example, to calculate the NFHS-5 Unsafe abortion values, the new district (Biswanath) takes the same value for its parent district (Sonitpur). The same is applicable to the 95% Lower and Upper Confidence Intervals (CI) as shown in the table below:
+        </p>
+
+        <p>
+            For type 2 districts, which were formed by adding areas from two or more parent districts, we assigned the average indicator’s value of the respective parent district (Figure 4 and Table 2).
+        </p>
+
+        <Figure src={''} label='type2' number='4' 
+            caption={'Example of type 2 districts (Assam State)'}/>
+
+        <p>
+            Out of 36 states, 22 states have neither type 1 nor type 2 boundaries, these states are listed below with their numbers of unchanging district boundaries, that is, same number of boundaries in 2015-16 and 2019-21 (Table 3).
+        </p>
+
+        <p>
+            These constitute 307 out of 707 districts that have not changed boundaries to either type 1 or type 2. The remaining 400 districts fall within 14 states, and all have type 1 districts, the only states without type 2 district boundaries are Assam, Chhattisgarh, Haryana, Madhya Pradesh, Maharashtra, Meghalaya, Punjab, Tripura, and West Bengal states.
+        </p>
+        <p>
+            The following are the number of type 1 and type 2 districts with the total districts in each respective year, stating the number of new districts created in each state (Table 4).
+        </p>
+
+        <Accordion className='mb-3'>
+            <AccordionItem>
+                <AccordionHeader>
+                    Changes on the listed states.
+                </AccordionHeader>
+                <AccordionBody>
+                    Bla.. bla.. bla..
+                </AccordionBody>
+            </AccordionItem>
+        </Accordion>
+
+        <h5>Step 2. Rasterization and harmonisation to national official boundaries to enable over time comparisons</h5>
+
+        <p>
+            With indicator values for the 707 NFHS-5 districts in table format, these are joined to the NFHS-5 district boundary shapefile using a common attribute (State_District). For each indicator and confidence intervals within the joined table, the shapefile is rasterized, to match the raster properties (coordinate system, cell size and grid alignment) derived from a common mastergrid of the national boundaries (<a href='#reference'>WorldPop et al, 2018</a>). The rasterized indicator values are then summarized using the district level official boundaries of India (Ministry of Science and Technology, Government of India) by using a GIS tool that calculates the zonal statistics using R (2021) software. This produces statistics (mean and median) from all the raster cells that sit within each district boundary so that indicator values are generated for each of the 742 districts. Medians were used to summarise the indicators of interest. This outputted table can be exported as a csv file or shapefile. A flowchart of the steps can be found in Figure 5.
+        </p>
+        <Figure src={''} label='flowchart' number='5' 
+            caption={'Flowchart illustrating the process of convering indicator values from NFHS-5 district boundaries to official distric boundaries'}/>
+
+        <div id='reference'>
+        <h4>Reference</h4>
+        <ul>
+            <li id='subramaniam2021'>Subramaniam SV, Kumar A, Tripathi N. Geographic insights lab. NFHS policy Tracker for districts. Cambridge, USA: Harvard Center for Population and Development Studies and Center for Geographic Analysis at Harvard, 2021.</li>
+            <li id='ulahannan2022'><a href='https://gh.bmj.com/content/7/4/e007798.abstract' target='_blank'>Ulahannan, Sabu Kochupurackal, et al. "Alarming level of severe acute malnutrition in Indian districts.” BMJ global health 7.4 (2022): e007798.</a></li>
+            <li id='worldpop2018'><a href='https://hub.worldpop.org/geodata/summary?id=29691' target='_blank'>WorldPop (www.worldpop.org - School of Geography and Environmental Science, University of Southampton; Department of Geography and Geosciences, University of Louisville; Departement de Geographie, Universite de Namur) and Center for International Earth Science Information Network (CIESIN), Columbia University (2018). Global High Resolution Population Denominators Project - Funded by The Bill and Melinda Gates Foundation (OPP1134076). https://hub.worldpop.org/geodata/summary?id=29691 . [Accessed 09 January 2023].</a></li>
+            <li id='rcoreteam2021'><a href='https://R-project.org' target='_blank'>R Core Team (2021). R: A language and environment for statistical. computing. R Foundation for Statistical Computing, Vienna, Austria</a></li>
+        </ul>
+        </div>
+        <br/>
+        <hr/>
+        <h4>.</h4>
+      </div>
+    );
+}
+
+function SecondNote() {
+    return (
+      <div className='bg-light rounded-4 p-3'>
+        <h2>Technical Note 2</h2>
         <h3>Exceedance Probability and Confidence in Changes Over Time</h3>
+        <hr/>
         <h4>Background</h4>
         <p>
             We have produced 5x5km high-resolution (also referred to as grid level) prediction and uncertainty maps illustrating changes over time for health and development indicators within specific subnational areas, such as districts or similar administrative divisions varying by country. Our methodology relies on data from the two most recent rounds of the nationally representative Demographic and Health Surveys (DHS), which are available at the cluster level, and mapped through GPS coordinates of the cluster centres. In the case of India, we utilised the National Family Health Surveys (NFHS), specifically NFHS-4 (2015-16) denoted as Round 1, and NFHS-5 (2019-22) denoted as Round 2. Measuring changes between these survey rounds allows us to track and assess the progress of the health and development indicators over time.
@@ -96,4 +224,4 @@ export default function Technical() {
         <h4>.</h4>
       </div>
     );
-  }
+}

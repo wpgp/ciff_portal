@@ -10,7 +10,7 @@ export default function About() {
           The estimates presented in this portal are the result of a standard modelling approach for estimating high resolution maps and there may be deviations from aggregated measures published elsewhere.
         </p>
         <p>
-          For more information please refer to the <a href='./tech-note' target='_blank'>Technical Note</a> or <a href='https://doi.org/10.1038/s41597-023-01961-2' target='_blank'>Pezzulo et al. (2023)</a>.
+          For more information, please refer to the related previously published work here: <a href='https://doi.org/10.1038/s41597-023-01961-2' target='_blank'>Pezzulo et al. (2023)</a>.
         </p>
 
         <h3>Disclaimer</h3>
@@ -24,7 +24,7 @@ export default function About() {
         <h3>Acknowledgement</h3>
         <ul>
           <li>
-            Administrative Boundary of India: Ministry of Science and Technology, Government of India. Survey of India. Online Maps Portal. Administrative Boundary Database (<a href='https://onlinemaps.surveyofindia.gov.in/Digital_Product_Show.aspx'>OVSF/1M/7</a>).
+            Administrative Boundary of India: Ministry of Science and Technology, Government of India. Survey of India. Online Maps Portal. Administrative Boundary Database (<a href='https://onlinemaps.surveyofindia.gov.in/Digital_Product_Show.aspx'>OVSF/1M/7</a>). Accessed 09 January 2023.
           </li>
           <li>
             NFHS-4 data: International Institute for Population Sciences (IIPS) and ICF. 2017. National Family Health Survey (NFHS-4), 2015-16: India. Mumbai: IIPS.
