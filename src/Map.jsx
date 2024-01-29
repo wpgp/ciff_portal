@@ -485,9 +485,9 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
         const pval = feature.properties[`${indicator}_CH_P`];
         let res = true
         if (pIndicator.includes(indicator)){
-          res = showImprove === 'ShowImprovement' ? (val > 0 && pval > probLimit)  : showImprove === 'ShowWorsening' ? (val <= 0 && pval < (1-probLimit)) : true
+          res = showImprove === 'ShowImprovement' ? (val > 0 && pval > probLimit)  : showImprove === 'ShowWorsening' ? (val <= 0 && pval < (100-probLimit)) : true
         } else {
-          res = showImprove === 'ShowWorsening' ? (val > 0 && pval > probLimit)  : showImprove === 'ShowImprovement' ? (val <= 0 && pval < (1-probLimit)) : true
+          res = showImprove === 'ShowWorsening' ? (val > 0 && pval > probLimit)  : showImprove === 'ShowImprovement' ? (val <= 0 && pval < (100-probLimit)) : true
         }
         return res
       }
@@ -531,7 +531,7 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
       }
         
       const label = {'0':'any (0-100%)', '1':'likely (>90%)', '2':'highly likely (>95%)', '3':'almost certain (>99%)'}
-      const limit = {'0':0.00, '1':0.90, '2':0.95, '3':0.99}
+      const limit = {'0':0.00, '1':90, '2':95, '3':99}
       const text = label[val]
       setProbLimit(limit[val])
       if (setFunc.length === 3){setFunc[2]({'level':label[val], 'prob':limit[val], 'direction':showImprove})}
@@ -636,7 +636,7 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
           zoom={country.Zoom}
           minZoom={3}
           maxZoom={9}
-          style={{width:'100%', height:'60vh', background:'#fff', borderRadius:'10px'}}
+          style={{width:'100%', height:'60vh', minHeight:'400px', background:'#fff', borderRadius:'10px'}}
           >
 
           <DefineMap />
@@ -655,7 +655,7 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
           
           {showLabel ? <TileLayer url={basemaps['label']} zIndex={500}/> : <></>}
 
-          <Pane name='tiles' style={{zIndex:5}}>
+          <Pane name='tiles' style={{zIndex:55}}>
             {mainLayer}
             <GeoJSON
               data={selectedState}
@@ -670,7 +670,7 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
           </Pane>
     
           {showLabel ? null :
-          <Pane name='boundary' style={{zIndex:10}}>    
+          <Pane name='boundary' style={{zIndex:60}}>    
             <GeoJSON
               data={boundary}
               style={StateStyle}

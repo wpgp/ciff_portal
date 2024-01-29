@@ -4,6 +4,7 @@ import { TheChart } from './Chart';
 import { TheMap } from './Map';
 
 import 'leaflet/dist/leaflet.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
 import { indDict, countries, pIndicator } from './Config';
@@ -90,14 +91,14 @@ export default function MainApp(){
       <hr/>
 
       <div className='row mt-3 p-3 mb-3 rounded-3 bg-secondary-subtle'>
-        <div className='d-flex justify-content-between'>
+        <div className='row d-flex justify-content-between'>
         <div className='col-lg-8'>
           <p>This web application presents a summary of the child and maternal health and development indicators calculated at subnational level (geographic areas below the national level) for a selection of countries of interest to CIFF.</p>
           <p>Multiple indicators are presented in map, chart, and tabulated form, and for multiple time points based on data availability. Changes over time for each indicator are also presented.</p>
-          <p>Please consult the <a href='./guide'>Guide</a> and the <a href='./about'>About</a> sections for more information on how to use this portal.</p>
-          <p style={{color:'red', fontWeight:'bold', border:'2px solid red', padding:'10px'}}>The data used for this prototype are not real data but made up for the purpose of purely presenting the design of the application, and therefore no inference should be made about any of the indicator's values, distributions, and patterns.</p>
+          <p>Please consult the Guide and the About sections for more information on how to use this portal.</p>
+          {/*<p style={{color:'red', fontWeight:'bold', border:'2px solid red', padding:'10px'}}>The data used for this prototype are not real data but made up for the purpose of purely presenting the design of the application, and therefore no inference should be made about any of the indicator's values, distributions, and patterns.</p>*/}
         </div>
-        <div className='col-lg-3' id='selection'>
+        <div className='col-lg-4 p-3' id='selection'>
           <b>Select country</b>
           <SimpleSelect
             name='Country'

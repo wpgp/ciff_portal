@@ -6,9 +6,6 @@ import guide3 from './assets/guide-3.png'
 export default function Guide() {
   return (
     <div>
-      <h2>Guide</h2>
-      <hr/>
-
       <div className='row'>
         <div className='col-5'>
           <ol>

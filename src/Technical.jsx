@@ -3,9 +3,6 @@ import exceedance from './assets/exceedance.png'
 export default function Technical() {
     return (
       <div className='bg-light rounded-4 p-3'>
-        <h2>Technical Note</h2>
-        <hr/>
-
         <h3>Exceedance Probability and Confidence in Changes Over Time</h3>
         <h4>Background</h4>
         <p>

@@ -188,7 +188,6 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
   )}, [data, indicator, sortChart, sorttype])
 
   const showIndicators = () => {
-    console.log('show modal')
     modalRoot.render(
       <div>
         <div className='p-0 m-0 mb-2'>
