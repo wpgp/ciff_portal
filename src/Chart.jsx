@@ -36,7 +36,7 @@ function MakeTable({ columns, data, palette }) {
               {headerGroups.map((headerGroup, i) => (
                   <tr key={i}>
                       {headerGroup.headers.map((column, j) => (
-                      <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                      <th key={j} {...column.getHeaderProps(column.getSortByToggleProps())}>
                       {column.render('Header')}
                       <span>
                       {column.isSorted ? column.isSortedDesc ? ' \u2bc5' : ' \u2bc6' : ' \u2b24'}
@@ -69,34 +69,6 @@ function MakeTable({ columns, data, palette }) {
     </div>
   )
 }
-
-/*
-function DistrictChart({ input, field, sorter, sorttype }){
-  const fields = [field + "_R1", field + "_R2", field + "_CH"];
-  const mapper = {
-    'SortbyName':'district',
-    'SortbyLocation':'r',
-    'SortbyR1': fields[0],
-    'SortbyR2': fields[1],
-    'SortbyChange': fields[2],
-  };
-
-  const minmax = (visDict[field]['Minmax']);
-  let spec = JSON.parse(JSON.stringify(specs['DistrictBars']));
-
-  spec.data[0].values = input;
-  spec.data[1].transform[0].expr = "datum." + fields[0];
-  spec.data[1].transform[1].expr = "datum." + fields[1];
-  spec.data[1].transform[2].expr = "datum." + mapper[sorter];
-  spec.signals[0].value = 200;
-
-  spec.marks[0].sort.order = sorttype;
-  spec.marks[2].sort.order = [sorttype];
-
-  spec.scales[0].domain = minmax;
-  return <Vega spec={spec} actions={false} />
-}
-*/
 
 function RangeChart({ input, field, sorter, sorttype }){
   const fields = [field + "_R1", field + "_R2", field + "_CH"];
@@ -211,22 +183,35 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
     return (
       ['_R1', '_R2', '_CH'].map((item) => {
         let obj = {}
-        const y = data0.map((x) => x[indicator+item])
-        const z = data0.map((x) => x['district'])
-        const maxi = ArgMax(y)
-        const mini = ArgMin(y)
-
-        obj['avg'] = FloatFormat(Average(y), 1)// + description['Unit'];
-        if (pIndicator.includes(indicator)){
-          obj['best'] = z[maxi]
-          obj['worst'] = z[mini]
-          obj['bestVal'] = FloatFormat(y[maxi], 1)
-          obj['worstVal'] = FloatFormat(y[mini], 1)
+        function removeNull(x){
+          return x[indicator+item] != null
+        }
+        const data1 = data0.filter(removeNull)
+        const y = data1.map((x) => x[indicator+item])
+        const z = data1.map((x) => x['district'])
+        
+        if (y.length > 0){
+          const maxi = ArgMax(y)
+          const mini = ArgMin(y)
+          
+          obj['avg'] = FloatFormat(Average(y), 1)// + description['Unit'];
+          if (pIndicator.includes(indicator)){
+            obj['best'] = z[maxi]
+            obj['worst'] = z[mini]
+            obj['bestVal'] = FloatFormat(y[maxi], 1)
+            obj['worstVal'] = FloatFormat(y[mini], 1)
+          } else {
+            obj['best'] = z[mini]
+            obj['worst'] = z[maxi]
+            obj['bestVal'] = FloatFormat(y[mini], 1)
+            obj['worstVal'] = FloatFormat(y[maxi], 1)
+          }  
         } else {
-          obj['best'] = z[mini]
-          obj['worst'] = z[maxi]
-          obj['bestVal'] = FloatFormat(y[mini], 1)
-          obj['worstVal'] = FloatFormat(y[maxi], 1)
+          obj['avg'] = '-'
+          obj['best'] = '-'
+          obj['worst'] = '-'
+          obj['bestVal'] = '-'
+          obj['worstVal'] = '-'
         }
         return obj
       })
@@ -241,10 +226,13 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
     </div>
   )
 
+  const round2 = (description['R2'] !== 'No data') ? ` In round 2, (${description['R2']}, ${description['Y2']}) the figure is ${hilite[1]['avg']}${description['Unit']}.` : ''
+
   const summaryTab = (
     <div style={{fontSize:'90%'}}>
       <p>
-        In the {adm1} of <b>{stateName}</b>, approximately {hilite[0]['avg']}{description['Unit']} {description['Statement']} in round 1 ({description['R1']}, {description['Y1']}) and {hilite[1]['avg']}{description['Unit']} in round 2 ({description['R2']}, {description['Y2']}).
+        In the {adm1} of <b>{stateName}</b>, approximately {hilite[0]['avg']}{description['Statement']} in round 1 ({description['R1']}, {description['Y1']}).
+        {round2}
       </p>
       <p>
         The {adm2} of <b>{hilite[2]['best']}</b> experienced the highest {pIndicator.includes(indicator) ? 'increase': 'decrease (lowest increase)'} in {description['Unit']} of {(description['Indicator']).toLowerCase()} with a {hilite[2]['bestVal']}{description['Unit']} change from round 1 ({description['R1']}, {description['Y1']}) to round 2 ({description['R2']}, {description['Y2']}), showing an improvement in conditions.

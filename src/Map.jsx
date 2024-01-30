@@ -195,7 +195,7 @@ function Legend({ indicator, opt }){
     const info = LookupTable({'items':indicators, 'first':'Abbreviation', 'second':['Indicator','Definition','Source','Link','R1','R2','Y1','Y2','Unit','Proportional','Remark'], 'value':indicator})
     const colormap = colormaps[visDict[indicator][palette]]
     const ids = [...Array(20).keys()]
-    const remark = ((info[8] === 'percent') ? 'value in %' : info[8])
+    const remark = ((info[8] === '%') ? 'value in %' : info[8])
     const proportional = info[9] ? 'increasing value means better condition' : 'increasing value means worse condition'
 
     let delta = [0.1,0.2,0.5,1,2,5,10,20]

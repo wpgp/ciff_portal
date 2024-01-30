@@ -61,7 +61,7 @@ function Layout() {
         <Outlet />
       </div>
 
-      <div className='shadow fixed-bottom p-2 justify-content-end'>
+      <div className='shadow p-2 justify-content-end'>
         &copy; 2024 <a href='https://sdi.worldpop.org'>WorldPop SDI</a>
       </div>
     </div>
