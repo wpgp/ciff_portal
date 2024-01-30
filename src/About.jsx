@@ -1,6 +1,8 @@
 export default function About() {
     return (
-      <div>
+      <div className='bg-light rounded-4 p-3'>
+        <h2>About</h2>
+        <hr/>
         <p>
           This web application presents a summary of family health conditions at subnational scales. Multiple indicators are presented in map, chart, and tabulated form.
         </p>

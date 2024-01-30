@@ -188,14 +188,14 @@ function RadioPanel({ pass, indicator }){
     )
 }
 
-function Legend({ indicator, opt, pass }){
+function Legend({ indicator, opt }){
     let palette = 'Palette1'
     let minmax = (opt === 'CH') ? visDict[indicator]['CHMinmax'] : visDict[indicator]['Minmax']
   
-    const info = LookupTable({'items':indicators, 'first':'Abbreviation', 'second':['Indicator','Definition','Source','Link','R1','R2','Y1','Y2','Unit','Proportional'], 'value':indicator})
+    const info = LookupTable({'items':indicators, 'first':'Abbreviation', 'second':['Indicator','Definition','Source','Link','R1','R2','Y1','Y2','Unit','Proportional','Remark'], 'value':indicator})
     const colormap = colormaps[visDict[indicator][palette]]
     const ids = [...Array(20).keys()]
-    const remark = ((info[8] === 'Percent') ? 'Value in Percent' : info[8])
+    const remark = ((info[8] === 'percent') ? 'value in %' : info[8])
     const proportional = info[9] ? 'increasing value means better condition' : 'increasing value means worse condition'
 
     let delta = [0.1,0.2,0.5,1,2,5,10,20]
@@ -217,8 +217,8 @@ function Legend({ indicator, opt, pass }){
     }
 
     const cbar = (
-      <>
-      <svg width='100%' height='95'>
+      <div className='text-center'>
+      <svg width='100%' height='65'>
         {ids.slice(0,18).map((item) => (
           <rect key={item} x={(5+item*5)+'%'} y='0%' rx='5px' ry='5px' width='5%' height='30' stroke='#2b2b2b' fill={colormap[item]}/>
         ))}
@@ -229,10 +229,10 @@ function Legend({ indicator, opt, pass }){
         {ticks.map((item, id) => (
           <text key={id} x={sticks[id]+'%'} y='55' textAnchor='middle' fontSize='90%'>{parseFloat(item).toFixed(digit)}</text>
         ))}
-        <text x='50%' y='70' textAnchor='middle'>{remark}</text>
-        <text x='50%' y='83' textAnchor='middle' fontSize='90%'>{proportional}</text>
       </svg>
-      </>
+      <span><b>{remark}</b></span><br/>
+      <span><i>{proportional}</i></span>
+      </div>
     )
     
     //const updateIndicator = (value) => {}
@@ -260,6 +260,14 @@ function Legend({ indicator, opt, pass }){
           <div className='col-5 p-0 m-0' style={{fontSize:'75%'}}>
             <p>
               <b>Definition</b><br/>{info[1]}
+              {info[10] ? 
+              <>
+                <br/><br/><b>{info[10]}</b>{info[0] === 'Prevalence of child workers' ? 
+                  <Ask about='Note on census boundaries'/> : <Ask about='Note on changing boundaries'/>
+                }
+              </>
+              : <></>}
+              
             </p>
           </div>
           
@@ -296,24 +304,9 @@ function DistrictPopup(obj, col){
   return (content)
 }
 
-function PrintMap(){
-  var content = document.getElementById("mapContainer");
-  var pri = document.getElementById("ifmcontentstoprint").contentWindow;
-  pri.document.open();
-  pri.document.write(content.innerHTML);
-  pri.document.close();
-  pri.focus();
-  pri.print();
-}
-
-function DownloadRaster(){
-  const path = './downloadRaster.inc';
-  getInfo('Download Raster Data', path);
-}
-
 export function TheMap({ country, boundary, data, selected, setFunc, indicator }){
 
-    const mapper = useMemo(() => ({'R1':'Value in Round 1', 'R2':'Value in Round 2', 'CH':'Change (R2-R1)'}), []);
+    const mapper = {'R1':'Value in Round 1', 'R2':'Value in Round 2', 'CH':'Change (R2-R1)'};
     const [opt, setOpt] = useState('R1');
     const [raster, setRaster] = useState(false);
     const [showLabel, setShowLabel] = useState(false);
@@ -321,7 +314,7 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
     const [coords, setCoords] = useState({lat:0, lng:0, val:0, remark:mapper[opt]});
     const [probLimit, setProbLimit] = useState(0);
     
-    const noPE = ['NMR', 'CHMR', 'Teen_Pregn']
+    const noPE = ['NMR', 'CHMR', 'Teen_Pregn', 'Lab_child', 'Stillbirth']
     const disableRange = noPE.includes(indicator);
 
     const setShowImprove_ = (x) => {

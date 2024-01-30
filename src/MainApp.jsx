@@ -49,7 +49,7 @@ export default function MainApp(){
       if (exceedance.direction === st[0]) {
         res = res && (val > 0 && pval > exceedance.prob)
       } else if (exceedance.direction === st[1]) {
-        res = res && (val <= 0 && pval < (1-exceedance.prob))
+        res = res && (val <= 0 && pval < (100-exceedance.prob))
       }
       
       return res

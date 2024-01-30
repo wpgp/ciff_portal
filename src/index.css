@@ -48,11 +48,12 @@ kbd {
 }
 
 table {
-  font-size: smaller;
+  font-size: small;
 }
 
 Table thead{
   position: sticky;
+  background-color: #ffb3bb;
   top: 0px;
   margin: 0 0 0 0;
 }

@@ -5,7 +5,10 @@ import guide3 from './assets/guide-3.png'
 
 export default function Guide() {
   return (
-    <div>
+    <div className='bg-light rounded-4 p-3'>
+      <h2>Guide</h2>
+      <hr/>
+
       <div className='row'>
         <div className='col-5'>
           <ol>

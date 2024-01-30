@@ -17,13 +17,13 @@ const askTable = (
 
 const askColorBar = (
     <div>
-        <p>
+        <blockquote>
             Irrespective of the direction of each indicator, the legend displays a better condition (improvement over time when looking at time change) in blue, and a worse condition (worsening over time when looking at time change) in red. For example, 
             <ul>
                 <li> increasing value meaning better condition like % of contraceptive prevalence </li>
                 <li> increasing value meaning worse condition like % of low birth weight </li>
             </ul>
-        </p>
+        </blockquote>
     </div>
 )
 
@@ -44,7 +44,7 @@ const askChangeN = (
             We use that to filter which districts to show on the map. Districts where the exceedance probability is less than the limit, set by the user on the slider, will be filtered out.
         </p>
         <hr/>
-        Find out more on the <a href='./tech-note' target='_blank'>Tech Note</a> page.
+        Find out more on the <a href='#tech-note-1' target='_blank'>Tech Note</a> page.
     </div>
 )
 
@@ -65,16 +65,34 @@ const askChangeP = (
             We use that to filter which districts to show on the map. Districts where the exceedance probability is less than the limit, set by the user on the slider, will be filtered out.
         </p>
         <hr/>
-        Find out more on <a href='./tech-note' target='_blank'>the Tech Note page</a>
+        Find out more on <a href='#tech-note-2' target='_blank'>the Tech Note page</a>
     </div>
 )
 
+const askBoundaries = (
+    <div>
+        <p>
+            While the surveys were designed to be representative at the district level, caution is advised in interpreting and utilizing the findings due to the inherent limitations posed by small sample sizes for the mentioned indicators. Furthermore, it is important to note that the indicators discussed herein are rare events, further emphasizing the need for careful consideration and caution in their interpretation, given the limited sample sizes at the district level.
+        </p>
+        <p>
+            See <a href='#tech-note-1' target='_blank'>Technical Note Managing Over Time Changing Boundaries</a> from round 1 (NFHS-4) to round 2 (NFHS-5) and national official boundaries to enable over time comparisons.
+        </p>
+    </div>
+)
+
+const askChildWorker = (
+    <div>
+        Since census boundaries aligned with NFHS-4 boundaries, the same two-step approached as described in the <a href='#tech-note-1'>Technical Note</a> was applied.
+    </div>
+)
 export function Ask({ about, positive=true}){
     const askAbout = {
         'How to read table': askTable,
         'About this color bar': askColorBar,
         'NNote on the change certainty': askChangeN,
-        'Note on the change certainty': askChangeP
+        'Note on the change certainty': askChangeP,
+        'Note on changing boundaries': askBoundaries,
+        'Note on census boundaries': askChildWorker
     }
     const content = positive ? askAbout[about] : askAbout['N'+about]
 

@@ -1,5 +1,10 @@
-import { Accordion, AccordionBody, AccordionHeader, AccordionItem } from 'react-bootstrap'
+import { Accordion, Row, Col, Table, Card } from 'react-bootstrap'
 import exceedance from './assets/exceedance.png'
+import aggregation from './assets/aggregation.png'
+import disaggregation from './assets/disaggregation.png'
+import type1 from './assets/type-1.png'
+import type2 from './assets/type-2.png'
+import workflow from './assets/workflow.png'
 
 export default function Technical({which}) {
     if (which === 'boundary') {
@@ -9,18 +14,238 @@ export default function Technical({which}) {
     }
 }
 
-function Figure ({src, label, number, caption}){
+function Figure ({src, label, number, caption, width='80%'}){
     return (
-        <figure id={label}>
-            <div className="blockquote text-center">
-                <img alt={label} src={src} width='80%'/>
+        <div id={label} className='m-2 text-center'>
+            <div>
+                <img alt={label} src={src} width={width}/>
             </div>
-            <figcaption className="blockquote-footer text-center">
+            <figcaption className="text-center">
                 <b>Figure {number}.</b> {caption}
             </figcaption>
-        </figure>
+        </div>
     )
 }
+
+function FigureX ({src, label, number, caption, width='80%'}){
+    return (
+        <Card id={label}>
+            <Card.Img variant='top' src={src}></Card.Img>
+            <Card.Body>
+                <Card.Title>Figure {number}</Card.Title>
+                <Card.Text>{caption}</Card.Text>
+            </Card.Body>
+        </Card>
+    )
+}
+
+const ContentTab3 = [
+    {"State": "Andaman & Nicobar Islands", "Count": "3"},
+    {"State": "Andhra Pradesh", "Count": "13"},
+    {"State": "Bihar", "Count": "38"},
+    {"State": "Chandigarh", "Count": "1"},
+    {"State": "Dandra & Nagar Haveli & Daman & Diu", "Count": "3"},
+    {"State": "Goa", "Count": "2"},
+    {"State": "Himachal Pradesh", "Count": "12"},
+    {"State": "Jammu and Kashmir", "Count": "20"},
+    {"State": "Jharkhand", "Count": "24"},
+    {"State": "Karnataka", "Count": "30"},
+    {"State": "Kerala", "Count": "2"},
+    {"State": "Ladakh", "Count": "1"},
+    {"State": "Lakshadweep", "Count": "14"},
+    {"State": "Manipur", "Count": "9"},
+    {"State": "Mizoram", "Count": "8"},
+    {"State": "Nagaland", "Count": "11"},
+    {"State": "Odisha", "Count": "30"},
+    {"State": "Puducherry", "Count": "4"},
+    {"State": "Rajasthan", "Count": "33"},
+    {"State": "Sikkim", "Count": "4"},
+    {"State": "Tamil Nadu", "Count": "32"},
+    {"State": "Uttarakhand", "Count": "13"}
+]
+
+const ContentTab4 = [
+    {"State": "Arunachal Pradesh", "Type1": "6", "Type2": "1", "Count15": "16", "Count19": "20", "New": "4"},
+    {"State": "Assam", "Type1": "12", "Type2": "-", "Count15": "27", "Count19": "33", "New": "6"},
+    {"State": "Chhattisgarh", "Type1": "15", "Type2": "-", "Count15": "18", "Count19": "27", "New": "9"},
+    {"State": "Gujarat", "Type1": "8", "Type2": "3", "Count15": "26", "Count19": "33", "New": "7"},
+    {"State": "Haryana", "Type1": "1", "Type2": "-", "Count15": "21", "Count19": "22", "New": "1"},
+    {"State": "Madhya Pradesh", "Type1": "2", "Type2": "-", "Count15": "50", "Count19": "51", "New": "1"},
+    {"State": "Maharashtra", "Type1": "2", "Type2": "-", "Count15": "35", "Count19": "36", "New": "1"},
+    {"State": "Meghalaya", "Type1": "8", "Type2": "-", "Count15": "7", "Count19": "11", "New": "4"},
+    {"State": "NCT of Delhi", "Type1": "4", "Type2": "4", "Count15": "9", "Count19": "11", "New": "2"},
+    {"State": "Punjab", "Type1": "4", "Type2": "-", "Count15": "20", "Count19": "22", "New": "2"},
+    {"State": "Telangana", "Type1": "23", "Type2": "7", "Count15": "10", "Count19": "31", "New": "21"},
+    {"State": "Tripura", "Type1": "7", "Type2": "-", "Count15": "4", "Count19": "8", "New": "4"},
+    {"State": "Uttar Pradesh", "Type1": "4", "Type2": "2", "Count15": "71", "Count19": "75", "New": "4"},
+    {"State": "West Bengal", "Type1": "2", "Type2": "-", "Count15": "19", "Count19": "20", "New": "1"}
+]
+
+const ListOfChanges = [
+    {
+        title: 'Arunachal Pradesh',
+        items: [
+            'A new district (Kra Daadi) was formed from Kurung Kumey district.',
+            'Longding district was created from Tirap district.',
+            'Namsai district was created from Lohit district.',
+            'A new Siang district was created from Parent districts West Siang and East Siang.'
+        ]
+    },
+    {
+        title: 'Assam',
+        subtitle: 'All 6 new districts created from type 1 Parent districts include:',
+        items: [
+            'Biswanath district was created from Sonitpur', 
+            'Charaideo from Sivasagar', 
+            'Hojai from Nagaon', 
+            'Majuli from Jorhat', 
+            'South Salmara Mancachar from Dhubri',
+            'West Karbi Anglong from Karbi Anglong' 
+            ]
+    },
+    {
+        title: 'Gujarat',
+        subtitle: 'New districts formed include:',
+        items: [
+            'Botad from Bhavnagar and Ahmadabad',
+            'Chhota Udaipur from Vadodara',
+            'Devbhumi Dwarka from Jamnagar',
+            'Gir Somnath from Junagadh',
+            'Mahisagar from Panchmahal and Kheda',
+            'Morbi from Rajkot and Surrendranagar'
+        ]
+    },
+    {
+        title: 'Chhattisgarh',
+        subtitle: 'Dakshin Bastar Dantewada district in 2015-16 no longer exists, as two new districts: Dantewada and Sukma were created from it in 2019-21. Balod and Bemetara districts were also created from Durg district, thus forming three new districts including Durg.  Surguja district in 2015-16 has also been divided into three: Balarampur, Surajpur, and Surguja. Other districts formed include:',
+        items: [
+            'Baloda Bazar from Raipur',
+            'Kodagaon from Bastar',
+            'Mungeli from Bilaspur'
+        ]
+    },
+    {
+        title: 'NCT of Delhi',
+        subtitle: 'Two entirely new districts: Shahdara (formed from North East and East districts), and South East Delhi (formed from South district) have been added. Although other districts bear the same name as in 2015-16, they have changed boundaries, for example,',
+        items: [
+            'Central district and North district boundaries have been merged to form a new Central district in 2019-21',
+            'With the 2015-16 North merging as stated above, the 2015-16 North West district was also divided into new North and North West districts',
+            'New Delhi district in 2019-21 now includes a part of the 2015-16 South West boundaries with the 2015-16 New Delhi boundary',
+            '2015-16 South district is now divided into two 2019-21 districts- South and South East'
+        ]
+    },
+    {
+        title: 'Telangana',
+        subtitle: 'The following type 1 and type 2 districts exist in Telangana state in 2019-21:',
+        items: [
+            'Komaram Bheem Asifabad, Mancherial, and Nirmal from Adilabad district in 2015-16',
+            'Jagitial, Peddapalli, and Rajanna Sircilla districts from Karimnagar 2015-16 district',
+            'Kothagudem from Khammam',
+            'Jogulamba Gadwal and Nagarkurnool from Mahbubnagar',
+            'Kamareddy from Nizamabad',
+            'Medchal-Malkajgiri from RangaReddy',
+            'Sangareddy from Medak',
+            'Suryapet and Yadadri Bhuvanagiri from Nalgonda',
+            'Warangal Rural from Warangal',
+            'Jangoan from Warangal and Nalgonda',
+            'Jayashankar Bhupalapally from Karimnagar, Warangal, and Khammam',
+            'Mahabubabad from Warangal and Khammam',
+            'Ranga Reddy and Vikarabad from RangaReddy and Mahabubnagar',
+            'Siddipet from Medak, Warangal, and Karimnagar',
+            'Warangal Urban from Warangal and Karimnagar'
+        ]
+    },
+    {
+        title: 'Haryana',
+        subtitle: 'The only new district formed is Charkhi Dadri from Bhiwani district.',
+        items: ''
+    },
+    {
+        title: 'Madhya Pradesh',
+        subtitle: 'Only one new district was formed: Agar Malwa from Shajapur district.',
+        items: ''
+    },
+    {
+        title: 'Punjab',
+        subtitle: 'The two new districts formed are:',
+        items: [
+            'Fazilka from Firozpur',
+            'Pathankot from Gurdaspur'
+        ]
+    },
+    {
+        title: 'Meghalaya',
+        subtitle: 'Jaintia Hills no longer exists in 2015-16 as the district now includes two new districts: East Jaintia Hills and West Jaintia Hills. Other new districts formed include:',
+        items: [
+            'North Garo Hills from East Garo Hills',
+            'South West Garo Hills from West Garo Hills',
+            'South West Khasi Hills from West Khasi Hills'
+        ]
+    },
+    {
+        title: 'Uttar Pradesh',
+        subtitle: 'Four new districts formed are:',
+        items : [
+            'Amethi from Sultanpur and Rae Bareli',
+            'Hapur from Ghaziabad',
+            'Sambhal from Moradabad and Budaun',
+            'Shamli from Muzaffarnagar'
+        ]
+    },
+    {
+        title: 'West Bengal',
+        subtitle: 'Barddhaman district no longer exists, but has two new districts created from it:',
+        items : [
+            'Paschim Barddhaman and Purba Barddhaman'
+        ]
+    },
+    {
+        title: 'Tripura',
+        subtitle: 'The new districts formed include:',
+        items : [
+            'Khowai and Sepahijala from West district',
+            'Unakoti from North district'
+        ]
+    },
+]
+
+function DetailCard({obj}) {
+    return (
+        <Row>
+            <Card border='primary' style={{width:'23rem'}}>
+                <Card.Body>
+                    <Card.Title>{obj.title}</Card.Title>
+                    <Card.Subtitle>{obj.subtitle ? obj.subtitle : ''}</Card.Subtitle>
+                    {obj.items ? 
+                    <Card.Text>
+                        <blockquote>
+                            <ul>
+                            {obj.items.map((item, i) => {
+                                return (<li key={i}>{item}</li>)
+                            })}
+                            </ul>
+                        </blockquote>
+                    </Card.Text>
+                    : ''
+                    }
+                </Card.Body>
+            </Card>
+        </Row>
+    )
+}
+
+function ContentChanges() {
+    return (
+        <Row xs={1} md={3} className='g-2'>
+            {ListOfChanges.map((obj,i) => {return(
+                <Col key={i}>
+                    <DetailCard key={i} obj={obj}/>
+                </Col>
+            )})}
+        </Row>
+    )
+}
+
 function FirstNote() {
     return (
       <div className='bg-light rounded-4 p-3'>
@@ -48,14 +273,14 @@ function FirstNote() {
             The administrative boundaries of India for the year 2015-2016 (NFHS-4) count a total of 640 districts while the administrative boundaries of India for the year 2019-2021 (NFHS-5) count a total of 707 districts (67 additional districts) (ICF. The Demographic and Health Surveys Program Spatial Data Repository). However, there are 36 states in both years with changes. The boundary changes begin with the addition of new states and the removal of some states, for example, at the state level, a new state Ladakh was created in 2019-2021 from Jammu and Kashmir, as shown in Figure 1 below.
         </p>
 
-        <Figure src={''} label='dissagregation' number='1' 
+        <Figure src={disaggregation} label='dissagregation' number='1' width='600px'
             caption={'States dissagregation example'}/>
         
         <p>
             Meanwhile, Dadra and Nagar Haveli and Daman and Diu, two distinct states have now merged to form a new state called Dadra & Nagar Haveli & Daman & Diu as shown below in Figure 2.
         </p>
 
-        <Figure src={''} label='aggregation' number='2' 
+        <Figure src={aggregation} label='aggregation' number='2' width='550px'
             caption={'States agregation example'}/>
 
         <p>
@@ -63,26 +288,144 @@ function FirstNote() {
         </p>
 
         <p>
-            The newly created 67 districts were formed from one or more districts included in the NFHS-4 dataset and can be divided into two different categories: type 1 and type 2. Type 1 districts (55 districts) were formed by altering the boundaries of one single district from 2015-16 NFHS-4 administrative boundaries and creating one new district. In comparison, type 2 districts (12 districts) were formed by adding geographical units from two or more parent districts. For the type 1 districts formed from one single parent district we assigned the same indicator's value as the parent district (Figure 3 and table 1)
+            The newly created 67 districts were formed from one or more districts included in the NFHS-4 dataset and can be divided into two different categories: type 1 and type 2. Type 1 districts (55 districts) were formed by altering the boundaries of one single district from 2015-16 NFHS-4 administrative boundaries and creating one new district. In comparison, type 2 districts (12 districts) were formed by adding geographical units from two or more parent districts. For the type 1 districts formed from one single parent district we assigned the same indicator's value as the parent district (Figure 3 and Table 1)
         </p>
 
-        <Figure src={''} label='type1' number='3' 
+        <Figure src={type1} label='type1' number='3' width='400px'
             caption={'Example of type 1 districts (Assam State)'}/>
 
         <p>
             In the example above the type 1 districts Biswanath and Hojai were formed from the parent district Sonitpur and Nagaon, respectively. For example, to calculate the NFHS-5 Unsafe abortion values, the new district (Biswanath) takes the same value for its parent district (Sonitpur). The same is applicable to the 95% Lower and Upper Confidence Intervals (CI) as shown in the table below:
         </p>
 
+        <div id='table1' className='px-5'>
+            <div className='text-center'><b>Table 1.</b> Example of indicator's value assignment for type 1 districts</div>
+            <Table hover striped='columns'>
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td colSpan={4} className='text-center'>Unsafe Abortion Value</td>
+                    </tr>
+                    <tr>
+                        <td>District</td>
+                        <td>NFHS-4 (mean value)</td>
+                        <td>NFHS-5 (mean value)</td>
+                        <td>NFHS-4 (lower CI)</td>
+                        <td>NFHS-5 (upper CI)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sonitpur</td><td>21.3</td><td>35.9</td><td>8.8</td><td>43.0</td>
+                    </tr>
+                    <tr>
+                        <td>Biswanath</td><td>21.3</td><td>43.5</td><td>8.8</td><td>43.0</td>
+                    </tr>
+                    <tr>
+                        <td>*Sonitpur</td><td>21.3</td><td>35.9</td><td>8.8</td><td>43.0</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colSpan={5}>
+                        Notes: *Sonitpur is the altered version of Sonitpur from NFHS-4 after Biswanath was created from it.
+                        </td>
+                    </tr>
+                </tfoot>
+            </Table>
+        </div>
+
         <p>
-            For type 2 districts, which were formed by adding areas from two or more parent districts, we assigned the average indicator’s value of the respective parent district (Figure 4 and Table 2).
+            For type 2 districts, which were formed by adding areas from two or more parent districts, we assigned the average indicator's value of the respective parent district (Figure 4 and Table 2).
         </p>
 
-        <Figure src={''} label='type2' number='4' 
-            caption={'Example of type 2 districts (Assam State)'}/>
+        <Figure src={type2} label='type2' number='4' width='450px'
+            caption={'Example of type 2 districts (Gujarat State)'}/>
+
+        <p>
+            In the example above the type 2 district Botad was formed from the parent districts Ahmadabad and Bhavnagar.
+        </p>
+        
+        <div id='table2' className='px-5'>
+            <div className='text-center'><b>Table 2.</b> Example of indicator's value assignment for type 2 districts</div>
+            <Table hover striped='columns'>
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td colSpan={4} className='text-center'>Total Fertility Rate</td>
+                    </tr>
+                    <tr>
+                        <td>District</td>
+                        <td>NFHS-4 (mean value)</td>
+                        <td>NFHS-5 (mean value)</td>
+                        <td>NFHS-4 (lower CI)</td>
+                        <td>NFHS-5 (upper CI)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ahmadabad</td><td>0.256</td><td>0.284</td><td>0.067</td><td>0.621</td>
+                    </tr>
+                    <tr>
+                        <td>Bhavnagar</td><td>0.000</td><td>0.000</td><td>n/a</td><td>n/a</td>
+                    </tr>
+                    <tr>
+                        <td>Botad</td><td>0.128</td><td>0.000</td><td>0.067</td><td>0.621</td>
+                    </tr>
+                    <tr>
+                        <td>*Ahmadabad</td><td>0.256</td><td>1.712</td><td>0.067</td><td>0.621</td>
+                    </tr>
+                    <tr>
+                        <td>*Bhavnagar</td><td>0.000</td><td>1.794</td><td>0.067</td><td>0.621</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colSpan={5}>
+                        Notes: *Ahmadabad and *Bhavnagar are the altered versions of Ahmadabad and Bhavnagar from NFHS-4 after Botad was created from it.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan={5}>
+                        n/a = not applicable, only *Ahmadabad and *Bhavnagar are part of NFHS-5
+                        </td>
+                    </tr>
+                </tfoot>
+            </Table>
+        </div>
 
         <p>
             Out of 36 states, 22 states have neither type 1 nor type 2 boundaries, these states are listed below with their numbers of unchanging district boundaries, that is, same number of boundaries in 2015-16 and 2019-21 (Table 3).
         </p>
+        <div id='table3' className='px-5'>
+            <div className='text-center'><b>Table 3.</b> Number of districts in each state in 2019-21</div>
+
+            <Table hover striped='columns' size='lg'>
+                <thead>
+                    <tr>
+                        <td>No.</td>
+                        <td>State</td>
+                        <td>Total Districts in 2019-2021</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {ContentTab3.map((row,i) => {
+                        return (
+                            <tr key={i}>
+                                <td>{i+1}</td>
+                                <td>{row.State}</td>
+                                <td>{row.Count}</td>
+                            </tr>
+                        )
+                    })}
+                </tbody>
+                <tfoot>
+                    <tr style={{fontWeight:'bold'}}>
+                        <td colSpan={2}>SUM</td><td>307</td>
+                    </tr>
+                </tfoot>
+            </Table>
+        </div>
 
         <p>
             These constitute 307 out of 707 districts that have not changed boundaries to either type 1 or type 2. The remaining 400 districts fall within 14 states, and all have type 1 districts, the only states without type 2 district boundaries are Assam, Chhattisgarh, Haryana, Madhya Pradesh, Maharashtra, Meghalaya, Punjab, Tripura, and West Bengal states.
@@ -91,15 +434,57 @@ function FirstNote() {
             The following are the number of type 1 and type 2 districts with the total districts in each respective year, stating the number of new districts created in each state (Table 4).
         </p>
 
+        <div id='table4' className='px-5'>
+            <div className='text-center'><b>Table 4.</b> Number of districts in each state in 2019-21</div>
+            <Table hover striped='columns' size='lg'>
+                <thead>
+                    <tr>
+                        <td>No.</td>
+                        <td>State</td>
+                        <td>Type-1 Districts</td>
+                        <td>Type-2 Districts</td>
+                        <td>Total Districts in 2015-2016</td>
+                        <td>Total Districts in 2019-2021</td>
+                        <td>New Districts</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {ContentTab4.map((row, i) => {
+                        return (
+                            <tr key={i}>
+                                <td>{i+1}</td>
+                                <td>{row.State}</td>
+                                <td>{row.Type1}</td>
+                                <td>{row.Type2}</td>
+                                <td>{row.Count15}</td>
+                                <td>{row.Count19}</td>
+                                <td>{row.New}</td>
+                            </tr>
+                        )
+                    })}
+                </tbody>
+                <tfoot>
+                    <tr style={{fontWeight:'bold'}}>
+                        <td colSpan={2}>Total</td>
+                        <td></td>
+                        <td></td>
+                        <td>333</td>
+                        <td>400</td>
+                        <td>67</td>
+                    </tr>
+                </tfoot>
+            </Table>
+        </div>
+
         <Accordion className='mb-3'>
-            <AccordionItem>
-                <AccordionHeader>
+            <Accordion.Item>
+                <Accordion.Header>
                     Changes on the listed states.
-                </AccordionHeader>
-                <AccordionBody>
-                    Bla.. bla.. bla..
-                </AccordionBody>
-            </AccordionItem>
+                </Accordion.Header>
+                <Accordion.Body>
+                    <ContentChanges />
+                </Accordion.Body>
+            </Accordion.Item>
         </Accordion>
 
         <h5>Step 2. Rasterization and harmonisation to national official boundaries to enable over time comparisons</h5>
@@ -107,7 +492,7 @@ function FirstNote() {
         <p>
             With indicator values for the 707 NFHS-5 districts in table format, these are joined to the NFHS-5 district boundary shapefile using a common attribute (State_District). For each indicator and confidence intervals within the joined table, the shapefile is rasterized, to match the raster properties (coordinate system, cell size and grid alignment) derived from a common mastergrid of the national boundaries (<a href='#reference'>WorldPop et al, 2018</a>). The rasterized indicator values are then summarized using the district level official boundaries of India (Ministry of Science and Technology, Government of India) by using a GIS tool that calculates the zonal statistics using R (2021) software. This produces statistics (mean and median) from all the raster cells that sit within each district boundary so that indicator values are generated for each of the 742 districts. Medians were used to summarise the indicators of interest. This outputted table can be exported as a csv file or shapefile. A flowchart of the steps can be found in Figure 5.
         </p>
-        <Figure src={''} label='flowchart' number='5' 
+        <Figure src={workflow} label='flowchart' number='5' 
             caption={'Flowchart illustrating the process of convering indicator values from NFHS-5 district boundaries to official distric boundaries'}/>
 
         <div id='reference'>
@@ -134,7 +519,7 @@ function SecondNote() {
         <hr/>
         <h4>Background</h4>
         <p>
-            We have produced 5x5km high-resolution (also referred to as grid level) prediction and uncertainty maps illustrating changes over time for health and development indicators within specific subnational areas, such as districts or similar administrative divisions varying by country. Our methodology relies on data from the two most recent rounds of the nationally representative Demographic and Health Surveys (DHS), which are available at the cluster level, and mapped through GPS coordinates of the cluster centres. In the case of India, we utilised the National Family Health Surveys (NFHS), specifically NFHS-4 (2015-16) denoted as Round 1, and NFHS-5 (2019-22) denoted as Round 2. Measuring changes between these survey rounds allows us to track and assess the progress of the health and development indicators over time.
+            We have produced 5x5km high-resolution (also referred to as grid level) prediction and uncertainty maps illustrating changes over time for health and development indicators within specific subnational areas, such as districts or similar administrative divisions varying by country. Our methodology relies on data from the two most recent rounds of the nationally representative Demographic and Health Surveys (DHS), which are available at the cluster level, and mapped through GPS coordinates of the cluster centres. In the case of India, we utilised the National Family Health Surveys (NFHS), specifically NFHS-4 (2015-16) denoted as Round 1, and NFHS-5 (2019-22) denoted as Round 2. Measuring changes between these survey rounds allows us to track and assess the progress of the health and development indicators over time
         </p>
         <p>
             To ensure the reliability of our estimates of the changes within each subnational area, we employed exceedance probability to quantify our confidence in these observed changes. Exceedance probability, commonly applied in environmental and risk analysis <a hfer='#reference'>Richards et al., 2014</a>, assesses the likelihood of an event surpassing a specific limit within a defined period (<a href='#reference'>Soch, 2020</a>). In simpler terms, exceedance probability helps us assess potential improvements or worsening of our health and development indicators. We express this likelihood as a percentage, indicating the probability of an indicator exceeding our defined threshold. For this work, we use the statistical significance levels of 90% (likely), 95% (highly likely), and 99% (almost certain). 
@@ -167,7 +552,7 @@ function SecondNote() {
                 The ECDF at zero for each district indicates the proportion of samples equal to or less than zero. This informs us of the probability, given the data, that the true change is less than or equal to zero. 
             </li>
             <li>
-                The complement of the ECDF at zero, calculated as 1 – ECDF(0), tells us the proportion of samples greater than zero. This provides the probability, given the data, that the true change is greater than zero (see <a href='#fig-exceedance'>Figure 1b</a>). 
+                The complement of the ECDF at zero, calculated as 1 - ECDF(0), tells us the proportion of samples greater than zero. This provides the probability, given the data, that the true change is greater than zero (see <a href='#fig-exceedance'>Figure 1b</a>). 
             </li>
         </ol>
 
@@ -184,15 +569,10 @@ function SecondNote() {
             </li>
         </ol>
 
-        <figure id='fig-exceedance'>
-            <div className="blockquote text-center">
-                <img alt='exceedance' src={exceedance} width='80%'/>
-            </div>
-            <figcaption className="blockquote-footer text-center">
-                <b>Figure 1.</b> Workflow highlighting some of the key steps of the process described in the Outline for implementing and applying exceedance probability using the indicator ANC4+ in selected districts in India. Panel (a) links to Step 1.3 in the Outline and shows the samples of district level estimates for the change over time between NFHS-4 (Round 1) and NFHS-5 (Round2) for the ANC4+ indicator in the state of Odisha, India. Panel (b) links to Step 2.3 in the Outline and shows the histograms and proportions of samples for estimates of change over time in two districts within the state of Odisha, India. Panel (c) links to Step 3 in the Outline and is a visual representation of how changing significance levels affect the confidence (uncertainty) around the estimated improvement of ANC4+ over time for the selected districts. 
-            </figcaption>
-        </figure>
-
+        <Figure src={exceedance}
+            label='fig-exceedance' 
+            number='1'
+            caption={'Workflow highlighting some of the key steps of the process described in the Outline for implementing and applying exceedance probability using the indicator ANC4+ in selected districts in India. Panel (a) links to Step 1.3 in the Outline and shows the samples of district level estimates for the change over time between NFHS-4 (Round 1) and NFHS-5 (Round2) for the ANC4+ indicator in the state of Odisha, India. Panel (b) links to Step 2.3 in the Outline and shows the histograms and proportions of samples for estimates of change over time in two districts within the state of Odisha, India. Panel (c) links to Step 3 in the Outline and is a visual representation of how changing significance levels affect the confidence (uncertainty) around the estimated improvement of ANC4+ over time for the selected districts.'}/>
         </div>
 
         <h4>Methods</h4>
