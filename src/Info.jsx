@@ -31,13 +31,13 @@ const askColorBar = (
 
 const askChangeN = (
     <div>
-        <Illustration/>
         <p>
             The values shown on the map are our "best guess" given the data and modelling but as with any statistics there are a range of plausible values.
         </p>
         <p>
             The slider allows the user to choose the probability that there is meaningful improvement/worsening. The map filters out units where it is unlikely that there have been meaningful improvements.
         </p>
+        <Illustration/>
 
         <b>Technical:</b>
         <p>
@@ -53,13 +53,13 @@ const askChangeN = (
 
 const askChangeP = (
     <div>
-        <Illustration/>
         <p>
             The values shown on the map are our "best guess" given the data and modelling but as with any statistics there are a range of plausible values.
         </p>
         <p>
             The slider allows the user to choose the probability that there is meaningful improvement/worsening. The map filters out units where it is unlikely that there have been meaningful improvements.
         </p>
+        <Illustration/>
 
         <b>Technical:</b>
         <p>
