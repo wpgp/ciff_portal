@@ -47,7 +47,7 @@ const askChangeN = (
             We use that to filter which districts to show on the map. Districts where the exceedance probability is less than the limit, set by the user on the slider, will be filtered out.
         </p>
         <hr/>
-        Find out more on the <a href='#tech-note-2' target='_blank'>Technical Note 2</a> page.
+        Find out more on the <a href='#tech-note-2' target='_blank'>Tech Note 2</a> page.
     </div>
 )
 
@@ -69,7 +69,7 @@ const askChangeP = (
             We use that to filter which districts to show on the map. Districts where the exceedance probability is less than the limit, set by the user on the slider, will be filtered out.
         </p>
         <hr/>
-        Find out more on the <a href='#tech-note-2' target='_blank'>Technical Note 2</a> page.
+        Find out more on the <a href='#tech-note-2' target='_blank'>Tech Note 2</a> page.
     </div>
 )
 
