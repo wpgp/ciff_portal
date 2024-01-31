@@ -58,8 +58,19 @@ Table thead{
   margin: 0 0 0 0;
 }
 
-.main-body {
-  padding: 20px 40px 0 40px;
+.popover {
+  z-index: 4000;
+}
+
+.popover-body {
+  max-height: 60vh;
+  overflow-y: auto;
+  font-size: small;
+}
+
+.modal {
+  background-color: rgba(255,255,255,0.5);
+  z-index: 5000;
 }
 
 .nav-item {

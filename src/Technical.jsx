@@ -1,5 +1,5 @@
-import { Accordion, Row, Col, Table, Card } from 'react-bootstrap'
-import exceedance from './assets/exceedance.png'
+import { Accordion, Row, Col, Table, Card, Image } from 'react-bootstrap'
+import exceedance from './assets/exceedance-2.png'
 import aggregation from './assets/aggregation.png'
 import disaggregation from './assets/disaggregation.png'
 import type1 from './assets/type-1.png'
@@ -17,8 +17,8 @@ export default function Technical({which}) {
 function Figure ({src, label, number, caption, width='80%'}){
     return (
         <div id={label} className='m-2 text-center'>
-            <div>
-                <img alt={label} src={src} width={width}/>
+            <div className='text-center'>
+                <Image alt={label} src={src}/>
             </div>
             <figcaption className="text-center">
                 <b>Figure {number}.</b> {caption}
@@ -211,26 +211,26 @@ const ListOfChanges = [
 
 function DetailCard({obj}) {
     return (
-        <Row>
-            <Card border='primary' style={{width:'23rem'}}>
+        <div>
+            <Card border='primary'>
                 <Card.Body>
                     <Card.Title>{obj.title}</Card.Title>
                     <Card.Subtitle>{obj.subtitle ? obj.subtitle : ''}</Card.Subtitle>
                     {obj.items ? 
                     <Card.Text>
-                        <blockquote>
+                        <div>
                             <ul>
                             {obj.items.map((item, i) => {
                                 return (<li key={i}>{item}</li>)
                             })}
                             </ul>
-                        </blockquote>
+                        </div>
                     </Card.Text>
                     : ''
                     }
                 </Card.Body>
             </Card>
-        </Row>
+        </div>
     )
 }
 
@@ -251,12 +251,12 @@ function FirstNote() {
       <div className='bg-light rounded-4 p-3'>
         <h2>Technical Note 1</h2>
         <h3>
-            Managing Over Time Changing Boundaries
+        Managing over time changing boundaries and harmonising boundaries from round 1 (NFHS-4) to round 2 (NFHS-5) and national official boundaries to enable over time comparisons
         </h3>
         <hr/>
         <h4>Background</h4>
         <p>
-            The India NFHS surveys are constructed to be representative at national, province and district level for most of the indicators. In the case of rare events indicators such as stillbirth rates, or where more sophisticated estimation methods were needed such as mortality rates (child and neonatal mortality rates), indicators were constructed and mapped at district level using the surveys. Specifically, for four indicators named, unsafe abortion, neonatal mortality rate, child mortality rate and stillbirth rate we used a two-step approach: <b>Step 1</b>. We followed the methods described in <a href='#reference'>Subramaniam et al. (2021)</a> and <a href='#reference'>Ulahannan et al. (2022)</a> to match the 2015-16 NFHS-4 data to 2019-21 NFHS-5 boundaries (ICF. The Demographic and Health Surveys Program Spatial Data Repository), in order to be able to compare changing districts over time; <b>Step 2</b>. Once all data were available at NFHS-5 boundaries, we rasterised the data for the whole country and then aggregated the data using the district level official boundaries of India (Ministry of Science and Technology, Government of India), which were used for final display on the online portal. Average values for districts were used for aggregation.
+            The India NFHS surveys are constructed to be representative at national, province and district level for most of the indicators. In the case of rare events indicators such as stillbirth rates, or where more sophisticated estimation methods were needed such as mortality rates (child and neonatal mortality rates), indicators were constructed and mapped at district level using the surveys. Specifically, for four indicators named, unsafe abortion, neonatal mortality rate, child mortality rate and stillbirth rate we used a two-step approach: <b>Step 1</b>. We followed the methods described in Subramaniam et al. (2021) and Ulahannan et al. (2022) to match the 2015-16 NFHS-4 data to 2019-21 NFHS-5 boundaries (ICF. The Demographic and Health Surveys Program Spatial Data Repository), in order to be able to compare changing districts over time; <b>Step 2</b>. Once all data were available at NFHS-5 boundaries, we rasterised the data for the whole country and then aggregated the data using the district level official boundaries of India (Ministry of Science and Technology, Government of India), which were used for final display on the online portal. Average values for districts were used for aggregation.
         </p>
         <p>
             For child worker, census estimates were used to calculate the indicator, and only had one point in time was available. Since census boundaries aligned with NFHS-4 boundaries, the same two-step approached as described above was applied.
@@ -284,7 +284,7 @@ function FirstNote() {
             caption={'States agregation example'}/>
 
         <p>
-            For the additional 67 districts, data from NFHS-4 are not available therefore, to be able to compare changes in indicators aggregated at the district level, we applied a simple methodology to harmonize geographical boundaries across the two time periods and assign the corresponding indicator value following <a href='#reference'>Subramaniam et al. (2021)</a> and <a href='#reference'>Ulahannan et al. (2022)</a>. The methodology that we applied involves re-assigning indicators' values calculated from NFHS-4 data to all the 2019-21 NFHS-5 districts. This approach therefore does not make any alterations to the 2019-21 NFHS-5 data that are reported at the district level.
+            For the additional 67 districts, data from NFHS-4 are not available therefore, to be able to compare changes in indicators aggregated at the district level, we applied a simple methodology to harmonize geographical boundaries across the two time periods and assign the corresponding indicator value following Subramaniam et al. (2021) and Ulahannan et al. (2022). The methodology that we applied involves re-assigning indicators' values calculated from NFHS-4 data to all the 2019-21 NFHS-5 districts. This approach therefore does not make any alterations to the 2019-21 NFHS-5 data that are reported at the district level.
         </p>
 
         <p>
@@ -308,21 +308,21 @@ function FirstNote() {
                     </tr>
                     <tr>
                         <td>District</td>
-                        <td>NFHS-4 (mean value)</td>
-                        <td>NFHS-5 (mean value)</td>
+                        <td>NFHS-4 (mean)</td>
                         <td>NFHS-4 (lower CI)</td>
-                        <td>NFHS-5 (upper CI)</td>
+                        <td>NFHS-4 (upper CI)</td>
+                        <td>NFHS-5 (mean)</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Sonitpur</td><td>21.3</td><td>35.9</td><td>8.8</td><td>43.0</td>
+                        <td>Sonitpur</td><td>21.3</td><td>8.8</td><td>43.0</td><td>35.9</td>
                     </tr>
                     <tr>
-                        <td>Biswanath</td><td>21.3</td><td>43.5</td><td>8.8</td><td>43.0</td>
+                        <td>Biswanath</td><td>21.3</td><td>8.8</td><td>43.0</td><td>35.9</td>
                     </tr>
                     <tr>
-                        <td>*Sonitpur</td><td>21.3</td><td>35.9</td><td>8.8</td><td>43.0</td>
+                        <td>*Sonitpur</td><td>21.3</td><td>8.8</td><td>43.0</td><td>35.9</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -356,27 +356,27 @@ function FirstNote() {
                     </tr>
                     <tr>
                         <td>District</td>
-                        <td>NFHS-4 (mean value)</td>
-                        <td>NFHS-5 (mean value)</td>
+                        <td>NFHS-4 (mean)</td>
                         <td>NFHS-4 (lower CI)</td>
-                        <td>NFHS-5 (upper CI)</td>
+                        <td>NFHS-4 (upper CI)</td>
+                        <td>NFHS-5 (mean)</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Ahmadabad</td><td>0.256</td><td>0.284</td><td>0.067</td><td>0.621</td>
+                        <td>Ahmadabad</td><td>0.256</td><td>0.067</td><td>0.621</td><td>0.284</td>
                     </tr>
                     <tr>
-                        <td>Bhavnagar</td><td>0.000</td><td>0.000</td><td>n/a</td><td>n/a</td>
+                        <td>Bhavnagar</td><td>0.000</td><td>n/a</td><td>n/a</td><td>0.000</td>
                     </tr>
                     <tr>
-                        <td>Botad</td><td>0.128</td><td>0.000</td><td>0.067</td><td>0.621</td>
+                        <td>Botad</td><td>0.128</td><td>0.067</td><td>0.621</td><td>0.000</td>
                     </tr>
                     <tr>
-                        <td>*Ahmadabad</td><td>0.256</td><td>1.712</td><td>0.067</td><td>0.621</td>
+                        <td>*Ahmadabad</td><td>0.256</td><td>0.067</td><td>0.621</td><td>1.712</td>
                     </tr>
                     <tr>
-                        <td>*Bhavnagar</td><td>0.000</td><td>1.794</td><td>0.067</td><td>0.621</td>
+                        <td>*Bhavnagar</td><td>0.000</td><td>0.067</td><td>0.621</td><td>1.794</td>
                     </tr>
                 </tbody>
                 <tfoot>
@@ -477,9 +477,9 @@ function FirstNote() {
         </div>
 
         <Accordion className='mb-3'>
-            <Accordion.Item>
+            <Accordion.Item eventKey='0'>
                 <Accordion.Header>
-                    Changes on the listed states.
+                    Click to show the details on the changes.
                 </Accordion.Header>
                 <Accordion.Body>
                     <ContentChanges />
@@ -490,7 +490,7 @@ function FirstNote() {
         <h5>Step 2. Rasterization and harmonisation to national official boundaries to enable over time comparisons</h5>
 
         <p>
-            With indicator values for the 707 NFHS-5 districts in table format, these are joined to the NFHS-5 district boundary shapefile using a common attribute (State_District). For each indicator and confidence intervals within the joined table, the shapefile is rasterized, to match the raster properties (coordinate system, cell size and grid alignment) derived from a common mastergrid of the national boundaries (<a href='#reference'>WorldPop et al, 2018</a>). The rasterized indicator values are then summarized using the district level official boundaries of India (Ministry of Science and Technology, Government of India) by using a GIS tool that calculates the zonal statistics using R (2021) software. This produces statistics (mean and median) from all the raster cells that sit within each district boundary so that indicator values are generated for each of the 742 districts. Medians were used to summarise the indicators of interest. This outputted table can be exported as a csv file or shapefile. A flowchart of the steps can be found in Figure 5.
+            With indicator values for the 707 NFHS-5 districts in table format, these are joined to the NFHS-5 district boundary shapefile using a common attribute (State_District). For each indicator and confidence intervals within the joined table, the shapefile is rasterized, to match the raster properties (coordinate system, cell size and grid alignment) derived from a common mastergrid of the national boundaries (WorldPop et al, 2018). The rasterized indicator values are then summarized using the district level official boundaries of India (Ministry of Science and Technology, Government of India) by using a GIS tool that calculates the zonal statistics using R (2021) software. This produces statistics (mean and median) from all the raster cells that sit within each district boundary so that indicator values are generated for each of the 742 districts. Medians were used to summarise the indicators of interest. This outputted table can be exported as a csv file or shapefile. A flowchart of the steps can be found in Figure 5.
         </p>
         <Figure src={workflow} label='flowchart' number='5' 
             caption={'Flowchart illustrating the process of convering indicator values from NFHS-5 district boundaries to official distric boundaries'}/>
@@ -522,7 +522,7 @@ function SecondNote() {
             We have produced 5x5km high-resolution (also referred to as grid level) prediction and uncertainty maps illustrating changes over time for health and development indicators within specific subnational areas, such as districts or similar administrative divisions varying by country. Our methodology relies on data from the two most recent rounds of the nationally representative Demographic and Health Surveys (DHS), which are available at the cluster level, and mapped through GPS coordinates of the cluster centres. In the case of India, we utilised the National Family Health Surveys (NFHS), specifically NFHS-4 (2015-16) denoted as Round 1, and NFHS-5 (2019-22) denoted as Round 2. Measuring changes between these survey rounds allows us to track and assess the progress of the health and development indicators over time
         </p>
         <p>
-            To ensure the reliability of our estimates of the changes within each subnational area, we employed exceedance probability to quantify our confidence in these observed changes. Exceedance probability, commonly applied in environmental and risk analysis <a hfer='#reference'>Richards et al., 2014</a>, assesses the likelihood of an event surpassing a specific limit within a defined period (<a href='#reference'>Soch, 2020</a>). In simpler terms, exceedance probability helps us assess potential improvements or worsening of our health and development indicators. We express this likelihood as a percentage, indicating the probability of an indicator exceeding our defined threshold. For this work, we use the statistical significance levels of 90% (likely), 95% (highly likely), and 99% (almost certain). 
+            To ensure the reliability of our estimates of the changes within each subnational area, we employed exceedance probability to quantify our confidence in these observed changes. Exceedance probability, commonly applied in environmental and risk analysis Richards et al., 2014, assesses the likelihood of an event surpassing a specific limit within a defined period (Soch, 2020). In simpler terms, exceedance probability helps us assess potential improvements or worsening of our health and development indicators. We express this likelihood as a percentage, indicating the probability of an indicator exceeding our defined threshold. For this work, we use the statistical significance levels of 90% (likely), 95% (highly likely), and 99% (almost certain). 
         </p>
 
         <h4>Outline</h4>
@@ -533,30 +533,31 @@ function SecondNote() {
         <h5>Preparation</h5>
         <ol>
             <li>
-                Sample grid-level estimates from the posterior distributions of the models. These models, processed through the Integrated Nested Laplace Approximation – Stochastic Partial Differential Equation method (INLA-SPDE) (<a href='#reference'>Rue et al., 2009</a>; <a href='#reference'>Lindgren et al., 2011</a>; <a href='#reference'>Martins et al., 2013</a>), pertain to the two rounds of survey data for ANC4+. 
+                Sample grid-level estimates from the posterior distributions of the models. These models, processed through the Integrated Nested Laplace Approximation – Stochastic Partial Differential Equation method (INLA-SPDE) (Rue et al., 2009; Lindgren et al., 2011; Martins et al., 2013), pertain to the two rounds of survey data for ANC4+. 
             </li>
             <li>
                 Derive grid-level change estimate samples by calculating the difference between the grid-level estimate samples of Round 2 and Round 1. 
             </li>
             <li>
-                Aggregate the grid level change estimate samples to the subnational level, specifically at the district level, to obtain district level change estimate samples (see <a href='#fig-exceedance'>Figure 1a</a>). 
+                Aggregate the grid level change estimate samples to the subnational level, specifically at the district level, to obtain district level change estimate samples (see Figure 1a). 
             </li>
         </ol>
 
         <h5>Implementation</h5>
         <ol>
             <li>
-                The district level change estimate samples can be depicted using an empirical cumulative density function (ECDF) (<a href='#dekking2005'>Dekking et al., 2005</a>). The ECDF offers insights into the probability, given the data, that the true change is equal to or less than a specified value. It derives from the proportion of samples that are equal to or less than the specified value. For change in ANC4+, we are interested in the district estimate value zero, because we want to observe where there have been meaningful improvements for ANC4+.  
+                The district level change estimate samples can be depicted using an empirical cumulative density function (ECDF) (Dekking et al., 2005). The ECDF offers insights into the probability, given the data, that the true change is equal to or less than a specified value. It derives from the proportion of samples that are equal to or less than the specified value. For change in ANC4+, we are interested in the district estimate value zero, because we want to observe where there have been meaningful improvements for ANC4+.  
             </li>
             <li>
                 The ECDF at zero for each district indicates the proportion of samples equal to or less than zero. This informs us of the probability, given the data, that the true change is less than or equal to zero. 
             </li>
             <li>
-                The complement of the ECDF at zero, calculated as 1 - ECDF(0), tells us the proportion of samples greater than zero. This provides the probability, given the data, that the true change is greater than zero (see <a href='#fig-exceedance'>Figure 1b</a>). 
+                The complement of the ECDF at zero, calculated as 1 - ECDF(0), tells us the proportion of samples greater than zero. This provides the probability, given the data, that the true change is greater than zero (see Figure 1b). 
             </li>
         </ol>
 
         <h5>Application</h5>
+        <div>
         <ol>
             <li>
                 To ensure a high level of certainty (95% certain) that district level estimates are greater than zero, compare the probability (or proportion) obtained with 95% (or 0.95). Adjust the slider in the Portal to highlight districts where improvements are highly certain (95% certain). 
@@ -565,10 +566,11 @@ function SecondNote() {
                 Conversely, if the probability (or proportion) is below 95% (less than 0.95), it indicates a lack of high certainty (95% certain) regarding meaningful improvements in those districts. 
             </li>
             <li>
-                Steps 1 and 2 can be repeated for various certainty levels (see <a href='#fig-exceedance'>Figure 1c</a>).
+                Steps 1 and 2 can be repeated for various certainty levels (see Figure 1c).
             </li>
         </ol>
-
+        </div>
+        <br/>
         <Figure src={exceedance}
             label='fig-exceedance' 
             number='1'
@@ -580,7 +582,7 @@ function SecondNote() {
             In examining changes in ANC4, we employed the statistical method INLA-SPDE to estimate ANC4+ values. This method generates “best estimations” (posterior distributions) based on available data, enabling us to predict potential ANC4 values. By comparing these values across different survey rounds, we obtain samples representing changes at grid and district levels.
         </p>
         <p>
-            To ensure reliability in these estimates, we utilised the ECDF. The ECDF visually represents the likelihood of observing specific changes in ANC4+. For example, the ECDF at zero indicates the likelihood of observing changes equal to or less than zero in ANC4+. Its complement, calculated as 1 minus the ECDF value at zero, informs us about the probability, given the data, of observing changes greater than zero (see <a href='#fig-exceedance'>Figure 1c</a>). We then apply this information by comparing probabilities from the ECDF at zero against a 95% threshold, illustrated in Figure 1d, to highlight districts where improvements are highly certain (95% certain).  
+            To ensure reliability in these estimates, we utilised the ECDF. The ECDF visually represents the likelihood of observing specific changes in ANC4+. For example, the ECDF at zero indicates the likelihood of observing changes equal to or less than zero in ANC4+. Its complement, calculated as 1 minus the ECDF value at zero, informs us about the probability, given the data, of observing changes greater than zero (see Figure 1c). We then apply this information by comparing probabilities from the ECDF at zero against a 95% threshold, illustrated in Figure 1d, to highlight districts where improvements are highly certain (95% certain).  
         </p>
 
         <h4>Conclusion</h4>

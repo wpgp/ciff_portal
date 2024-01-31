@@ -1,5 +1,5 @@
 import { Routes, Route, Outlet, Link } from 'react-router-dom'
-import { Nav, Navbar, Modal, NavDropdown } from 'react-bootstrap'
+import { Nav, Navbar, NavDropdown } from 'react-bootstrap'
 import logoWP from './assets/wp_navy.png'
 import logoCIFF from './assets/logo_ciff.png'
 import MainApp from './MainApp'
@@ -48,8 +48,8 @@ function Layout() {
                 <Nav.Link href='#about'><i className='pi pi-info-circle mx-1'></i>About</Nav.Link>
                 <Nav.Link href='#guide'><i className='pi pi-question-circle mx-1'></i>Guide</Nav.Link>
                 <NavDropdown href='' title={<span><i className='pi pi-book mx-1'></i>Tech Note</span>}>
-                  <NavDropdown.Item href='#tech-note-1'>Technical Note 1</NavDropdown.Item>
-                  <NavDropdown.Item href='#tech-note-2'>Technical Note 2</NavDropdown.Item>
+                  <NavDropdown.Item href='#tech-note-1'>Tech Note 1</NavDropdown.Item>
+                  <NavDropdown.Item href='#tech-note-2'>Tech Note 2</NavDropdown.Item>
                 </NavDropdown>
               </Nav>
             </Navbar.Collapse>

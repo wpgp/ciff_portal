@@ -1,4 +1,4 @@
-import { React, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import ReactDOM from 'react-dom/client';
 import { useTable, useSortBy } from 'react-table';
 import { Vega } from 'react-vega';
@@ -226,18 +226,40 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
     </div>
   )
 
-  const round2 = (description['R2'] !== 'No data') ? ` In round 2, (${description['R2']}, ${description['Y2']}) the figure is ${hilite[1]['avg']}${description['Unit']}.` : ''
+  const round2 = (description['R2'] !== 'No data') ? ` In round 2, (${description['R2']}, ${description['Y2']}) the figure was ${hilite[1]['avg']}${description['Unit']}.` : ''
 
   const summaryTab = (
     <div style={{fontSize:'90%'}}>
+      <div className='row p-2'>
+        <Table striped bordered hover size='sm'>
+          <thead>
+            <tr>
+              <td>
+                <Ask about='How to read table' />
+              </td><td>Round 1</td><td>Round 2</td><td>Change</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{country.Adm1} Level Average</td><td>{hilite[0]['avg']}</td><td>{hilite[1]['avg']}</td><td>{hilite[2]['avg']}</td>
+            </tr>
+            <tr>
+              <td>Highest Performing</td><td>{hilite[0]['best']}</td><td>{hilite[1]['best']}</td><td>{hilite[2]['best']}</td>
+            </tr>
+            <tr>
+              <td>Least Performing</td><td>{hilite[0]['worst']}</td><td>{hilite[1]['worst']}</td><td>{hilite[2]['worst']}</td>
+            </tr>
+          </tbody>
+        </Table>
+      </div>
+
       <p>
-        In the {adm1} of <b>{stateName}</b>, approximately {hilite[0]['avg']}{description['Statement']} in round 1 ({description['R1']}, {description['Y1']}).
+        In the {adm1} of <b>{stateName}</b>, {description['Pre-Statement']} approximately {hilite[0]['avg']}{description['Statement']} in round 1 ({description['R1']}, {description['Y1']}).
         {round2}
       </p>
       <p>
-        The {adm2} of <b>{hilite[2]['best']}</b> experienced the highest {pIndicator.includes(indicator) ? 'increase': 'decrease (lowest increase)'} in {description['Unit']} of {(description['Indicator']).toLowerCase()} with a {hilite[2]['bestVal']}{description['Unit']} change from round 1 ({description['R1']}, {description['Y1']}) to round 2 ({description['R2']}, {description['Y2']}), showing an improvement in conditions.
+        The {adm2} of <b>{hilite[2]['best']}</b> experienced the highest {pIndicator.includes(indicator) ? 'increase': 'decrease (lowest increase)'} of {(description['Indicator']).toLowerCase()} with a {hilite[2]['bestVal']}{description['Unit']} change from round 1 ({description['R1']}, {description['Y1']}) to round 2 ({description['R2']}, {description['Y2']}), showing an improvement in conditions.
       </p>
-      <p><span onClick={() => showIndicators()}><BsBarChartFill/></span> Compare with other indicators</p>
     </div>
   )
 
@@ -300,38 +322,13 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
     <div className='row m-0 p-0'>
       <div className='title'>Detailed Data</div>
       <div className='pt-1 pb-2 frame' style={{fontSize:'100%'}}>
+        <h5>{stateName} ({data0.length} {adm2}s)</h5>
         <div>
           <p>{country.Adm2} and {adm1} level summary estimates are presented for the selected indicators and for each survey round and for the change between the two rounds.</p>
           <p>A summary chart for all indicators is also displayed, and it shows {country.Adm1} level aggregated values for all indicators and for each of the selected {country.Adm1}.</p>
         </div>
       </div>
     
-      <div className='row m-0 info'>
-        <h5 style={{padding:'5px', borderRadius:'5px', background:'#cfcccc', color:'#000'}}>{stateName} ({data0.length} {adm2}s)</h5>
-        <div className='row m-0 p-0'>
-          <Table striped bordered hover size='sm'>
-            <thead>
-              <tr>
-                <td>
-                  <Ask about='How to read table' />
-                </td><td>Round 1</td><td>Round 2</td><td>Change</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{country.Adm1} Level Average</td><td>{hilite[0]['avg']}</td><td>{hilite[1]['avg']}</td><td>{hilite[2]['avg']}</td>
-              </tr>
-              <tr>
-                <td>Highest Performing</td><td>{hilite[0]['best']}</td><td>{hilite[1]['best']}</td><td>{hilite[2]['best']}</td>
-              </tr>
-              <tr>
-                <td>Least Performing</td><td>{hilite[0]['worst']}</td><td>{hilite[1]['worst']}</td><td>{hilite[2]['worst']}</td>
-              </tr>
-            </tbody>
-          </Table>
-        </div>
-      </div>
-
       <Tabs
         defaultActiveKey="summary"
         id="data-tabs"

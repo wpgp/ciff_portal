@@ -7,7 +7,7 @@ export default function About() {
           This web application presents a summary of family health conditions at subnational scales. Multiple indicators are presented in map, chart, and tabulated form.
         </p>
         
-        <h3>Methods</h3>
+        <h4>Methods</h4>
         <p>
           The estimates presented in this portal are the result of a standard modelling approach for estimating high resolution maps and there may be deviations from aggregated measures published elsewhere.
         </p>
@@ -15,7 +15,7 @@ export default function About() {
           For more information, please refer to the related previously published work here: <a href='https://doi.org/10.1038/s41597-023-01961-2' target='_blank'>Pezzulo et al. (2023)</a>.
         </p>
 
-        <h3>Disclaimer</h3>
+        <h4>Disclaimer</h4>
         <p>
           Maps used on this website are for general illustration only, and are not intended to be used for reference purposes.
         </p>
@@ -23,7 +23,7 @@ export default function About() {
           The representation of political boundaries does not necessarily reflect the organization's view on the legal status of a country or territory.
         </p>
 
-        <h3>Acknowledgement</h3>
+        <h4>Acknowledgement</h4>
         <ul>
           <li>
             Administrative Boundary of India: Ministry of Science and Technology, Government of India. Survey of India. Online Maps Portal. Administrative Boundary Database (<a href='https://onlinemaps.surveyofindia.gov.in/Digital_Product_Show.aspx'>OVSF/1M/7</a>). Accessed 09 January 2023.

@@ -10,7 +10,7 @@ export default function Guide() {
       <hr/>
 
       <div className='row'>
-        <div className='col-5'>
+        <div className='col-md-5 mb-2'>
           <ol>
             <li>Select a country and indicator to display. A subnational map of the indicator will be displayed on the left.</li>
             <li>By default, indicator value from the Round 1 survey is displayed on the map.</li>
@@ -26,9 +26,11 @@ export default function Guide() {
             <li>Chart and tabulated data for the selected unit is displayed on the right. The data can be sorted according to the sub-unit name or the indicator values.</li>
             <li>The aggregated values of all indicators from the selected unit can also be seen on the panel.</li>
           </ol>
+          <hr/>
+          <span>.</span>
         </div>
 
-        <div className='col-7 text-center'>
+        <div className='col-md-7 text-center'>
           <img alt='guide' src={guide1} width='100%'/>
           <img alt='guide' src={guide2} width='98%'/>
           <img alt='guide' src={guide3} width='98%'/>

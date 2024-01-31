@@ -1,5 +1,7 @@
-import { OverlayTrigger, Popover } from "react-bootstrap"
+import { useState } from "react"
+import { OverlayTrigger, Popover, Modal, Button } from "react-bootstrap"
 import { BsQuestionCircleFill } from "react-icons/bs"
+import exceedance from './assets/exceedance.png'
 
 const askTable = (
     <div>
@@ -29,6 +31,7 @@ const askColorBar = (
 
 const askChangeN = (
     <div>
+        <Illustration/>
         <p>
             The values shown on the map are our "best guess" given the data and modelling but as with any statistics there are a range of plausible values.
         </p>
@@ -44,12 +47,13 @@ const askChangeN = (
             We use that to filter which districts to show on the map. Districts where the exceedance probability is less than the limit, set by the user on the slider, will be filtered out.
         </p>
         <hr/>
-        Find out more on the <a href='#tech-note-1' target='_blank'>Tech Note</a> page.
+        Find out more on the <a href='#tech-note-2' target='_blank'>Technical Note 2</a> page.
     </div>
 )
 
 const askChangeP = (
     <div>
+        <Illustration/>
         <p>
             The values shown on the map are our "best guess" given the data and modelling but as with any statistics there are a range of plausible values.
         </p>
@@ -65,7 +69,7 @@ const askChangeP = (
             We use that to filter which districts to show on the map. Districts where the exceedance probability is less than the limit, set by the user on the slider, will be filtered out.
         </p>
         <hr/>
-        Find out more on <a href='#tech-note-2' target='_blank'>the Tech Note page</a>
+        Find out more on the <a href='#tech-note-2' target='_blank'>Technical Note 2</a> page.
     </div>
 )
 
@@ -75,16 +79,36 @@ const askBoundaries = (
             While the surveys were designed to be representative at the district level, caution is advised in interpreting and utilizing the findings due to the inherent limitations posed by small sample sizes for the mentioned indicators. Furthermore, it is important to note that the indicators discussed herein are rare events, further emphasizing the need for careful consideration and caution in their interpretation, given the limited sample sizes at the district level.
         </p>
         <p>
-            See <a href='#tech-note-1' target='_blank'>Technical Note Managing Over Time Changing Boundaries</a> from round 1 (NFHS-4) to round 2 (NFHS-5) and national official boundaries to enable over time comparisons.
+            See <a href='#tech-note-1' target='_blank'>Technical Note 1</a> from round 1 (NFHS-4) to round 2 (NFHS-5) and national official boundaries to enable over time comparisons.
         </p>
     </div>
 )
 
 const askChildWorker = (
     <div>
-        Since census boundaries aligned with NFHS-4 boundaries, the same two-step approached as described in the <a href='#tech-note-1'>Technical Note</a> was applied.
+        Since census boundaries aligned with NFHS-4 boundaries, the same two-step approached as described in the <a href='#tech-note-1'>Technical Note 1</a> was applied.
     </div>
 )
+
+function Illustration(){
+    const [show,setShow] = useState(false)
+    function handleShow(){setShow(true)}
+    function handleHide(){setShow(false)}
+
+    return (
+        <div className="text-center m-0 p-0 mb-2">
+            <Button variant='danger' size='sm' onClick={handleShow}>Illustration</Button>
+
+            <Modal show={show} onHide={handleHide} size='lg'>
+                <Modal.Header closeButton><h4>Illustration</h4></Modal.Header>
+                <Modal.Body>
+                    <img alt='exceedance' src={exceedance} width='100%'/>
+                </Modal.Body>
+            </Modal>
+        </div>
+    )
+}
+
 export function Ask({ about, positive=true}){
     const askAbout = {
         'How to read table': askTable,
@@ -105,7 +129,7 @@ export function Ask({ about, positive=true}){
 
     return (
         <OverlayTrigger trigger={'click'} placement='bottom-start' overlay={overlay}>
-        <span className='mx-1' title={about}><BsQuestionCircleFill/></span>
+            <span className='mx-1' title={about}><BsQuestionCircleFill/></span>
         </OverlayTrigger>
     )
 }

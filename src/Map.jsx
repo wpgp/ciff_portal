@@ -313,6 +313,14 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
     const [showImprove, setShowImprove] = useState('');
     const [coords, setCoords] = useState({lat:0, lng:0, val:0, remark:mapper[opt]});
     const [probLimit, setProbLimit] = useState(0);
+
+    useEffect(() => {
+      setOpt('R1')
+      setRaster(false)
+      setShowLabel(false)
+      setShowImprove('')
+      setProbLimit(0)
+    }, [indicator])
     
     const noPE = ['NMR', 'CHMR', 'Teen_Pregn', 'Lab_child', 'Stillbirth']
     const disableRange = noPE.includes(indicator);
@@ -596,21 +604,21 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
 
           {/* FILTER BY CHANGE */}
           <div className='row m-0 p-0' id='optionCI' style={{display:'none'}}>
-            <div className='row m-0 p-0'>
-              <div className='col-4' style={{minWidth:'50px'}}>
-              <div className='pb-1' style={{fontWeight:'bold'}}>
-                Filter by change
-                <span> </span>
-                <span title='Filtering units based on the change in the indicator'><BsQuestionCircleFill /></span>
+            <div className='row m-0 p-0 pb-2 justify-content-between'>
+              <div className='col-sm-4' style={{minWidth:'50px'}}>
+                <div className='pb-1' style={{fontWeight:'bold'}}>
+                  Filter by change
+                  <span> </span>
+                  <span title='Filtering units based on the change in the indicator'><BsQuestionCircleFill /></span>
+                </div>
+                <BasicSelect
+                  name={'Filter'}
+                  items={['Show Improvement', 'Show Worsening', 'Show All']} 
+                  value={showImprove}
+                  pass={setShowImprove_}
+                />
               </div>
-              <BasicSelect
-                name={'Filter'}
-                items={['Show Improvement', 'Show Worsening', 'Show All']} 
-                value={showImprove}
-                pass={setShowImprove_}
-              />
-              </div>
-              <div className='col-7' style={{minWidth:'50px', display:displaySlider}}>
+              <div className='col-sm-7 bg-danger-subtle rounded-3' style={{minWidth:'50px', display:displaySlider}}>
                 <label className='form-check-label'><b>Change significance</b>: <span id='valueCI'>any (0-100%)</span></label>
                   <Ask about='Note on the change certainty' positive={pIndicator.includes(indicator)}/>
                 <input className='form-range' type='range' id='rangeCI' disabled={disableRange} defaultValue='0' min='0' max='3' step='1' name='CIRange' onChange={() => changeCI('-1')}/><br/>
@@ -650,20 +658,24 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
 
           <Pane name='tiles' style={{zIndex:55}}>
             {mainLayer}
+          </Pane>
+    
+          <Pane name='selected' style={{zIndex:60}}>
             <GeoJSON
               data={selectedState}
               ref={refState}
               style={StateStyle2}
+              zIndex={400}
             />
             <GeoJSON
               data={boundary}
               style={StateStyle}
-              zIndex={500}
-              />
+              zIndex={400}
+            />
           </Pane>
-    
+
           {showLabel ? null :
-          <Pane name='boundary' style={{zIndex:60}}>    
+          <Pane name='boundary' style={{zIndex:65}}>    
             <GeoJSON
               data={boundary}
               style={StateStyle}
