@@ -10,7 +10,9 @@ export default function Guide() {
       <hr/>
 
       <div className='row'>
-        <div className='col-md-5 mb-2'>
+        <div className='col-5'>
+          <div className='pb-3'>
+          <h4>Basic Usage</h4>
           <ol>
             <li>Select a country and indicator to display. A subnational map of the indicator will be displayed on the left.</li>
             <li>By default, indicator value from the Round 1 survey is displayed on the map.</li>
@@ -25,12 +27,22 @@ export default function Guide() {
             <li>Select an administrative unit from the list provided. Selection can also be done by clicking any region on the map.</li>
             <li>Chart and tabulated data for the selected unit is displayed on the right. The data can be sorted according to the sub-unit name or the indicator values.</li>
             <li>The aggregated values of all indicators from the selected unit can also be seen on the panel.</li>
+            <li>Additional information can be accessed by hovering or clicking <i className='pi pi-question-circle'></i>.</li>
+            <li>More technical information regarding the portal (<a href='#tech-note-1'>Tech Note 1</a> and <a href='#tech-note-2'>Tech Note 2</a>) can be accessed through the menu on top.</li>
           </ol>
-          <hr/>
-          <span>.</span>
+          </div>
+
+          <div>
+          <h4>Filtering by change</h4>
+          <ol>
+            <li>The aggregated change at sub-unit level can be filtered using the tool box provided.</li>
+            <li>Use the dropdown to display sub-units with significant improvement or worsening.</li>
+            <li>For indicators with sufficient statistics, the change significance can be adjusted </li>
+          </ol>
+          </div>
         </div>
 
-        <div className='col-md-7 text-center'>
+        <div className='col-7 text-center'>
           <img alt='guide' src={guide1} width='100%'/>
           <img alt='guide' src={guide2} width='98%'/>
           <img alt='guide' src={guide3} width='98%'/>
