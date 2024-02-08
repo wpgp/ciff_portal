@@ -1,3 +1,4 @@
+import ReactPlayer from 'react-player'
 import 'primeicons/primeicons.css'
 import guide1 from './assets/guide-1.png'
 import guide2 from './assets/guide-2.png'
@@ -10,6 +11,13 @@ export default function Guide() {
       <hr/>
 
       <div className='row'>
+        <div className="d-flex justify-content-center mb-4 p-3">
+          <ReactPlayer 
+            url='https://www.youtube.com/watch?v=kSd3E6FfEeo'
+          />
+        </div>
+        <hr/>
+        
         <div className='col-5'>
           <div className='pb-3'>
           <h4>Basic Usage</h4>
@@ -27,17 +35,18 @@ export default function Guide() {
             <li>Select an administrative unit from the list provided. Selection can also be done by clicking any region on the map.</li>
             <li>Chart and tabulated data for the selected unit is displayed on the right. The data can be sorted according to the sub-unit name or the indicator values.</li>
             <li>The aggregated values of all indicators from the selected unit can also be seen on the panel.</li>
-            <li>Additional information can be accessed by hovering or clicking <i className='pi pi-question-circle'></i>.</li>
-            <li>More technical information regarding the portal (<a href='#tech-note-1'>Tech Note 1</a> and <a href='#tech-note-2'>Tech Note 2</a>) can be accessed through the menu on top.</li>
+            <li>Throughout the site, additional information can be accessed by hovering over or clicking on the <i className='pi pi-question-circle'></i> icon where available.</li>
+            <li>For a selected number of indicators, additional technical information were created. <a href='#tech-note-1'>Technical Note 1</a> about "Managing over time changing boundaries and harmonising boundaries from round 1 (NFHS4) to round 2 (NFHS-5) and national official boundaries to enable over time comparisons" can be accessed here and through the drop-down menu on the top right bar of this site.</li>
           </ol>
           </div>
 
           <div>
           <h4>Filtering by change</h4>
-          <ol>
-            <li>The aggregated change at sub-unit level can be filtered using the tool box provided.</li>
-            <li>Use the dropdown to display sub-units with significant improvement or worsening.</li>
-            <li>For indicators with sufficient statistics, the change significance can be adjusted </li>
+          <ol start={9}>
+            <li>Once clicking on Change and District level under Layers, a "Filter by Change" drop-down menu appears. Use the dropdown to display subnational units with significant improvement or worsening through time for the selected indicator.</li>
+            <li>Once the selection has been made, a slider bar showing different levels of significance appears. The slider allows the user to choose the probability that there is meaningful improvement/worsening. The map filters out units where it is unlikely that there have been meaningful improvements.</li>
+            <li>Additional information can be found by clicking on the <i className='pi pi-question-circle'></i> icon on top of the change significance slider.</li>
+            <li>An illustration and <a href='#tech-note-2'>Technical Note 2</a> providing details on "Exceedance Probability and Confidence in Changes Over Time" can be accessed from here and also by using the drop-down "Technical Note" menu on the top right bar of this site.</li>
           </ol>
           </div>
         </div>
