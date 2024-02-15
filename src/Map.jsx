@@ -537,14 +537,14 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
     
     const displaySlider = useMemo(() => {
       let show;
-      if (['ShowImprovement', 'ShowWorsening'].includes(showImprove)) {
+      if (['ShowImprovement', 'ShowWorsening'].includes(showImprove) && !disableRange) {
         show = 'block'
         changeCI('0')
       } else {
         show = 'none'
       }
       return show
-    }, [showImprove])
+    }, [showImprove, disableRange])
 
     const theRadioPanel = useMemo(() => {
       return (
