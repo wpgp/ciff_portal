@@ -385,11 +385,7 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
       return
     }, [showLabel, indicator, minmax, opt, mapper]);
 
-    if (opt === 'CH') {
-      let a = 0.5*(minmax[0] - minmax[1])
-      let b = 0.5*(minmax[1] - minmax[0])
-      minmax = [a,b]
-    }
+    minmax = (opt === 'CH') ? visDict[indicator]['CHMinmax'] : visDict[indicator]['Minmax']
   
     const zoomFit = (bounds) => {main_map.fitBounds(bounds)}    
     const states = boundary.features.map((item) => item.properties.state);
