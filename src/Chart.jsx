@@ -1,19 +1,101 @@
 import { useState, useMemo } from 'react';
-import ReactDOM from 'react-dom/client';
+import { BsBarChartFill} from 'react-icons/bs';
 import { useTable, useSortBy } from 'react-table';
 import { Vega } from 'react-vega';
 import Table from 'react-bootstrap/Table';
-import { BsBarChartFill} from 'react-icons/bs';
-import { Tab, Tabs } from 'react-bootstrap';
+import { Tab, Tabs, Modal } from 'react-bootstrap';
 import { SimpleSelect, DecimalFormat, FloatFormat, GetColor, ArgMax, ArgMin } from './Utils';
 import { Ask } from './Info';
-import { visDict, pIndicator } from './Config';
+import { visDict, pIndicator, nIndicator } from './Config';
 
 import specs from './data/chart_spec.json';
 import indicators from './data/indicators.json';
 
 function Average(array) {
   return array.reduce((a, b) => a + b) / array.length;
+}
+
+function AllIndicators({ input, proportional }){
+  let spec = JSON.parse(JSON.stringify(specs['StateAggregate']));
+  spec.data[0].values = input;
+
+  if (proportional) {
+    spec.title.text = "An increase in the indicator below means improvement";
+    spec.data[1].transform[0].expr = "(datum.Proportional === true)";
+  } else {
+    spec.title.text = "A decrease in the indicator below means improvement";
+    spec.data[1].transform[0].expr = "(datum.Proportional === false)";
+  }
+
+  spec.signals[0].value = 150;
+  return <Vega spec={spec} actions={false} />
+}
+
+function transformIndicators(obj){
+  const mapper = {'R1':'Round 1', 'R2':'Round 2'}
+  let new_obj = []
+  pIndicator.forEach((key) => {
+    ['R1','R2'].forEach((round) => {
+      new_obj.push({
+        'State': obj['state'],
+        'District': obj['district'],
+        'Mean': obj[key+'_'+round],
+        'Round': mapper[round],
+        'Indicator': visDict[key]['Indicator'],
+        'Abbreviation': key,
+        'Proportional': true,
+      })})
+    }
+  )
+
+  nIndicator.forEach((key) => {
+    ['R1','R2'].forEach((round) => {
+      new_obj.push({
+        'State': obj['state'],
+        'District': obj['district'],
+        'Mean': obj[key+'_'+round],
+        'Round': mapper[round],
+        'Indicator': visDict[key]['Indicator'],
+        'Abbreviation': key,
+        'Proportional': false,
+      })})
+    }
+  )
+  return new_obj
+}
+
+function ShowIndicators({ obj }){
+  const [show,setShow] = useState(false)
+  function handleShow(){setShow(true)}
+  function handleHide(){setShow(false)}
+  
+  const new_obj = transformIndicators(obj.original)
+
+  return (
+      <div className="text-center m-0 p-0 mb-2">
+          <i className='mx-1 pi pi-arrow-circle-right' title='Show all indicator comparison' onClick={handleShow}></i>
+
+          <Modal show={show} onHide={handleHide} size='lg'>
+              <Modal.Header closeButton><h4>All Indicator Comparison</h4></Modal.Header>
+              <Modal.Body>
+                <div>
+                  <div className='p-0 m-0 mb-2'>
+                    The charts below summarise the average values of all indicators in <b>{obj.original.district}, {obj.original.state}</b>.
+                  </div>
+                  <hr/>
+                  <div>
+                    <div className='float-start m-0 p-0'>
+                      <AllIndicators input={new_obj} proportional={true}/>
+                    </div>
+                    <div className='float-end m-0 p-0'>
+                    <AllIndicators input={new_obj} proportional={false}/>
+                    </div>
+                  </div>
+                </div>
+              </Modal.Body>
+          </Modal>
+      </div>
+  )
 }
 
 function MakeTable({ columns, data, palette }) {
@@ -35,6 +117,7 @@ function MakeTable({ columns, data, palette }) {
           <thead>
               {headerGroups.map((headerGroup, i) => (
                   <tr key={i}>
+                    <td></td>
                       {headerGroup.headers.map((column, j) => (
                       <th key={j} {...column.getHeaderProps(column.getSortByToggleProps())}>
                       {column.render('Header')}
@@ -51,11 +134,14 @@ function MakeTable({ columns, data, palette }) {
                   prepareRow(row);
                   return (
                       <tr key={i}>
+                        <td><ShowIndicators obj={row}/></td>
                           {row.cells.map((cell, j) => {
                             let cstyle = {}
                             if (palette[cell.column.Header]) {
                               const color = GetColor(cell.value, palette[cell.column.Header]['Minmax'], palette[cell.column.Header]['Palette'])
                               cstyle['backgroundColor'] = color;
+                              cstyle['fontWeight'] = 'bold';
+                              cstyle['textAlign'] = 'center';
                             }
                             return (
                                 <td key={j} style={cstyle}>{cell.render('Cell')}</td>
@@ -95,25 +181,7 @@ function RangeChart({ input, field, sorter, sorttype }){
   return <Vega spec={spec} actions={false} />
 }
 
-function AllIndicators({ input, proportional }){
-  let spec = JSON.parse(JSON.stringify(specs['StateAggregate']));
-  spec.data[0].values = input;
-
-  if (proportional) {
-    spec.title.text = "An increase in the indicator below means improvement";
-    spec.data[1].transform[0].expr = "(datum.Proportional === true)";
-  } else {
-    spec.title.text = "A decrease in the indicator below means improvement";
-    spec.data[1].transform[0].expr = "(datum.Proportional === false)";
-  }
-
-  spec.signals[0].value = 150;
-  return <Vega spec={spec} actions={false} />
-}
-
-const modalRoot = ReactDOM.createRoot(document.getElementById('modalBody'));
-
-export function TheChart({ country, data, data0, aggData, indicator, pass, exceed }){
+export function TheChart({ country, data, data0, indicator, pass, exceed }){
   const [sortChart, setSortChart] = useState('SortbyName');
   const [sorttype, setSorttype] = useState('ascending');
 
@@ -158,27 +226,7 @@ export function TheChart({ country, data, data0, aggData, indicator, pass, excee
     return (
     <RangeChart input={data} field={indicator} sorter={sortChart} sorttype={sorttype}/>
   )}, [data, indicator, sortChart, sorttype])
-
-  const showIndicators = () => {
-    modalRoot.render(
-      <div>
-        <div className='p-0 m-0 mb-2'>
-          The charts below summarise the average values of all indicators in <b>{stateName}</b>.
-        </div>
-        <div>
-          <div className='float-start m-0 p-0'>
-            <AllIndicators input={aggData} proportional={true}/>
-          </div>
-          <div className='float-end m-0 p-0'>
-            <AllIndicators input={aggData} proportional={false}/>
-          </div>
-        </div>
-      </div>
-    )
-    document.getElementById('modal').style.display = "block";
-    document.getElementById('modalTitle').innerHTML = `<h4>All Indicator Comparison</h4>`;
-  }
-
+  
   const hilite = useMemo(() => {
     return (
       ['_R1', '_R2', '_CH'].map((item) => {

@@ -5,7 +5,7 @@ import { TiledMapLayer } from 'react-esri-leaflet';
 import { Form } from 'react-bootstrap';
 
 import { indDict, visDict, pIndicator } from './Config'
-import { getInfo, ArgMin, FloatFormat, LookupTable, GetColor, GetXFromRGB, SimpleSelect, BasicSelect } from './Utils';
+import { ArgMin, FloatFormat, LookupTable, GetColor, GetXFromRGB, SimpleSelect, BasicSelect } from './Utils';
 import { Ask } from './Info';
 //import GeoRasterLayer from 'georaster-layer-for-leaflet';
 
@@ -99,8 +99,9 @@ function RadioPanel({ pass, indicator }){
 
   let showGridded = () => {
     pass[1](true);
+    pass[2](true);
     document.getElementById('optionCI').style.display = 'none';
-    document.getElementById('optionInspect').style.display = 'block';
+    //document.getElementById('optionInspect').style.display = 'block';
   }
 
   const hideLayerControl = () => {
@@ -296,10 +297,19 @@ function Legend({ indicator, opt }){
 
 function DistrictPopup(obj, col){
   let content = `<div><b>${obj.district}</b>`;
+  const mapper = {
+    'R1': 'R<sub>1</sub>',
+    'R2': 'R<sub>2</sub>',
+    'CH': 'Change',
+  }
   content += `<br/>${obj.state}<br/>`
-  content += `<br/>R<sub>1</sub>\u25b9 ${FloatFormat(obj[col+'_R1'], 1)}`
-  content += `<br/>R<sub>2</sub>\u25b9 ${FloatFormat(obj[col+'_R2'], 1)}`
-  content += `<br/>Change\u25b9 ${FloatFormat(obj[col+'_CH'], 1)}`
+  //content += `<br/>R<sub>1</sub>\u25b9 ${FloatFormat(obj[col+'_R1'], 1)}`
+  //content += `<br/>R<sub>2</sub>\u25b9 ${FloatFormat(obj[col+'_R2'], 1)}`
+  //content += `<br/>Change\u25b9 ${FloatFormat(obj[col+'_CH'], 1)}`
+  //content += `<br/>${obj['toDisplay']}`
+  Object.keys(obj.toDisplay).forEach((key, i) => {
+    content += `<br/> ${mapper[key]}\u25b9 ${FloatFormat(obj.toDisplay[key], 1)}`
+  })
   content += '</div>'
   return (content)
 }
@@ -311,7 +321,7 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
     const [raster, setRaster] = useState(false);
     const [showLabel, setShowLabel] = useState(false);
     const [showImprove, setShowImprove] = useState('');
-    const [coords, setCoords] = useState({lat:0, lng:0, val:0, remark:mapper[opt]});
+    const [coords, setCoords] = useState({lat:0, lng:0, val:null, remark:mapper[opt]});
     const [probLimit, setProbLimit] = useState(0);
 
     useEffect(() => {
@@ -368,11 +378,11 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
 
           const a = context.getImageData(0, 0, 1, 1).data;
           const palette = (opt === 'CH') ? colorList[visDict[indicator]['Palette2']] : colorList[visDict[indicator]['Palette1']];
-          const val = GetXFromRGB(a, palette, minmax);
+          const val = FloatFormat(GetXFromRGB(a, palette, minmax), 1);
           setCoords({ lat: e.latlng.lat, lng: e.latlng.lng, val:val, remark:mapper[opt] });
           
         } catch {
-          console.log('error')
+          console.log('failed to get grid value')
         }
       }
 
@@ -454,9 +464,23 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
       }
     }, [indicator, opt, field, minmax])
 
-    const district = data.features.filter((item) => (item.properties.state.replaceAll(' ','') === selected));
+    let district = data.features.filter((item) => (item.properties.state.replaceAll(' ','') === selected));
+    district.forEach((item) => {
+      const content = opt === 'CH' ? (
+        {
+          'R1': item.properties[indicator+'_R1'], 
+          'R2': item.properties[indicator+'_R2'], 
+          'CH': item.properties[indicator+'_CH']}
+      ) : (
+        {
+          [opt]: item.properties[indicator+'_'+opt],
+        }
+      )
+      item.properties['toDisplay'] = content
+    })
     const selectedState = boundary.features.filter((item) => (item.properties.state.replaceAll(' ','') === selected));
-  
+    
+
     const ref = useRef()
     useEffect(() => {
       if (ref.current) {
@@ -593,7 +617,7 @@ export function TheMap({ country, boundary, data, selected, setFunc, indicator }
                 </div>
               </div>
               <div className='col-6' style={{display:showLabel ? 'block' : 'none'}}>
-                <b>{coords.remark} : {coords.val}</b>
+                <b>{coords.remark} : {coords.val ? coords.val : ''}</b>
               </div>
             </div>
           </div>

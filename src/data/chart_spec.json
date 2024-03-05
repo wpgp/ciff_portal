@@ -132,7 +132,6 @@
     "padding": 5,
     "title": {
       "text": "An increase in the indicator below means improvement",
-      "fontSize": 12,
       "anchor": "start"
     },
     "data": [
@@ -307,7 +306,6 @@
     "padding": 5,
     "title": {
       "text": "An increase in the indicator below means improvement",
-      "fontSize": 12,
       "subtitle": " ",
       "anchor": "start"
     },

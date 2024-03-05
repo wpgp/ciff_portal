@@ -1,5 +1,5 @@
 import { React, useState, useMemo } from 'react';
-import { GroupSelect, SimpleSelect } from './Utils';
+import { getFromUrl, GroupSelect, SimpleSelect } from './Utils';
 import { TheChart } from './Chart';
 import { TheMap } from './Map';
 
@@ -13,7 +13,6 @@ import indicators from './data/indicators.json';
 import stateBoundary from './data/IND_adm1.json'
 import data from './data/IND_data.json'
 import dataTable from './data/IND_table.json'
-import agg_data from './data/IND_agg.json'
 
 export default function MainApp(){
   const [countryShort, setCountryShort] = useState('India');
@@ -33,7 +32,6 @@ export default function MainApp(){
 
   var selectedData = dataTable
   var filteredData = dataTable
-  var filteredAggData = agg_data
 
   if (region) {
     selectedData = dataTable.filter((item) => {
@@ -54,20 +52,16 @@ export default function MainApp(){
       
       return res
     })
-
-    filteredAggData = agg_data.filter((item) => {
-        return item.State.replaceAll(' ','') === region
-    })
   }
 
   const chart = useMemo(() => {
     if (region !== '' && indicator !== ''){      
       return (
-      <TheChart country={country} data={filteredData} data0={selectedData} aggData={filteredAggData} selected={region} pass={setIndicator} exceed={exceedance} indicator={indicator}/>
+      <TheChart country={country} data={filteredData} data0={selectedData} selected={region} pass={setIndicator} exceed={exceedance} indicator={indicator}/>
     )} else {
       return (<></>)
     }
-  }, [filteredData, filteredAggData, indicator, country, region, exceedance, selectedData])
+  }, [filteredData, indicator, country, region, exceedance, selectedData])
 
   //to filter the table according to the change layer on map,
   //setFunc={[setRegion, setIndicator, setExceedance]}.

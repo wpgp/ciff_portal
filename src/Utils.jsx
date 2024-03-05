@@ -3,6 +3,16 @@ import Form from 'react-bootstrap/Form';
 
 import colormaps from './data/colormaps.json';
 
+export async function getFromUrl(url) {
+    try {
+      let response = await fetch(url);
+      let responseJson = await response.json();
+      return responseJson;
+     } catch(error) {
+      console.error(error);
+    }
+}
+
 export function ArgMax(array) {
     return [].map.call(array, (x, i) => [x, i]).reduce((r, a) => (a[0] > r[0] ? a : r))[1];
 }
@@ -12,11 +22,19 @@ export function ArgMin(array) {
 }
 
 export function DecimalFormat({ value, precision=1 }){
-    return parseFloat(value).toFixed(precision)
+    if (value) {
+        return parseFloat(value).toFixed(precision)
+    } else {
+        return '-'
+    }
 }
 
 export function FloatFormat(value, precision=3){
-    return parseFloat(value).toFixed(precision)
+    if (value) {
+        return parseFloat(value).toFixed(precision)
+    } else {
+        return '-'
+    }
 }
 
 export function GetColor(d, minmax, cmapID){

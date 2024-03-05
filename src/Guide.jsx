@@ -18,7 +18,9 @@ export default function Guide() {
         </div>
         <hr/>
         
-        <div className='col-5'>
+        <div className='row'>
+        <div className='col-lg-5 pb-3'>
+          <div className='row'>
           <div className='pb-3'>
           <h4>Basic Usage</h4>
           <ol>
@@ -34,7 +36,7 @@ export default function Guide() {
 
             <li>Select an administrative unit from the list provided. Selection can also be done by clicking any region on the map.</li>
             <li>Chart and tabulated data for the selected unit is displayed on the right. The data can be sorted according to the sub-unit name or the indicator values.</li>
-            <li>The aggregated values of all indicators from the selected unit can also be seen on the panel.</li>
+            <li>By clicking <i className='pi pi-arrow-circle-right'></i>, the aggregated values of all indicators from the selected unit can be displayed.</li>
             <li>Throughout the site, additional information can be accessed by hovering over or clicking on the <i className='pi pi-question-circle'></i> icon where available.</li>
             <li>For a selected number of indicators, additional technical information were created. <a href='#tech-note-1'>Technical Note 1</a> about "Managing over time changing boundaries and harmonising boundaries from round 1 (NFHS4) to round 2 (NFHS-5) and national official boundaries to enable over time comparisons" can be accessed here and through the drop-down menu on the top right bar of this site.</li>
           </ol>
@@ -49,12 +51,14 @@ export default function Guide() {
             <li>An illustration and <a href='#tech-note-2'>Technical Note 2</a> providing details on "Exceedance Probability and Confidence in Changes Over Time" can be accessed from here and also by using the drop-down "Technical Note" menu on the top right bar of this site.</li>
           </ol>
           </div>
+          </div>
         </div>
 
-        <div className='col-7 text-center'>
+        <div className='col-lg-7 text-center'>
           <img alt='guide' src={guide1} width='100%'/>
           <img alt='guide' src={guide2} width='98%'/>
           <img alt='guide' src={guide3} width='98%'/>
+        </div>
         </div>
       </div>
     </div>
