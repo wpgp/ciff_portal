@@ -54,7 +54,7 @@ function Layout() {
             </Navbar.Collapse>
             <Navbar className='justify-content-end'>
               <Nav>
-                <Nav.Link href='/temporary/'><i className='pi pi-sign-out mx-1'></i>Logout</Nav.Link>
+                <Nav.Link href='/ciff_portal/'><i className='pi pi-sign-out mx-1'></i>Logout</Nav.Link>
               </Nav>
             </Navbar>
           </Navbar>
@@ -65,7 +65,7 @@ function Layout() {
         <Outlet/>
       </div>
 
-      <div className='shadow fixed-bottom p-2 justify-content-end'>
+      <div className='shadow p-2 justify-content-end'>
         &copy; 2024 <a href='https://sdi.worldpop.org'>WorldPop SDI</a>
       </div>
     </div>
