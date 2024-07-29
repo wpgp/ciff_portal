@@ -1265,7 +1265,7 @@ export const mainConfig = {
             "Breastfeed": {
                 "Indicator":"Exclusive breastfeeding",
                 "Theme":"Nutrition",
-                "Remark":"",
+                "Remark":"For this indicator, estimates were produced only at the county level. All sub-counties within each county were assigned the same value as their respective county.",
                 "Min":15.0,
                 "Max":80.0,
                 "Delta":5.0,
