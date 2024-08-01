@@ -2127,7 +2127,7 @@ export const indicatorDef = {
         "Definition":"Percentage (%) of women whose first marriage or consensual union occurred before the age of 15 over the full sample of women aged 15–49",
         "Unit": "per cent",
         "Denominator":"women aged 15 to 49",
-        "Statement":"of women whose first marriage or consensual union occurred before the age of 15",
+        "Statement":"of women had marriage or consensual union before reaching the age of 15",
         "Proportional":false,
     },
     "Labour_fem": {
