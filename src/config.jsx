@@ -2124,10 +2124,10 @@ export const indicatorDef = {
     "Child_m": {
         "Indicator":"Child marriage",
         "Theme":"Child Protection",
-        "Definition":"Percentage (%) of women aged 20 to 24 years who were married or in a union before age 18. ",
+        "Definition":"Percentage (%) of women whose first marriage or consensual union occurred before the age of 15 over the full sample of women aged 15–49",
         "Unit": "per cent",
         "Denominator":"women aged 15 to 49",
-        "Statement":"of women aged 20 to 24 years were married or in union before age 18",
+        "Statement":"of women whose first marriage or consensual union occurred before the age of 15",
         "Proportional":false,
     },
     "Labour_fem": {
