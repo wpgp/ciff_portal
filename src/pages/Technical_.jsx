@@ -267,7 +267,7 @@ function ThirdNote() {
     }
     return (
         <div className='bg-secondary-subtle rounded-4 p-3'>
-            <h2>Technical Note 1</h2>
+            <h2>Technical Note 3</h2>
             <h3>
             Data sourced from the Institute for Health Metrics and Evaluation (IHME)
             </h3>
