@@ -19,11 +19,11 @@ export function Technical({which}) {
     return content[which]
 }
 
-function Figure ({src, label, number, caption, width='80%'}){
+function Figure ({src, label, number, caption, width='90%'}){
     return (
         <div id={label} className='m-2 text-center'>
             <div className='text-center'>
-                <Image alt={label} src={src}/>
+                <Image alt={label} src={src} width={width}/>
             </div>
             <figcaption className="text-center">
                 <b>Figure {number}.</b> {caption}
@@ -87,11 +87,11 @@ function ZeroNote() {
                     
                 <Card style={{ width: '18rem' }}>
                     <Card.Body>
-                        <Card.Title><a href='#/technote-0' className='subtitle'>Technical Note 2</a></Card.Title>
+                        <Card.Title><a href='#/technote-2' className='subtitle'>Technical Note 2</a></Card.Title>
                         <Card.Text>
                         Change of an indicator over time can be appreciated as either improvement or worsening. In this technical note, we explain the use of Exceedance Probability to statistically determine the direction of the change.
                         </Card.Text>
-                        <a href='#/technote-0'>Go to note<i className='pi pi-arrow-circle-right mx-1'></i></a>
+                        <a href='#/technote-2'>Go to note<i className='pi pi-arrow-circle-right mx-1'></i></a>
                     </Card.Body>
                 </Card>
 
@@ -155,7 +155,7 @@ function SecondNote() {
         <hr/>
         <h4>Background</h4>
         <p>
-            We have produced 5x5km high-resolution (also referred to as grid level) prediction and uncertainty maps illustrating changes over time for health and development indicators within specific subnational areas, such as districts or similar administrative divisions varying by country. Our methodology relies on data from the two most recent rounds of the nationally representative Demographic and Health Surveys (DHS), which are available at the cluster level, and mapped through GPS coordinates of the cluster centres. In the case of India, we utilised the National Family Health Surveys (NFHS), specifically NFHS-4 (2015-16) denoted as Round 1, and NFHS-5 (2019-22) denoted as Round 2. Measuring changes between these survey rounds allows us to track and assess the progress of the health and development indicators over time
+            We have produced 5x5km high-resolution (also referred to as grid level) prediction and uncertainty maps illustrating changes over time for health and development indicators within specific subnational areas, such as districts, sub-counties or similar administrative divisions varying by country. Our methodology relies on data from the two most recent rounds of the nationally representative Demographic and Health Surveys (DHS), which are available at the cluster level and mapped using the GPS coordinates of the cluster centroids and a set of ancillary covariates. Measuring changes between two consecutive survey rounds (here denoted as Round 1 and Round 2) allows us to track and assess the progress of the health and development indicators over time.
         </p>
         <p>
             To ensure the reliability of our estimates of the changes within each subnational area, we employed exceedance probability to quantify our confidence in these observed changes. Exceedance probability, commonly applied in environmental and risk analysis Richards et al., 2014, assesses the likelihood of an event surpassing a specific limit within a defined period (Soch, 2020). In simpler terms, exceedance probability helps us assess potential improvements or worsening of our health and development indicators. We express this likelihood as a percentage, indicating the probability of an indicator exceeding our defined threshold. For this work, we use the statistical significance levels of 95% (highly likely) and 99% (almost certain). 
@@ -163,7 +163,7 @@ function SecondNote() {
 
         <h4>Outline</h4>
         <p>
-            We outline the entire process of implementing and applying exceedance probability using the indicator "Percentage of women who had 4 or more antenatal visits" (ANC4+) in India as an example. For India, the subnational areas are the districts. This outline unfolds in three main steps: (1) preparation, (2) implementation, and (3) application. Further detail can be found in the Methods section. 
+            We outline the entire process of implementing and applying exceedance probability in subnational change estimation using the Percentage of women who had 4 or more antenatal visits indicator (ANC4+) as an example. This outline unfolds in three main steps: (1) preparation, (2) implementation, and (3) application. Further detail can be found in the Methods section.
         </p>
         <div className="border border-secondary rounded-4 p-3 mb-4">
         <h5>Preparation</h5>
@@ -185,7 +185,7 @@ function SecondNote() {
         <div className='row p-0 m-0 px-3'>
         <ol>
             <li>
-                The district level change estimate samples can be depicted using an empirical cumulative density function (ECDF) (Dekking et al., 2005). The ECDF offers insights into the probability, given the data, that the true change is equal to or less than a specified value. It derives from the proportion of samples that are equal to or less than the specified value. For change in ANC4+, we are interested in the district estimate value zero, because we want to observe where there have been meaningful improvements for ANC4+.  
+                The change estimate samples can be depicted using an empirical cumulative density function (ECDF) (Dekking et al., 2005). The ECDF offers insights into the probability, given the data, that the true change is equal to or less than a specified value. It derives from the proportion of samples that are equal to or less than the specified value. For change in ANC4+, we are interested in the subnational estimate value of zero, because we want to observe where there have been meaningful improvements for ANC4+.
             </li>
             <li>
                 The ECDF at zero for each district indicates the proportion of samples equal to or less than zero. This informs us of the probability, given the data, that the true change is less than or equal to zero. 
@@ -214,12 +214,12 @@ function SecondNote() {
         <Figure src={exceedance}
             label='fig-exceedance' 
             number='1'
-            caption={'Workflow highlighting some of the key steps of the process described in the Outline for implementing and applying exceedance probability using the indicator ANC4+ in selected districts in India. Panel (a) links to Step 1.3 in the Outline and shows the samples of district level estimates for the change over time between NFHS-4 (Round 1) and NFHS-5 (Round2) for the ANC4+ indicator in the state of Odisha, India. Panel (b) links to Step 2.3 in the Outline and shows the histograms and proportions of samples for estimates of change over time in two districts within the state of Odisha, India. Panel (c) links to Step 3 in the Outline and is a visual representation of how changing significance levels affect the confidence (uncertainty) around the estimated improvement of ANC4+ over time for the selected districts.'}/>
+            caption={'Workflow highlighting some of the key steps of the process described in the Outline for implementing and applying exceedance probability using the indicator ANC4+ in selected sub-counties in Kenya. Panel (a) links to Step 3 in the Preparation stage and shows the samples of sub-county level estimates for the change over time between KDHS-7 (Round 1) and KDHS-8 (Round2) for the ANC4+ indicator in the county of Kwale, Kenya. Panel (b) links to Step 3 in the Application stage and shows the histograms and proportions of samples for estimates of change over time in two sub-counties within the county of Kwale, Kenya. Panel (c) links to the Application stage and is a visual representation of how changing significance levels affect the confidence (uncertainty) around the estimated improvement of ANC4+ over time for the selected sub-counties.'}/>
         </div>
 
         <h4>Methods</h4>
         <p>
-            In examining changes in ANC4, we employed the statistical method INLA-SPDE to estimate ANC4+ values. This method generates "best estimations" (posterior distributions) based on available data, enabling us to predict potential ANC4 values. By comparing these values across different survey rounds, we obtain samples representing changes at grid and district levels.
+            In examining changes in ANC4+, we employed the statistical method INLA-SPDE to estimate ANC4+ values. This method generates “best estimations” (posterior distributions) based on available data, enabling us to predict potential ANC4+ values. By comparing these values across different survey rounds, we obtain samples representing changes at the level of individual grid cells and established administrative units.
         </p>
         <p>
             To ensure reliability in these estimates, we utilised the ECDF. The ECDF visually represents the likelihood of observing specific changes in ANC4+. For example, the ECDF at zero indicates the likelihood of observing changes equal to or less than zero in ANC4+. Its complement, calculated as 1 minus the ECDF value at zero, informs us about the probability, given the data, of observing changes greater than zero (see Figure 1c). We then apply this information by comparing probabilities from the ECDF at zero against a 95% threshold, illustrated in Figure 1d, to highlight districts where improvements are highly certain (95% certain).  
