@@ -88,11 +88,17 @@ export function Map({ param, data, boundary, func, filterFunc }){
       par['round'] = val
       par['field'] = param.indicator + '_' + val,
       par['showRaster'] = false
+      document.getElementById('filterBySignificance').style.visibility = 'visible';
       setOpt(par, {replace:true})
     }
   
     function showHiRes(val){
       let par = {...opt}
+      if (val){
+        document.getElementById('filterBySignificance').style.visibility = 'hidden';
+      } else {
+        document.getElementById('filterBySignificance').style.visibility = 'visible';
+      }
       par['showRaster'] = val
       setOpt(par, {replace:true})
     }

@@ -277,7 +277,7 @@ export function MainApp() {
       )
     } else {
       return (
-        <div className='row rounded-3 m-0 bg-secondary-subtle'>
+        <div className='row rounded-3 m-0 bg-secondary-subtle' id='filterBySignificance'>
           <div className='col-5 p-2' style={{fontSize:'75%'}}>
             The data displayed can also be filtered according to how significant the change is. This applies when the unit-level confidence interval is available.
           </div>
