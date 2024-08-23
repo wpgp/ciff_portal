@@ -130,6 +130,8 @@ function MakeTable({ columns, data, palette, indicators }) {
                                 cstyle['backgroundColor'] = color;
                                 cstyle['fontWeight'] = 'bold';
                                 cstyle['textAlign'] = cell.column.align;
+                              } else if (cell.column.Header === '') {
+                                cstyle['color'] = (cell.value === '\u25bc') ? 'red' : 'limegreen';
                               } else {
                                 cstyle['textAlign'] = cell.column.align;
                               }
@@ -215,8 +217,15 @@ export function Chart({ param, data, stat, filterFunc}){
   const definition = indicatorDef[param.indicator]
   const rounds = ['R1', 'R2', 'CH']
   
-  const filteredData = data.filter(filterFunc)
-
+  let filteredData = data.filter(filterFunc)
+  filteredData = filteredData.map((row) => {
+    const pos = pIndicator.includes(param.indicator) ? 
+      (row[param.indicator + '_CH'] > 0) : 
+      (row[param.indicator + '_CH'] < 0)
+    row['good'] = pos ? '\u25b2' : '\u25bc'
+    return row
+  })
+  
   let stateData = [structuredClone(filteredData[0])]
   let admHeader = param.config.Adm2 + ' Name'
   if (stateData[0] && param.config.StateOnly.includes(param.indicator)){
@@ -246,6 +255,7 @@ export function Chart({ param, data, stat, filterFunc}){
 
   const columns = [
     {Header:`${admHeader}`, accessor:'district', align:'left'},
+    {Header:``, accessor:'good', disableSortBy: true, align:'left'},
     {Header:`R1`, accessor: `${param.indicator}_R1`, Cell:CellFormater, sortType:'basic', align:'center'},
     {Header:`CI_R1`, accessor: `${param.indicator}_R1CI`, disableSortBy: true, align:'center'},
     {Header:'R2', accessor:`${param.indicator}_R2`, Cell:CellFormater, sortType:'basic', align:'center'},
