@@ -2142,19 +2142,19 @@ export const indicatorDef = {
     "NAR_prim": {
         "Indicator":"Net primary school attendance rate",
         "Theme":"Education",
-        "Definition":"Percentage (%) of children of official primary school-age who were enrolled in primary education",
+        "Definition":"Percentage (%) of children of official primary school-age who were attending primary education",
         "Unit": "per cent",
         "Denominator":"de facto household population of primary school age (this varies by Country)",
-        "Statement":"of children of official primary school age were enrolled in primary education",
+        "Statement":"of children of official primary school age were attending primary education",
         "Proportional": true,
     },
     "NAR_sec": {
         "Indicator":"Net secondary school attendance rate",
         "Theme":"Education",
-        "Definition":"Percentage (%) of children of official secondary school-age who were enrolled in secondary education",
+        "Definition":"Percentage (%) of children of official secondary school-age who were attending secondary education",
         "Unit": "per cent",
         "Denominator":"de facto household population of secondary school age (this varies by Country)",
-        "Statement":"Percentage (%) of children of official secondary school-age who were enrolled in secondary education",
+        "Statement":"Percentage (%) of children of official secondary school-age who were attending secondary education",
         "Proportional": true,
     },
     "Stunting": {
