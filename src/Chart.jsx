@@ -255,13 +255,13 @@ export function Chart({ param, data, stat, filterFunc}){
 
   const columns = [
     {Header:`${admHeader}`, accessor:'district', align:'left'},
-    {Header:``, accessor:'good', disableSortBy: true, align:'left'},
     {Header:`R1`, accessor: `${param.indicator}_R1`, Cell:CellFormater, sortType:'basic', align:'center'},
     {Header:`CI_R1`, accessor: `${param.indicator}_R1CI`, disableSortBy: true, align:'center'},
     {Header:'R2', accessor:`${param.indicator}_R2`, Cell:CellFormater, sortType:'basic', align:'center'},
     {Header:`CI_R2`, accessor: `${param.indicator}_R2CI`, disableSortBy: true, align:'center'},
     {Header:'CH', accessor:`${param.indicator}_CH`, Cell:CellFormater, sortType:'basic', align:'center'},
-    {Header:`CI_CH`, accessor: `${param.indicator}_CHCI`, disableSortBy: true, align:'center'}
+    {Header:`CI_CH`, accessor: `${param.indicator}_CHCI`, disableSortBy: true, align:'center'},
+    {Header:``, accessor:'good', disableSortBy: true, align:'left'},
   ]
   
   const districtchart = useMemo(() => {

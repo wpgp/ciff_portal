@@ -61,6 +61,7 @@ Table thead{
   background-color: #ffb3bb;
   top: 0px;
   margin: 0 0 0 0;
+  vertical-align: text-top;
 }
 
 optgroup {
