@@ -131,7 +131,7 @@ function MakeTable({ columns, data, palette, indicators }) {
                                 cstyle['fontWeight'] = 'bold';
                                 cstyle['textAlign'] = cell.column.align;
                               } else if (cell.column.Header === '') {
-                                cstyle['color'] = row.original.color;
+                                cstyle['color'] = (cell.value === '\u25b2') ? 'limegreen' : 'red';
                               } else {
                                 cstyle['textAlign'] = cell.column.align;
                               }
