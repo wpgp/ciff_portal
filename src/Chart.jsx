@@ -131,7 +131,7 @@ function MakeTable({ columns, data, palette, indicators }) {
                                 cstyle['fontWeight'] = 'bold';
                                 cstyle['textAlign'] = cell.column.align;
                               } else if (cell.column.Header === '') {
-                                cstyle['color'] = (cell.value === '\u25bc') ? 'red' : 'limegreen';
+                                cstyle['color'] = row.original.color;
                               } else {
                                 cstyle['textAlign'] = cell.column.align;
                               }
@@ -219,10 +219,14 @@ export function Chart({ param, data, stat, filterFunc}){
   
   let filteredData = data.filter(filterFunc)
   filteredData = filteredData.map((row) => {
-    const pos = pIndicator.includes(param.indicator) ? 
-      (row[param.indicator + '_CH'] > 0) : 
-      (row[param.indicator + '_CH'] < 0)
-    row['good'] = pos ? '\u25b2' : '\u25bc'
+    const clr = pIndicator.includes(param.indicator) ? 
+      ((row[param.indicator + '_CH'] > 0) ? 'limegreen' : 'red' ) :
+      ((row[param.indicator + '_CH'] < 0) ? 'limegreen' : 'red')
+    const arr = (row[param.indicator + '_CH']) ? 
+      ((row[param.indicator + '_CH'] > 0) ? '\u25b2' : '\u25bc') :
+      ''
+    row['good'] = arr
+    row['color'] = clr
     return row
   })
   
