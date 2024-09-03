@@ -273,7 +273,7 @@ export function MainApp() {
     const disabled = tabData ? !(appParam.indicator+'_CH_P' in tabData[0]) : false
     if (disabled) {
       return (
-        <></>
+        <div id='filterBySignificance'></div>
       )
     } else {
       return (

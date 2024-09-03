@@ -994,7 +994,7 @@ export const mainConfig = {
         "DistrictOnly": ['LBW', 'Stillbirth', 'Lab_child', 'Breastfeed'],
         "StateOnly": ['LBW', 'Stillbirth', 'Lab_child', 'Breastfeed'],
         "NoR1": ['Lab_child', 'NTDs_helm', 'NTDs_schi'],
-        "NoR2": ['NAR_prim', 'NAR_sec'],
+        "NoR2": [],
         "indicators": {
             "Teen_Pregn": {
                 "Indicator":"Teenage pregnancies",
@@ -1353,9 +1353,9 @@ export const mainConfig = {
                 "Palette2":"CIFF20_r",
                 "Resolution":"5 km",
                 "R1":"DHS-7",
-                "R2":"",
+                "R2":"DHS-8",
                 "Y1":"2014",
-                "Y2":""
+                "Y2":"2022"
             },
             "NAR_sec": {
                 "Indicator":"Net secondary school attendance rate",
@@ -1372,9 +1372,9 @@ export const mainConfig = {
                 "Palette2":"CIFF20_r",
                 "Resolution":"5 km",
                 "R1":"DHS-7",
-                "R2":"",
+                "R2":"DHS-8",
                 "Y1":"2014",
-                "Y2":""
+                "Y2":"2022"
             },
             "Labour_fem": {
                 "Indicator":"Female labour force participation",
